@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-//import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -18,53 +17,40 @@ import java.util.Locale;
 @TeleOp(name = "Competition Main", group = "TeleOp")
 public class Competition extends LinearOpMode {
 
-    private Limelight3A limelight;
+
     GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
-    double oldTime = 0;
+
+    org.firstinspires.ftc.teamcode.RobotHardware robot = new RobotHardware(this);
 
     @Override
     public void runOpMode() {
-        /*
-        //Limelight Setup
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        telemetry.setMsTransmissionInterval(11);
-        limelight.pipelineSwitch(0);
-        limelight.start();
-         */
 
-        //GoBilda Odometry Pod Setup
-        odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
-        odo.setOffsets(-84.0, -168.0); //these are tuned for 3110-0002-0001 Product Insight #1
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        odo.resetPosAndIMU();
+        ///Variable Setup
+        //Odometry
+        double oldTime = 0;
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.addData("X offset", odo.getXOffset());
-        telemetry.addData("Y offset", odo.getYOffset());
-        telemetry.addData("Device Version Number:", odo.getDeviceVersion());
-        telemetry.addData("Device Scalar", odo.getYawScalar());
-        telemetry.update();
+        //Mecanum Drive
+        double x = 0;
+        double y = 0;
+        double rotation = 0;
 
-        // Initialize the motors
-        // Declare motor variables
-        DcMotor leftFront = hardwareMap.get(DcMotor.class, "leftFront");
-        DcMotor rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        DcMotor leftBack = hardwareMap.get(DcMotor.class, "leftBack");
-        DcMotor rightBack = hardwareMap.get(DcMotor.class, "rightBack");
+        //Elevator
+        double elevatorPower = 0;
 
-        // Set motor directions (reverse left side if needed)
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
+        //Intake
+        boolean IntakeClosed = true;
+        boolean IntakeButtonWasPressed = false;
+        double PosChange = 0.0;
+
+        robot.init();  //Hardware configuration in RobotHardware.java
 
         waitForStart();
         resetRuntime();
 
         while (opModeIsActive()) {
 
-            /*
             //Limelight Data
-            LLResult result = limelight.getLatestResult();
+            LLResult result = robot.limelight.getLatestResult();
             if (result != null) {
                 if (result.isValid()) {
                     Pose3D botpose = result.getBotpose();
@@ -72,57 +58,72 @@ public class Competition extends LinearOpMode {
                     telemetry.addData("ty", result.getTy());
                     telemetry.addData("Botpose", botpose.toString());
                 }
-             */
+            }
 
             //Odometry
-            odo.update(); //Update odometry
+            robot.odo.update(); //Update odometry
             double newTime = getRuntime();
             double loopTime = newTime - oldTime;
             double frequency = 1 / loopTime;
             oldTime = newTime;
-            Pose2D pos = odo.getPosition();
+            Pose2D pos = robot.odo.getPosition();
             String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
             telemetry.addData("Position", data);
-            Pose2D vel = odo.getVelocity();
+            Pose2D vel = robot.odo.getVelocity();
             String velocity = String.format(Locale.US, "{XVel: %.3f, YVel: %.3f, HVel: %.3f}", vel.getX(DistanceUnit.MM), vel.getY(DistanceUnit.MM), vel.getHeading(AngleUnit.DEGREES));
             telemetry.addData("Velocity", velocity);
-            telemetry.addData("Status", odo.getDeviceStatus());
-            telemetry.addData("Pinpoint Frequency", odo.getFrequency()); //prints/gets the current refresh rate of the Pinpoint
+            telemetry.addData("Status", robot.odo.getDeviceStatus());
+            telemetry.addData("Pinpoint Frequency", robot.odo.getFrequency()); //prints/gets the current refresh rate of the Pinpoint
             telemetry.addData("REV Hub Frequency: ", frequency); //prints the control system refresh rate
 
+            ///MECANUM DRIVE
+
             // Get joystick inputs
-            double y = -gamepad1.left_stick_y; // Forward/backward
-            double x = gamepad1.left_stick_x;  // Strafe
-            double rotation = gamepad1.right_stick_x; // Rotation
+            y = -gamepad1.left_stick_y; // Forward/backward
+            x = gamepad1.left_stick_x;  // Strafe
+            rotation = gamepad1.right_stick_x; // Rotation
 
-            // Calculate power for each motor
-            double leftFrontPower = y + x + rotation;
-            double rightFrontPower = y - x - rotation;
-            double leftBackPower = y - x + rotation;
-            double rightBackPower = y + x - rotation;
+            robot.mecanumDrive(x, y, rotation);
 
-            // Normalize power values to keep them between -1 and 1
-            double maxPower = Math.max(1.0, Math.abs(leftFrontPower));
-            maxPower = Math.max(maxPower, Math.abs(rightFrontPower));
-            maxPower = Math.max(maxPower, Math.abs(leftBackPower));
-            maxPower = Math.max(maxPower, Math.abs(rightBackPower));
+            ///ELEVATOR
+            if (gamepad1.dpad_up){
+                elevatorPower = 0.75;
+            } else if (gamepad1.dpad_down) {
+                elevatorPower = -0.50;
+            }
+            else
+                elevatorPower = 0;
 
-            leftFrontPower /= maxPower;
-            rightFrontPower /= maxPower;
-            leftBackPower /= maxPower;
-            rightBackPower /= maxPower;
+            robot.runElevator(elevatorPower);
 
-            // Set power to the motors
-            leftFront.setPower(leftFrontPower);
-            rightFront.setPower(rightFrontPower);
-            leftBack.setPower(leftBackPower);
-            rightBack.setPower(rightBackPower);
+            ///INTAKE
 
-            // Telemetry for debugging
-            telemetry.addData("Front Left Power", leftFrontPower);
-            telemetry.addData("Front Right Power", rightFrontPower);
-            telemetry.addData("Rear Left Power", leftBackPower);
-            telemetry.addData("Rear Right Power", rightBackPower);
+            //Intake Pincher
+            boolean IntakeButtonPressed = gamepad1.a; //Check if button pressed
+
+            if (IntakeButtonPressed && !IntakeButtonWasPressed){ //Button pressed in this loop
+                IntakeClosed = !IntakeClosed; //Toggle position state
+                if (IntakeClosed){
+                    robot.CloseIntakePincher(); //Move to position 1
+                } else {
+                    robot.OpenIntakePincher(); //Move to position 2
+                }
+            }
+
+            IntakeButtonWasPressed = IntakeButtonPressed; //Update previous button state
+
+            /*
+            if (gamepad1.right_bumper){
+                robot.IntakePosition(0.005);
+            } else if (gamepad1.left_bumper) {
+                robot.IntakePosition(-0.005);
+            } else {
+                robot.IntakePosition(0);
+            }
+
+            //telemetry.addData("Intake Button Pressed", IntakeButtonPressed);
+             */
+
             telemetry.update();
         }
     }
