@@ -17,4 +17,8 @@ public class Constants {
     ///INTAKE SLIDE SETPOINTS
     public static final int intakeSlideHome = 0;
     public static final int intakeSlideIntake = 750;
+
+    ///INTAKE SERVO POSITIONS
+    public static final double intakePincherClosed = 0;
+    public static final double intakePincherOpen = 0.60;
 }

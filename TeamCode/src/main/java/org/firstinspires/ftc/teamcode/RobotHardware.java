@@ -272,15 +272,11 @@ public class RobotHardware {
         intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    /**
-     *
-     */
-
     public void CloseIntakePincher (){
-        intakePincher.setPosition(0);
+        intakePincher.setPosition(Constants.intakePincherClosed);
     }
     public void OpenIntakePincher (){
-        intakePincher.setPosition(0.60);
+        intakePincher.setPosition(Constants.intakePincherOpen);
     }
 
     public void IntakePosition (double PosChange){
