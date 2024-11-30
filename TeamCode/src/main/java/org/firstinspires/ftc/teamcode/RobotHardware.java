@@ -68,8 +68,8 @@ public class RobotHardware {
     private DcMotor rightFront = null;
     private DcMotor leftBack = null;
     private DcMotor rightBack = null;
-    private DcMotor elevatorLift = null;
-    private DcMotor intakeSlide = null;
+    DcMotor elevatorLift = null;
+    DcMotor intakeSlide = null;
     private Servo intakePincher = null;
     Limelight3A limelight = null;
     GoBildaPinpointDriver odo = null; // Declare OpMode member for the Odometry Computer
@@ -145,8 +145,10 @@ public class RobotHardware {
         intakeSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // If there are encoders connected, switch to RUN_USING_ENCODER mode for greater accuracy
-        // elevatorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        // intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elevatorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elevatorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and initialize ALL installed servos.
         intakePincher = myOpMode.hardwareMap.get(Servo.class, "intakePincher");
@@ -231,8 +233,43 @@ public class RobotHardware {
      * @param elevatorPower Elevator Power
      */
     public void runElevator (double elevatorPower){
-
+        elevatorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevatorLift.setPower(elevatorPower);
+    }
+
+    /**
+     * Pass desired position to elevator
+     *
+     * @param elevatorPosition  Elevator position
+     */
+    public void setElevator (int elevatorTargetPosition){
+        double elevatorPower = 0;
+        int ElevatorCurrentPosition = elevatorLift.getCurrentPosition();
+        if (elevatorTargetPosition < ElevatorCurrentPosition){
+            elevatorPower = Constants.elevatorPowerUp;
+        } else
+            elevatorPower = Constants.elevatorPowerDown;
+
+        elevatorLift.setTargetPosition(elevatorTargetPosition);
+        elevatorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elevatorLift.setPower(elevatorPower);
+    }
+
+    /**
+     * Pass desired power to elevator
+     *
+     * @param intakeSlidePower Elevator Power
+     */
+    public void runIntakeSlide (double intakeSlidePower){
+
+        intakeSlide.setPower(intakeSlidePower);
+    }
+
+    public void resetSlideEncoders(){
+        elevatorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elevatorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     /**
