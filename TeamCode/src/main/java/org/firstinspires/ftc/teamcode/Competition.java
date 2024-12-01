@@ -9,6 +9,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
+import org.firstinspires.ftc.teamcode.IntakeStateMachine.IntakeState;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
 //import com.qualcomm.hardware.limelightvision.Limelight3A;
 import java.util.Locale;
@@ -20,8 +22,12 @@ public class Competition extends LinearOpMode {
 
     org.firstinspires.ftc.teamcode.RobotHardware robot = new RobotHardware(this);
 
+    IntakeStateMachine IntakeStateMachine;
+
     @Override
     public void runOpMode() {
+
+        IntakeStateMachine = new IntakeStateMachine(robot);
 
         ///Variable Setup
         //Odometry
@@ -94,7 +100,7 @@ public class Competition extends LinearOpMode {
             backButtonPreviouslyPressed = gamepad1.back; // Update previous state
 
             if (manualControl) {
-                // Manual control using dpad
+                /// Manual elevator control using dpad
                 if (gamepad1.dpad_up) {
                     elevatorPower = Constants.elevatorPowerUp;
                 } else if (gamepad1.dpad_down) {
@@ -106,9 +112,20 @@ public class Competition extends LinearOpMode {
                 // Run the elevator with manual power
                 robot.runElevator(elevatorPower);
 
+                ///Manual INTAKE SLIDE Control
+                if (gamepad1.dpad_right){
+                    intakeSlidePower = Constants.intakeSlidePowerOut;
+                } else if (gamepad1.dpad_left) {
+                    intakeSlidePower = Constants.intakeSlidePowerIn;
+                }
+                else
+                    intakeSlidePower = 0;
+
+                robot.runIntakeSlide(intakeSlidePower);
+
             } else {
                 // Position-based control
-
+                /*
                 if (gamepad1.y) {
                     // Move to high chamber position
                     robot.setElevator(Constants.elevatorHighChamber);
@@ -119,6 +136,8 @@ public class Competition extends LinearOpMode {
                     // Move to low-level position (example)
                     robot.setElevator(Constants.elevatorHome);
                 }
+
+                 */
             }
 
             /*
@@ -139,26 +158,15 @@ public class Competition extends LinearOpMode {
 
              */
 
-            ///INTAKE SLIDE
-            if (gamepad1.dpad_right){
-                intakeSlidePower = 0.85;
-            } else if (gamepad1.dpad_left) {
-                intakeSlidePower = -0.66;
-                }
-            else
-                intakeSlidePower = 0;
-
-            robot.runIntakeSlide(intakeSlidePower);
-
             ///RESET ENCODERS
             if (gamepad1.start){
                 robot.resetSlideEncoders();
             }
 
             ///INTAKE
-
+            /*
             //Intake Pincher
-            boolean IntakeButtonPressed = gamepad1.right_bumper; //Check if button pressed
+            boolean IntakeButtonPressed = gamepad1.left_bumper; //Check if button pressed
 
             if (IntakeButtonPressed && !IntakeButtonWasPressed){ //Button pressed in this loop
                 IntakeClosed = !IntakeClosed; //Toggle position state
@@ -171,24 +179,35 @@ public class Competition extends LinearOpMode {
 
             IntakeButtonWasPressed = IntakeButtonPressed; //Update previous button state
 
-            /*
-            if (gamepad1.a){
-                robot.IntakeRotate(0.005);
-            } else if (gamepad1.b) {
-                robot.IntakeRotate(-0.005);
-            } else {
-                robot.IntakeRotate(0);
-            }
-
-            if (gamepad1.x){
-                robot.IntakeLift(0.005);
-            } else if (gamepad1.y){
-                robot.IntakeLift(-0.005);
-            } else {
-                robot.IntakeLift(0);
-            }
-
              */
+
+            /*
+            if (gamepad1.right_trigger > 0.1){
+                robot.IntakePincherRotate(0.05);
+            } else if (gamepad1.left_trigger > 0.1) {
+                robot.IntakePincherRotate(-0.05);
+            } else {
+                robot.IntakePincherRotate(0);
+            }
+             */
+
+            if (gamepad1.x) {
+                IntakeStateMachine.setIntakeState(IntakeState.HOME);
+            } else if (gamepad1.b) {
+                IntakeStateMachine.setIntakeState(IntakeState.HANDOFF);
+            } else if (gamepad1.a) {
+                IntakeStateMachine.setIntakeState(IntakeState.PICKUP);
+            } else if (gamepad1.right_bumper){
+                IntakeStateMachine.setIntakeState(IntakeState.PICKUP_TO_HANDOFF);
+            } else if (gamepad1.right_trigger > 0.1){
+                robot.IntakePincherRotate(0.05);
+            } else if (gamepad1.left_trigger > 0.1) {
+                robot.IntakePincherRotate(-0.05);
+            } else {
+                robot.IntakePincherRotate(0);
+            }
+
+            telemetry.addData("Intake State", IntakeStateMachine.getIntakeState());
 
             //telemetry.addData("Intake Button Pressed", IntakeButtonPressed);
 
