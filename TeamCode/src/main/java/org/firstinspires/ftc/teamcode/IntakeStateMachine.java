@@ -24,7 +24,24 @@ public class IntakeStateMachine {
 
     public void setIntakeState(IntakeState state) {
         this.currentIntakeState = state;
+        this.currentPickupSequenceSubstep = 0;
+        this.currentHandoffSubStep = 0;
+        timer1.reset();
+        timer2.reset();
         updateIntakeServos();
+    }
+
+    public void update(){
+        switch (currentIntakeState){
+            case HOME:
+                break;
+            case PICKUP:
+                break;
+            case HANDOFF:
+                intakeHandoffSequence();
+            case PICKUP_TO_HANDOFF:
+                intakePickupSequence();
+        }
     }
 
     public IntakeState getIntakeState() {
@@ -44,7 +61,7 @@ public class IntakeStateMachine {
             case PICKUP:
                 robot.intakePincher.setPosition(Constants.intakePincherOpen);
                 robot.intakeRotate.setPosition(Constants.intakeRotateIntakePosition);
-                robot.intakeLift.setPosition(Constants.intakeLiftIntakePosition);
+                robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
                 robot.intakePincherRotate.setPosition(Constants.intakePincherRotateIntake);
                 robot.setIntakeSlide(Constants.intakeSlideIntake);
                 break;
@@ -66,18 +83,25 @@ public class IntakeStateMachine {
     private void intakePickupSequence(){
         switch (currentPickupSequenceSubstep){
             case 0:
-                robot.intakePincher.setPosition(Constants.intakePincherClosed);
                 timer1.reset();
+                robot.intakeLift.setPosition(Constants.intakeLiftIntakePosition);
                 currentPickupSequenceSubstep++;
                 break;
             case 1:
                 if (timer1.seconds() > 0.25) {
+                    robot.intakePincher.setPosition(Constants.intakePincherClosed);
+                    currentPickupSequenceSubstep++;
+            }
+                break;
+            case 2:
+                //System.out.println("Timer1: " + timer1.seconds());
+                if (timer1.seconds() > 0.50) {
                     setIntakeState(IntakeState.HANDOFF);
                     //intakeHandoffSequence();
                     currentPickupSequenceSubstep++;
                 }
                 break;
-            case 2:
+            case 3:
                 currentPickupSequenceSubstep = 0;
                 break;
         }
@@ -94,6 +118,7 @@ public class IntakeStateMachine {
                     break;
                 }
             case 1:
+                //System.out.println("Timer2: " + timer2.seconds());
                 if (timer2.seconds() > 0.25){
                     robot.intakeLift.setPosition(Constants.intakeLiftFullBack);
                     robot.setIntakeSlide(Constants.intakeSlideHome);

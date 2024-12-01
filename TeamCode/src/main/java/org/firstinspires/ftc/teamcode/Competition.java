@@ -47,6 +47,7 @@ public class Competition extends LinearOpMode {
         //Intake
         boolean IntakeClosed = true;
         boolean IntakeButtonWasPressed = false;
+        boolean RightBumperPressed = false;
         double PosChange = 0.0;
 
         robot.init();  //Hardware configuration in RobotHardware.java
@@ -197,8 +198,9 @@ public class Competition extends LinearOpMode {
                 IntakeStateMachine.setIntakeState(IntakeState.HANDOFF);
             } else if (gamepad1.a) {
                 IntakeStateMachine.setIntakeState(IntakeState.PICKUP);
-            } else if (gamepad1.right_bumper){
+            } else if (gamepad1.right_bumper && !RightBumperPressed){
                 IntakeStateMachine.setIntakeState(IntakeState.PICKUP_TO_HANDOFF);
+                RightBumperPressed = true;
             } else if (gamepad1.right_trigger > 0.1){
                 robot.IntakePincherRotate(0.05);
             } else if (gamepad1.left_trigger > 0.1) {
@@ -207,6 +209,11 @@ public class Competition extends LinearOpMode {
                 robot.IntakePincherRotate(0);
             }
 
+            if (!gamepad1.right_bumper) {
+                RightBumperPressed = false;
+            }
+
+            IntakeStateMachine.update();
             telemetry.addData("Intake State", IntakeStateMachine.getIntakeState());
 
             //telemetry.addData("Intake Button Pressed", IntakeButtonPressed);

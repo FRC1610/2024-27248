@@ -30,6 +30,7 @@ public class Constants {
     //Intake Lift
     public static final double intakeLiftFullBack = 0.12;
     public static final double intakeLiftHome = 0.30;
+    public static final double intakeLiftSearchPosition = 0.60;
     public static final double intakeLiftIntakePosition = 0.62;
     //Intake Rotate
     public static final double intakeRotateHome = 0.40;
