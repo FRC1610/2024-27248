@@ -39,6 +39,8 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.LED;
 
+import org.firstinspires.ftc.robotcore.external.Const;
+
 /*
  * This file works in conjunction with the External Hardware Class sample called: ConceptExternalHardwareClass.java
  * Please read the explanations in that Sample about how to use this class definition.
@@ -68,9 +70,12 @@ public class RobotHardware {
     private DcMotor rightFront = null;
     private DcMotor leftBack = null;
     private DcMotor rightBack = null;
-    private DcMotor elevatorLift = null;
-    private DcMotor intakeSlide = null;
-    private Servo intakePincher = null;
+    DcMotor elevatorLift = null;
+    DcMotor intakeSlide = null;
+    Servo intakePincher = null;
+    Servo intakeRotate = null;
+    Servo intakeLift = null;
+    Servo intakePincherRotate = null;
     Limelight3A limelight = null;
     GoBildaPinpointDriver odo = null; // Declare OpMode member for the Odometry Computer
     private RevBlinkinLedDriver blinkinLedDriver = null;
@@ -145,13 +150,25 @@ public class RobotHardware {
         intakeSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // If there are encoders connected, switch to RUN_USING_ENCODER mode for greater accuracy
-        // elevatorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        // intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elevatorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elevatorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and initialize ALL installed servos.
         intakePincher = myOpMode.hardwareMap.get(Servo.class, "intakePincher");
-        intakePincher.setPosition(0);
-        myOpMode.telemetry.addData("Intake Servo Pos",intakePincher.getPosition());
+        intakePincher.setPosition(Constants.intakePincherClosed);
+
+        intakeRotate = myOpMode.hardwareMap.get(Servo.class, "intakeRotate");
+        intakeRotate.setPosition(Constants.intakeRotateHome);
+
+        intakeLift = myOpMode.hardwareMap.get(Servo.class, "intakeLift");
+        intakeLift.setPosition(Constants.intakeLiftHome);
+
+        intakePincherRotate = myOpMode.hardwareMap.get(Servo.class, "intakePincherRotate");
+        intakePincherRotate.setPosition(0.50);
+
+
         //rightHand = myOpMode.hardwareMap.get(Servo.class, "right_hand");
         //leftHand.setPosition(MID_SERVO);
         //rightHand.setPosition(MID_SERVO);
@@ -218,11 +235,11 @@ public class RobotHardware {
         leftBack.setPower(leftBackPower);
         rightBack.setPower(rightBackPower);
 
-        myOpMode.telemetry.addData("Front Left Power", leftFrontPower);
-        myOpMode.telemetry.addData("Front Right Power", rightFrontPower);
-        myOpMode.telemetry.addData("Rear Left Power", leftBackPower);
-        myOpMode.telemetry.addData("Rear Right Power", rightBackPower);
-        myOpMode.telemetry.update();
+        //myOpMode.telemetry.addData("Front Left Power", leftFrontPower);
+        //myOpMode.telemetry.addData("Front Right Power", rightFrontPower);
+        //myOpMode.telemetry.addData("Rear Left Power", leftBackPower);
+        //myOpMode.telemetry.addData("Rear Right Power", rightBackPower);
+        //myOpMode.telemetry.update();
     }
 
     /**
@@ -231,27 +248,68 @@ public class RobotHardware {
      * @param elevatorPower Elevator Power
      */
     public void runElevator (double elevatorPower){
-
+        elevatorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevatorLift.setPower(elevatorPower);
     }
 
     /**
+     * Pass desired position to elevator
      *
+     * @param elevatorPosition  Elevator position
      */
+    public void setElevator (int elevatorTargetPosition){
+        double elevatorPower = 0;
+        int ElevatorCurrentPosition = elevatorLift.getCurrentPosition();
+        if (elevatorTargetPosition < ElevatorCurrentPosition){
+            elevatorPower = Constants.elevatorPowerUp;
+        } else
+            elevatorPower = Constants.elevatorPowerDown;
+
+        elevatorLift.setTargetPosition(elevatorTargetPosition);
+        elevatorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elevatorLift.setPower(elevatorPower);
+    }
+
+    /**
+     * Pass desired power to elevator
+     *
+     * @param intakeSlidePower Elevator Power
+     */
+    public void runIntakeSlide (double intakeSlidePower){
+
+        intakeSlide.setPower(intakeSlidePower);
+    }
+
+    public void resetSlideEncoders(){
+        elevatorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        elevatorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
 
     public void CloseIntakePincher (){
-        intakePincher.setPosition(0);
+        intakePincher.setPosition(Constants.intakePincherClosed);
     }
     public void OpenIntakePincher (){
-        intakePincher.setPosition(0.60);
+        intakePincher.setPosition(Constants.intakePincherOpen);
     }
 
     public void IntakePosition (double PosChange){
         double CurrentPosition = intakePincher.getPosition();
         double NewPosition = CurrentPosition + PosChange;
         intakePincher.setPosition(NewPosition);
-        myOpMode.telemetry.addData("Intake Servo Pos", intakePincher.getPosition());
-        myOpMode.telemetry.update();
+    }
+
+    public void IntakeRotate(double PosChange){
+        double CurrentPosition = intakeRotate.getPosition();
+        double NewPosition = CurrentPosition + PosChange;
+        intakeRotate.setPosition(NewPosition);
+    }
+
+    public void IntakeLift(double PosChange){
+        double CurrentPosition = intakeLift.getPosition();
+        double NewPosition = CurrentPosition + PosChange;
+        intakeLift.setPosition(NewPosition);
     }
 
 
