@@ -166,7 +166,7 @@ public class RobotHardware {
         intakeLift.setPosition(Constants.intakeLiftHome);
 
         intakePincherRotate = myOpMode.hardwareMap.get(Servo.class, "intakePincherRotate");
-        intakePincherRotate.setPosition(0.50);
+        intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
 
 
         //rightHand = myOpMode.hardwareMap.get(Servo.class, "right_hand");
@@ -271,6 +271,24 @@ public class RobotHardware {
     }
 
     /**
+     * Pass desired position to intake slide
+     *
+     * @param intakeSlideTargetPosition  Intake Slide position
+     */
+    public void setIntakeSlide (int intakeSlideTargetPosition){
+        double intakeSlidePower = 0;
+        int intakeSlideCurrentPosition = intakeSlide.getCurrentPosition();
+        if (intakeSlideTargetPosition < intakeSlideCurrentPosition){
+            intakeSlidePower = Constants.intakeSlidePowerOut;
+        } else
+            intakeSlidePower = Constants.intakeSlidePowerIn;
+
+        intakeSlide.setTargetPosition(intakeSlideTargetPosition);
+        intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        intakeSlide.setPower(intakeSlidePower);
+    }
+
+    /**
      * Pass desired power to elevator
      *
      * @param intakeSlidePower Elevator Power
@@ -304,6 +322,12 @@ public class RobotHardware {
         double CurrentPosition = intakeRotate.getPosition();
         double NewPosition = CurrentPosition + PosChange;
         intakeRotate.setPosition(NewPosition);
+    }
+
+    public void IntakePincherRotate(double PosChange){
+        double CurrentPosition = intakePincherRotate.getPosition();
+        double NewPosition = CurrentPosition + PosChange;
+        intakePincherRotate.setPosition(NewPosition);
     }
 
     public void IntakeLift(double PosChange){
