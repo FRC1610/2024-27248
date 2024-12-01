@@ -108,6 +108,7 @@ public class Competition extends LinearOpMode {
 
             } else {
                 // Position-based control
+
                 if (gamepad1.y) {
                     // Move to high chamber position
                     robot.setElevator(Constants.elevatorHighChamber);
@@ -119,7 +120,6 @@ public class Competition extends LinearOpMode {
                     robot.setElevator(Constants.elevatorHome);
                 }
             }
-
 
             /*
             if (gamepad1.dpad_up){
@@ -172,19 +172,32 @@ public class Competition extends LinearOpMode {
             IntakeButtonWasPressed = IntakeButtonPressed; //Update previous button state
 
             /*
-            if (gamepad1.right_bumper){
-                robot.IntakePosition(0.005);
-            } else if (gamepad1.left_bumper) {
-                robot.IntakePosition(-0.005);
+            if (gamepad1.a){
+                robot.IntakeRotate(0.005);
+            } else if (gamepad1.b) {
+                robot.IntakeRotate(-0.005);
             } else {
-                robot.IntakePosition(0);
+                robot.IntakeRotate(0);
             }
 
-            //telemetry.addData("Intake Button Pressed", IntakeButtonPressed);
+            if (gamepad1.x){
+                robot.IntakeLift(0.005);
+            } else if (gamepad1.y){
+                robot.IntakeLift(-0.005);
+            } else {
+                robot.IntakeLift(0);
+            }
+
              */
 
+            //telemetry.addData("Intake Button Pressed", IntakeButtonPressed);
+
             telemetry.addData("Elevator Pos", robot.elevatorLift.getCurrentPosition());
-            telemetry.addData("Intake Slide", robot.intakeSlide.getCurrentPosition());
+            telemetry.addData("Intake Slide Pos", robot.intakeSlide.getCurrentPosition());
+            telemetry.addData("Intake Pincher Pos",robot.intakePincher.getPosition());
+            telemetry.addData("Intake Rotate Pos",robot.intakeRotate.getPosition());
+            telemetry.addData("Intake Pincher Pos",robot.intakeLift.getPosition());
+            telemetry.addData("Intake Pincher Pos",robot.intakePincherRotate.getPosition());
             telemetry.update();
         }
     }
