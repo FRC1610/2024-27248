@@ -159,6 +159,14 @@ public class Competition extends LinearOpMode {
 
              */
 
+            ///TEST ELEVATOR PIVOT
+            if (gamepad1.dpad_right){
+                robot.elevatorPivot(0.01);
+            } else if (gamepad1.dpad_left) {
+                robot.elevatorPivot(-.01);
+            } else robot.elevatorPivot(0);
+            telemetry.addData("Elev Pivot Pos", robot.elevatorPivot.getPosition());
+
             ///RESET ENCODERS
             if (gamepad1.start){
                 robot.resetSlideEncoders();
@@ -202,9 +210,9 @@ public class Competition extends LinearOpMode {
                 IntakeStateMachine.setIntakeState(IntakeState.PICKUP_TO_HANDOFF);
                 RightBumperPressed = true;
             } else if (gamepad1.right_trigger > 0.1){
-                robot.IntakePincherRotate(0.05);
+                robot.IntakePincherRotate(0.01);
             } else if (gamepad1.left_trigger > 0.1) {
-                robot.IntakePincherRotate(-0.05);
+                robot.IntakePincherRotate(-0.01);
             } else {
                 robot.IntakePincherRotate(0);
             }

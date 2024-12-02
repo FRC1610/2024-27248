@@ -76,6 +76,9 @@ public class RobotHardware {
     Servo intakeRotate = null;
     Servo intakeLift = null;
     Servo intakePincherRotate = null;
+    Servo elevatorPivot = null;
+    Servo elevatorPincher = null;
+    Servo elevatorPincherRotate = null;
     Limelight3A limelight = null;
     GoBildaPinpointDriver odo = null; // Declare OpMode member for the Odometry Computer
     private RevBlinkinLedDriver blinkinLedDriver = null;
@@ -156,6 +159,7 @@ public class RobotHardware {
         intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Define and initialize ALL installed servos.
+        ///Intake Servos
         intakePincher = myOpMode.hardwareMap.get(Servo.class, "intakePincher");
         intakePincher.setPosition(Constants.intakePincherClosed);
 
@@ -168,6 +172,15 @@ public class RobotHardware {
         intakePincherRotate = myOpMode.hardwareMap.get(Servo.class, "intakePincherRotate");
         intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
 
+        ///Elevator Servos
+        elevatorPivot = myOpMode.hardwareMap.get(Servo.class, "elevatorPivot");
+        elevatorPivot.setPosition(Constants.elevatorPivotHome);
+
+        elevatorPincher = myOpMode.hardwareMap.get(Servo.class, "elevatorPincher");
+        elevatorPincher.setPosition(Constants.elevatorPincherHome);
+
+        elevatorPincherRotate = myOpMode.hardwareMap.get(Servo.class, "elevatorPincherRotate");
+        elevatorPincherRotate.setPosition(Constants.elevatorPincherRotateHome);
 
         //rightHand = myOpMode.hardwareMap.get(Servo.class, "right_hand");
         //leftHand.setPosition(MID_SERVO);
@@ -336,15 +349,10 @@ public class RobotHardware {
         intakeLift.setPosition(NewPosition);
     }
 
+    public void elevatorPivot(double PosChange){
+        double CurrentPosition = elevatorPivot.getPosition();
+        double NewPosition = CurrentPosition + PosChange;
+        elevatorPivot.setPosition(NewPosition);
+    }
 
-    /**
-     * Send the two hand-servos to opposing (mirrored) positions, based on the passed offset.
-     *
-     * @param offset
-     */
-    //public void setHandPositions(double offset) {
-    //    offset = Range.clip(offset, -0.5, 0.5);
-    //    leftHand.setPosition(MID_SERVO + offset);
-    //    rightHand.setPosition(MID_SERVO - offset);
-    //}
 }

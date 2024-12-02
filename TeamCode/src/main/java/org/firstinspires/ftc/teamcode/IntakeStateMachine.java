@@ -56,6 +56,7 @@ public class IntakeStateMachine {
                 robot.intakeLift.setPosition(Constants.intakeLiftHome);
                 robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
                 robot.setIntakeSlide(Constants.intakeSlideHome);
+                robot.elevatorPivot.setPosition(Constants.elevatorPivotHome);
                 break;
 
             case PICKUP:
@@ -64,6 +65,7 @@ public class IntakeStateMachine {
                 robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
                 robot.intakePincherRotate.setPosition(Constants.intakePincherRotateIntake);
                 robot.setIntakeSlide(Constants.intakeSlideIntake);
+                robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
                 break;
 
             case HANDOFF:
@@ -88,14 +90,14 @@ public class IntakeStateMachine {
                 currentPickupSequenceSubstep++;
                 break;
             case 1:
-                if (timer1.seconds() > 0.25) {
+                if (timer1.seconds() > 0.15) {
                     robot.intakePincher.setPosition(Constants.intakePincherClosed);
                     currentPickupSequenceSubstep++;
             }
                 break;
             case 2:
                 //System.out.println("Timer1: " + timer1.seconds());
-                if (timer1.seconds() > 0.50) {
+                if (timer1.seconds() > 0.1) {
                     setIntakeState(IntakeState.HANDOFF);
                     //intakeHandoffSequence();
                     currentPickupSequenceSubstep++;
@@ -113,16 +115,18 @@ public class IntakeStateMachine {
                 timer2.reset();
                 robot.intakeRotate.setPosition(Constants.intakeRotateHandoffPosition);
                 robot.setIntakeSlide(Constants.intakeSlideHome);
+                robot.setElevator(Constants.elevatorHome);
                 currentHandoffSubStep++;
                 if (robot.intakeSlide.getCurrentPosition() < 50){
                     break;
                 }
             case 1:
                 //System.out.println("Timer2: " + timer2.seconds());
-                if (timer2.seconds() > 0.25){
-                    robot.intakeLift.setPosition(Constants.intakeLiftFullBack);
+                if (timer2.seconds() > 0.10){
+                    robot.intakeLift.setPosition(Constants.intakeLiftHome);
                     robot.setIntakeSlide(Constants.intakeSlideHome);
                     robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHandoff);
+                    robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
                     currentHandoffSubStep++;
                     //setIntakeState(IntakeState.HAND_OFF);
                 }
