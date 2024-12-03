@@ -2,14 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 
-import org.firstinspires.ftc.teamcode.IntakeStateMachine.IntakeState;
+import org.firstinspires.ftc.teamcode.StateMachine.State;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 //import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -22,12 +21,12 @@ public class Competition extends LinearOpMode {
 
     org.firstinspires.ftc.teamcode.RobotHardware robot = new RobotHardware(this);
 
-    IntakeStateMachine IntakeStateMachine;
+    StateMachine StateMachine;
 
     @Override
     public void runOpMode() {
 
-        IntakeStateMachine = new IntakeStateMachine(robot);
+        StateMachine = new StateMachine(robot);
 
         ///Variable Setup
         //Odometry
@@ -201,13 +200,13 @@ public class Competition extends LinearOpMode {
              */
 
             if (gamepad1.x) {
-                IntakeStateMachine.setIntakeState(IntakeState.HOME);
+                StateMachine.setState(State.HOME);
             } else if (gamepad1.b) {
-                IntakeStateMachine.setIntakeState(IntakeState.HANDOFF);
+                StateMachine.setState(State.HANDOFF);
             } else if (gamepad1.a) {
-                IntakeStateMachine.setIntakeState(IntakeState.PICKUP);
+                StateMachine.setState(State.PICKUP);
             } else if (gamepad1.right_bumper && !RightBumperPressed){
-                IntakeStateMachine.setIntakeState(IntakeState.PICKUP_TO_HANDOFF);
+                StateMachine.setState(State.PICKUP_TO_HANDOFF);
                 RightBumperPressed = true;
             } else if (gamepad1.right_trigger > 0.1){
                 robot.IntakePincherRotate(0.01);
@@ -221,8 +220,8 @@ public class Competition extends LinearOpMode {
                 RightBumperPressed = false;
             }
 
-            IntakeStateMachine.update();
-            telemetry.addData("Intake State", IntakeStateMachine.getIntakeState());
+            StateMachine.update();
+            telemetry.addData("State", StateMachine.getState());
 
             //telemetry.addData("Intake Button Pressed", IntakeButtonPressed);
 

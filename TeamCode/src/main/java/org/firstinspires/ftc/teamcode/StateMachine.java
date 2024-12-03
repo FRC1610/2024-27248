@@ -2,28 +2,31 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class IntakeStateMachine {
-    public enum IntakeState {
+public class StateMachine {
+    public enum State {
         HOME,
         PICKUP,
+        WALLPICKUP,
         HANDOFF,
-        PICKUP_TO_HANDOFF;
+        PICKUP_TO_HANDOFF,
+        HIGHCHAMBER,
+        HIGHBASKET;
     }
 
     private ElapsedTime timer1 = new ElapsedTime();
     private ElapsedTime timer2 = new ElapsedTime();
     private int currentHandoffSubStep = 0;
     private int currentPickupSequenceSubstep = 0;
-    private IntakeState currentIntakeState;
+    private State currentState;
     private final RobotHardware robot;
 
-    public IntakeStateMachine(RobotHardware hardware) {
+    public StateMachine(RobotHardware hardware) {
         this.robot = hardware;
-        this.currentIntakeState = IntakeState.HOME;
+        this.currentState = State.HOME;
     }
 
-    public void setIntakeState(IntakeState state) {
-        this.currentIntakeState = state;
+    public void setState(State state) {
+        this.currentState = state;
         this.currentPickupSequenceSubstep = 0;
         this.currentHandoffSubStep = 0;
         timer1.reset();
@@ -32,24 +35,30 @@ public class IntakeStateMachine {
     }
 
     public void update(){
-        switch (currentIntakeState){
+        switch (currentState){
             case HOME:
                 break;
             case PICKUP:
+                break;
+            case WALLPICKUP:
                 break;
             case HANDOFF:
                 intakeHandoffSequence();
             case PICKUP_TO_HANDOFF:
                 intakePickupSequence();
+            case HIGHCHAMBER:
+                break;
+            case HIGHBASKET:
+                break;
         }
     }
 
-    public IntakeState getIntakeState() {
-        return currentIntakeState;
+    public State getState() {
+        return currentState;
     }
 
     private void updateIntakeServos() {
-        switch (currentIntakeState) {
+        switch (currentState) {
             case HOME:
                 robot.intakePincher.setPosition(Constants.intakePincherClosed);
                 robot.intakeRotate.setPosition(Constants.intakeRotateHome);
@@ -57,6 +66,7 @@ public class IntakeStateMachine {
                 robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
                 robot.setIntakeSlide(Constants.intakeSlideHome);
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotHome);
+                robot.setElevator(Constants.elevatorHome);
                 break;
 
             case PICKUP:
@@ -98,7 +108,7 @@ public class IntakeStateMachine {
             case 2:
                 //System.out.println("Timer1: " + timer1.seconds());
                 if (timer1.seconds() > 0.1) {
-                    setIntakeState(IntakeState.HANDOFF);
+                    setState(State.HANDOFF);
                     //intakeHandoffSequence();
                     currentPickupSequenceSubstep++;
                 }
