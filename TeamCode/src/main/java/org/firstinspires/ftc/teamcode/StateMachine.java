@@ -10,7 +10,8 @@ public class StateMachine {
         HANDOFF,
         PICKUP_TO_HANDOFF,
         HIGHCHAMBER,
-        HIGHBASKET;
+        HIGHBASKET,
+        WALLTOCHAMBER;
     }
 
     private ElapsedTime timer1 = new ElapsedTime();
@@ -31,7 +32,7 @@ public class StateMachine {
         this.currentHandoffSubStep = 0;
         timer1.reset();
         timer2.reset();
-        updateIntakeServos();
+        updatePositions();
     }
 
     public void update(){
@@ -50,6 +51,8 @@ public class StateMachine {
                 break;
             case HIGHBASKET:
                 break;
+            case WALLTOCHAMBER:
+                break;
         }
     }
 
@@ -57,7 +60,7 @@ public class StateMachine {
         return currentState;
     }
 
-    private void updateIntakeServos() {
+    private void updatePositions() {
         switch (currentState) {
             case HOME:
                 robot.intakePincher.setPosition(Constants.intakePincherClosed);
@@ -89,9 +92,28 @@ public class StateMachine {
                 robot.intakePincher.setPosition(Constants.intakePincherClosed);
                 intakePickupSequence();
                 break;
+
+            case WALLPICKUP:
+                intakeAllHome();
+                robot.setElevator(Constants.elevatorWallPickup);
+                robot.elevatorPivot.setPosition(Constants.elevatorPivotWallPickup);
+                robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
+                break;
+
+            case HIGHCHAMBER:
+                intakeAllHome();
+                robot.setElevator(Constants.elevatorHighChamber);
+                break;
         }
     }
 
+    private void intakeAllHome(){
+        robot.intakePincher.setPosition(Constants.intakePincherClosed);
+        robot.intakeRotate.setPosition(Constants.intakeRotateHome);
+        robot.intakeLift.setPosition(Constants.intakeLiftHome);
+        robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
+        robot.setIntakeSlide(Constants.intakeSlideHome);
+    }
     private void intakePickupSequence(){
         switch (currentPickupSequenceSubstep){
             case 0:
