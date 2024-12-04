@@ -2,60 +2,74 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class IntakeStateMachine {
-    public enum IntakeState {
+public class StateMachine {
+    public enum State {
         HOME,
         PICKUP,
+        WALLPICKUP,
         HANDOFF,
-        PICKUP_TO_HANDOFF;
+        PICKUP_TO_HANDOFF,
+        HIGHCHAMBER,
+        HIGHBASKET,
+        WALLTOCHAMBER;
     }
 
     private ElapsedTime timer1 = new ElapsedTime();
     private ElapsedTime timer2 = new ElapsedTime();
     private int currentHandoffSubStep = 0;
     private int currentPickupSequenceSubstep = 0;
-    private IntakeState currentIntakeState;
+    private State currentState;
     private final RobotHardware robot;
 
-    public IntakeStateMachine(RobotHardware hardware) {
+    public StateMachine(RobotHardware hardware) {
         this.robot = hardware;
-        this.currentIntakeState = IntakeState.HOME;
+        this.currentState = State.HOME;
     }
 
-    public void setIntakeState(IntakeState state) {
-        this.currentIntakeState = state;
+    public void setState(State state) {
+        this.currentState = state;
         this.currentPickupSequenceSubstep = 0;
         this.currentHandoffSubStep = 0;
         timer1.reset();
         timer2.reset();
-        updateIntakeServos();
+        updatePositions();
     }
 
     public void update(){
-        switch (currentIntakeState){
+        switch (currentState){
             case HOME:
                 break;
             case PICKUP:
+                break;
+            case WALLPICKUP:
                 break;
             case HANDOFF:
                 intakeHandoffSequence();
             case PICKUP_TO_HANDOFF:
                 intakePickupSequence();
+            case HIGHCHAMBER:
+                break;
+            case HIGHBASKET:
+                break;
+            case WALLTOCHAMBER:
+                break;
         }
     }
 
-    public IntakeState getIntakeState() {
-        return currentIntakeState;
+    public State getState() {
+        return currentState;
     }
 
-    private void updateIntakeServos() {
-        switch (currentIntakeState) {
+    private void updatePositions() {
+        switch (currentState) {
             case HOME:
                 robot.intakePincher.setPosition(Constants.intakePincherClosed);
                 robot.intakeRotate.setPosition(Constants.intakeRotateHome);
                 robot.intakeLift.setPosition(Constants.intakeLiftHome);
                 robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
                 robot.setIntakeSlide(Constants.intakeSlideHome);
+                robot.elevatorPivot.setPosition(Constants.elevatorPivotHome);
+                robot.setElevator(Constants.elevatorHome);
                 break;
 
             case PICKUP:
@@ -64,6 +78,7 @@ public class IntakeStateMachine {
                 robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
                 robot.intakePincherRotate.setPosition(Constants.intakePincherRotateIntake);
                 robot.setIntakeSlide(Constants.intakeSlideIntake);
+                robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
                 break;
 
             case HANDOFF:
@@ -77,9 +92,28 @@ public class IntakeStateMachine {
                 robot.intakePincher.setPosition(Constants.intakePincherClosed);
                 intakePickupSequence();
                 break;
+
+            case WALLPICKUP:
+                intakeAllHome();
+                robot.setElevator(Constants.elevatorWallPickup);
+                robot.elevatorPivot.setPosition(Constants.elevatorPivotWallPickup);
+                robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
+                break;
+
+            case HIGHCHAMBER:
+                intakeAllHome();
+                robot.setElevator(Constants.elevatorHighChamber);
+                break;
         }
     }
 
+    private void intakeAllHome(){
+        robot.intakePincher.setPosition(Constants.intakePincherClosed);
+        robot.intakeRotate.setPosition(Constants.intakeRotateHome);
+        robot.intakeLift.setPosition(Constants.intakeLiftHome);
+        robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
+        robot.setIntakeSlide(Constants.intakeSlideHome);
+    }
     private void intakePickupSequence(){
         switch (currentPickupSequenceSubstep){
             case 0:
@@ -88,15 +122,15 @@ public class IntakeStateMachine {
                 currentPickupSequenceSubstep++;
                 break;
             case 1:
-                if (timer1.seconds() > 0.25) {
+                if (timer1.seconds() > 0.15) {
                     robot.intakePincher.setPosition(Constants.intakePincherClosed);
                     currentPickupSequenceSubstep++;
             }
                 break;
             case 2:
                 //System.out.println("Timer1: " + timer1.seconds());
-                if (timer1.seconds() > 0.50) {
-                    setIntakeState(IntakeState.HANDOFF);
+                if (timer1.seconds() > 0.1) {
+                    setState(State.HANDOFF);
                     //intakeHandoffSequence();
                     currentPickupSequenceSubstep++;
                 }
@@ -113,16 +147,18 @@ public class IntakeStateMachine {
                 timer2.reset();
                 robot.intakeRotate.setPosition(Constants.intakeRotateHandoffPosition);
                 robot.setIntakeSlide(Constants.intakeSlideHome);
+                robot.setElevator(Constants.elevatorHome);
                 currentHandoffSubStep++;
                 if (robot.intakeSlide.getCurrentPosition() < 50){
                     break;
                 }
             case 1:
                 //System.out.println("Timer2: " + timer2.seconds());
-                if (timer2.seconds() > 0.25){
-                    robot.intakeLift.setPosition(Constants.intakeLiftFullBack);
+                if (timer2.seconds() > 0.10){
+                    robot.intakeLift.setPosition(Constants.intakeLiftHome);
                     robot.setIntakeSlide(Constants.intakeSlideHome);
                     robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHandoff);
+                    robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
                     currentHandoffSubStep++;
                     //setIntakeState(IntakeState.HAND_OFF);
                 }

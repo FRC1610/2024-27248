@@ -19,6 +19,19 @@ public class Constants {
     public static final int intakeSlideIntake = 1000;
     public static final int intakeSlideMax = 2100;
 
+    ///ELEVATOR SERVO POSITIONS
+    //Elevator Pivot
+    public static final double elevatorPivotHome = 1.0;
+    public static final double elevatorPivotHandoff = 0.16;
+    public static final double elevatorPivotWallPickup = 0.90;
+    public static final double elevatorPivotVertical = 0.50;
+    //Elevator Pincher
+    public static final double elevatorPincherHome = 0.5;
+    public static final double elevatorPincherOpen = 1.0;
+    public static final double elevatorPincherClosed = 0.0;
+    //Elevator Pincher Rotate
+    public static final double elevatorPincherRotateHome = 0.5;
+
     ///INTAKE SLIDE POWER
     public static final double intakeSlidePowerOut = 0.85;
     public static final double intakeSlidePowerIn = -0.75;
