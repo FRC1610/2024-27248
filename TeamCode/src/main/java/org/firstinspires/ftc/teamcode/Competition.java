@@ -227,14 +227,14 @@ public class Competition extends LinearOpMode {
             } else if (gamepad1.a) {
                 StateMachine.setState(State.PICKUP);
             } else if (gamepad1.b) {
-                StateMachine.setState(State.WALLPICKUP);
+                StateMachine.setState(State.WALL_PICKUP);
             } else if (gamepad1.y) {
                 StateMachine.setState(State.HIGHCHAMBER);
             } else if (gamepad1.right_bumper && StateMachine.getState() == State.PICKUP && !RightBumperPressed){
                 StateMachine.setState(State.PICKUP_TO_HANDOFF);
                 RightBumperPressed = true;
-            } else if (gamepad1.right_bumper && StateMachine.getState() == State.WALLPICKUP && !RightBumperPressed) {
-                StateMachine.setState(State.WALLTOCHAMBER);
+            } else if (gamepad1.right_bumper && StateMachine.getState() == State.WALL_PICKUP && !RightBumperPressed) {
+                StateMachine.setState(State.WALL_TO_CHAMBER);
                 RightBumperPressed = true;
             }
 

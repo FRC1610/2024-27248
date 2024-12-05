@@ -25,6 +25,7 @@ public class Constants {
     public static final double elevatorPivotHandoff = 0.16;
     public static final double elevatorPivotWallPickup = 0.90;
     public static final double elevatorPivotVertical = 0.50;
+    public static final double elevatorPivotBasket = 0.75;
     //Elevator Pincher
     public static final double elevatorPincherHome = 0.8;
     public static final double elevatorPincherOpen = 0.2;
