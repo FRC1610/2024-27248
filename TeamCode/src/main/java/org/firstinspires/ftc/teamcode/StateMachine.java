@@ -11,11 +11,11 @@ public class StateMachine {
         PICKUP_TO_HANDOFF,
         HIGHCHAMBER,
         HIGHBASKET,
-        WALLTOCHAMBER;
+        WALLTOCHAMBER
     }
 
-    private ElapsedTime timer1 = new ElapsedTime();
-    private ElapsedTime timer2 = new ElapsedTime();
+    private ElapsedTime intakeTimer1 = new ElapsedTime();
+    private ElapsedTime intakeTimer2 = new ElapsedTime();
     private int currentHandoffSubStep = 0;
     private int currentPickupSequenceSubstep = 0;
     private State currentState;
@@ -30,8 +30,8 @@ public class StateMachine {
         this.currentState = state;
         this.currentPickupSequenceSubstep = 0;
         this.currentHandoffSubStep = 0;
-        timer1.reset();
-        timer2.reset();
+        intakeTimer1.reset();
+        intakeTimer2.reset();
         updatePositions();
     }
 
@@ -117,19 +117,19 @@ public class StateMachine {
     private void intakePickupSequence(){
         switch (currentPickupSequenceSubstep){
             case 0:
-                timer1.reset();
+                intakeTimer1.reset();
                 robot.intakeLift.setPosition(Constants.intakeLiftIntakePosition);
                 currentPickupSequenceSubstep++;
                 break;
             case 1:
-                if (timer1.seconds() > 0.15) {
+                if (intakeTimer1.seconds() > 0.15) {
                     robot.intakePincher.setPosition(Constants.intakePincherClosed);
                     currentPickupSequenceSubstep++;
             }
                 break;
             case 2:
                 //System.out.println("Timer1: " + timer1.seconds());
-                if (timer1.seconds() > 0.1) {
+                if (intakeTimer1.seconds() > 0.15) {
                     setState(State.HANDOFF);
                     //intakeHandoffSequence();
                     currentPickupSequenceSubstep++;
@@ -144,7 +144,7 @@ public class StateMachine {
     private void intakeHandoffSequence(){
         switch (currentHandoffSubStep){
             case 0:
-                timer2.reset();
+                intakeTimer2.reset();
                 robot.intakeRotate.setPosition(Constants.intakeRotateHandoffPosition);
                 robot.setIntakeSlide(Constants.intakeSlideHome);
                 robot.setElevator(Constants.elevatorHome);
@@ -154,7 +154,7 @@ public class StateMachine {
                 }
             case 1:
                 //System.out.println("Timer2: " + timer2.seconds());
-                if (timer2.seconds() > 0.10){
+                if (intakeTimer2.seconds() > 0.10){
                     robot.intakeLift.setPosition(Constants.intakeLiftHome);
                     robot.setIntakeSlide(Constants.intakeSlideHome);
                     robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHandoff);
