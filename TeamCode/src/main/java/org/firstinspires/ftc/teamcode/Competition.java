@@ -140,11 +140,18 @@ public class Competition extends LinearOpMode {
                  */
 
                 if (gamepad1.dpad_right){
-                    robot.IntakeRotate(-0.01);
+                    robot.IntakeRotate(-0.005);
                 } else if (gamepad1.dpad_left) {
-                    robot.IntakeRotate(.01);
+                    robot.IntakeRotate(.005);
                 } else robot.IntakeRotate(0);
 
+                if (gamepad1.dpad_up){
+                    intakeSlidePower = Constants.intakeSlidePowerOut;
+                } else if (gamepad1.dpad_down) {
+                    intakeSlidePower = Constants.intakeSlidePowerIn;
+                } else intakeSlidePower = 0;
+
+                robot.runIntakeSlide(intakeSlidePower);
             }
 
             /*
