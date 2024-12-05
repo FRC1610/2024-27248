@@ -26,11 +26,14 @@ public class Constants {
     public static final double elevatorPivotWallPickup = 0.90;
     public static final double elevatorPivotVertical = 0.50;
     //Elevator Pincher
-    public static final double elevatorPincherHome = 0.5;
-    public static final double elevatorPincherOpen = 1.0;
-    public static final double elevatorPincherClosed = 0.0;
+    public static final double elevatorPincherHome = 0.8;
+    public static final double elevatorPincherOpen = 0.2;
+    public static final double elevatorPincherClosed = 0.80;
+
     //Elevator Pincher Rotate
     public static final double elevatorPincherRotateHome = 0.5;
+    public static final double elevatorPincherRotateLeftLimit = 0;
+    public static final double elevatorPincherRotateRightLimit = 1;
 
     ///INTAKE SLIDE POWER
     public static final double intakeSlidePowerOut = 0.85;

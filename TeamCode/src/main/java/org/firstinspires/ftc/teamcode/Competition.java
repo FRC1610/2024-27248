@@ -204,15 +204,22 @@ public class Competition extends LinearOpMode {
 
             IntakeButtonWasPressed = IntakeButtonPressed; //Update previous button state
 
-            /*
-            if (gamepad1.right_trigger > 0.1){
-                robot.IntakePincherRotate(0.05);
-            } else if (gamepad1.left_trigger > 0.1) {
-                robot.IntakePincherRotate(-0.05);
+
+            if (gamepad2.a){
+                robot.ElevatorPincherRotate(0.05);
+            } else if (gamepad2.b) {
+                robot.ElevatorPincherRotate(-0.05);
             } else {
-                robot.IntakePincherRotate(0);
+                robot.ElevatorPincherRotate(0);
             }
-             */
+            telemetry.addData("Elev Pinch Rotate", robot.elevatorPincherRotate.getPosition());
+
+            if (gamepad2.y){
+                robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
+            } else if (gamepad2.x) {
+                robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
+            }
+            telemetry.addData("Elev Pinch Pos", robot.elevatorPincher.getPosition());
 
             ///STATE CHANGE BUTTON SETUP
             if (gamepad1.x) {

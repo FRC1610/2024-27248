@@ -326,9 +326,9 @@ public class RobotHardware {
     }
 
     public void IntakePosition (double PosChange){
-        double CurrentPosition = intakePincher.getPosition();
+        double CurrentPosition = elevatorPincher.getPosition();
         double NewPosition = CurrentPosition + PosChange;
-        intakePincher.setPosition(NewPosition);
+        elevatorPincher.setPosition(NewPosition);
     }
 
     public void IntakeRotate(double PosChange){
@@ -341,6 +341,12 @@ public class RobotHardware {
         double CurrentPosition = intakePincherRotate.getPosition();
         double NewPosition = CurrentPosition + PosChange;
         intakePincherRotate.setPosition(NewPosition);
+    }
+
+    public void ElevatorPincherRotate(double PosChange){
+        double CurrentPosition = elevatorPincherRotate.getPosition();
+        double NewPosition = CurrentPosition + PosChange;
+        elevatorPincherRotate.setPosition(NewPosition);
     }
 
     public void IntakeLift(double PosChange){
