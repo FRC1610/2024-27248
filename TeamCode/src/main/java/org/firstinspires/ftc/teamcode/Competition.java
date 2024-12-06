@@ -47,6 +47,8 @@ public class Competition extends LinearOpMode {
         boolean IntakeClosed = true;
         boolean IntakeButtonWasPressed = false;
         boolean RightBumperPressed = false;
+        boolean aPressed = false;
+        boolean leftBumperPressed = false;
         double PosChange = 0.0;
 
         robot.init();  //Hardware configuration in RobotHardware.java
@@ -222,8 +224,6 @@ public class Competition extends LinearOpMode {
             }
             telemetry.addData("Elev Pinch Pos", robot.elevatorPincher.getPosition());
 
-            boolean aPressed = false;
-
             ///STATE CHANGE BUTTON SETUP
             //TODO Need button for High Basket but out of buttons - might need to get creative
             if (gamepad1.x) {
@@ -236,19 +236,23 @@ public class Competition extends LinearOpMode {
             } else if (gamepad1.y) {
                 StateMachine.setState(State.HIGHCHAMBER); //Y = HIGH CHAMBER Position
             } else if (gamepad1.right_bumper &&
-                    StateMachine.getState() == State.PICKUP ||
-                    StateMachine.getState() == State.MINI_INTAKE ||
-                    StateMachine.getState() == State.INTAKE_SEARCH &&
                     !RightBumperPressed) {
                 StateMachine.setState(State.PICKUP_TO_HANDOFF);
                 RightBumperPressed = true;
-            } else if (gamepad1.right_bumper && StateMachine.getState() == State.WALL_PICKUP && !RightBumperPressed) {
+            } else if (gamepad1.right_bumper &&
+                    StateMachine.getState() == State.WALL_PICKUP
+                    && !RightBumperPressed) {
                 StateMachine.setState(State.WALL_TO_CHAMBER);
                 RightBumperPressed = true;
-            } else if (gamepad1.left_bumper){
-                if (StateMachine.getState() !=State.MINI_INTAKE) {
+            } else if (gamepad1.left_bumper && !leftBumperPressed){
+                if (StateMachine.getState() == State.SEARCH_WAIT){
                     StateMachine.setState(State.MINI_INTAKE);
+                } else if (StateMachine.getState() == State.INTAKE_WAIT) {
+                    StateMachine.setState(State.INTAKE_SEARCH);
                 }
+                leftBumperPressed = true;
+            } else if (!gamepad1.left_bumper){
+                leftBumperPressed = false;
             }
 
             //IntakeButtonWasPressed = IntakeButtonPressed; //Update previous button state

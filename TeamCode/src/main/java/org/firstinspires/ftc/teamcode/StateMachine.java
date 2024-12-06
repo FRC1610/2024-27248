@@ -15,7 +15,8 @@ public class StateMachine {
         INTAKE_SEARCH,
         MINI_INTAKE,
         DROPOFF,
-        SEARCH_WAIT
+        SEARCH_WAIT,
+        INTAKE_WAIT
     }
 
     private ElapsedTime intakeTimer1 = new ElapsedTime();
@@ -36,7 +37,7 @@ public class StateMachine {
     }
 
     public void setState(State state) {
-        System.out.println("Transitioning to State: " + state);
+        System.out.println("Transitioning from " + currentState + " to " + state);
         this.currentState = state;
         this.currentPickupSequenceSubstep = 0;
         this.currentHandoffSubStep = 0;
@@ -55,14 +56,17 @@ public class StateMachine {
             case HOME:
                 break;
             case PICKUP:
+                System.out.println("Currently in PICKUP update");
                 searchPosition();
                 break;
             case WALL_PICKUP:
                 break;
             case HANDOFF:
+                System.out.println("Currently in HANDOFF update");
                 intakeHandoffSequence();
                 break;
             case PICKUP_TO_HANDOFF:
+                System.out.println("Currently in PICKUP_TO_UPDATE update");
                 intakePickupSequence();
                 break;
             case HIGHCHAMBER:
@@ -73,13 +77,20 @@ public class StateMachine {
                 break;
             case INTAKE_SEARCH:
                 intakeSearch();
+                //setState(State.INTAKE_SEARCH);
                 break;
             case MINI_INTAKE:
                 intakeMini();
+                //setState(State.MINI_INTAKE);
                 break;
             case DROPOFF:
                 break;
             case SEARCH_WAIT:
+                System.out.println("Currently in SEARCH_WAIT update");
+                //setState(State.SEARCH_WAIT);
+                break;
+            case INTAKE_WAIT:
+                //setState(State.INTAKE_WAIT);
                 break;
         }
     }
@@ -101,6 +112,7 @@ public class StateMachine {
                 break;
 
             case PICKUP: //Set floor pickup default search position (slide out, intake deployed)
+                System.out.println("Currently in PICKUP positions");
                 searchPosition();
                 break;
 
@@ -113,10 +125,12 @@ public class StateMachine {
                 break;
 
             case HANDOFF: //Call the Handoff sequence
+                System.out.println("Currently in HANDOFF positions");
                 intakeHandoffSequence();
                 break;
 
             case PICKUP_TO_HANDOFF: //Results in a set of cases being called
+                System.out.println("Currently in PICKUP_TO_HANDOFF positions");
                 robot.intakePincher.setPosition(Constants.intakePincherClosed);
                 intakePickupSequence();
                 break;
@@ -139,6 +153,14 @@ public class StateMachine {
                 break;
 
             case SEARCH_WAIT:
+                System.out.println("Currently in SEARCH_WAIT positions");
+                if (currentState == State.SEARCH_WAIT){
+                    System.out.println("Staying in SEARCH_WAIT");
+                    //Don't do anything plz
+                }
+                break;
+
+            case INTAKE_WAIT:
                 break;
         }
     }
@@ -205,6 +227,7 @@ public class StateMachine {
                 currentSearchSubstep++;
                 break;
             case 1:
+                setState(State.SEARCH_WAIT);
                 currentSearchSubstep = 0;
                 break;
         }
@@ -214,17 +237,18 @@ public class StateMachine {
         switch (currentMiniIntakeSubstep){
             case 0:
                 pickupTimer.reset();
-                robot.intakePincher.setPosition(Constants.intakePincherClosed);
+                robot.intakeLift.setPosition(Constants.intakeLiftIntakePosition);
                 currentMiniIntakeSubstep++;
                 break;
             case 1:
                 if (pickupTimer.seconds() > 0.10){
-                    robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
+                    robot.intakePincher.setPosition(Constants.intakePincherClosed);
                     currentMiniIntakeSubstep++;
                     break;
                 }
                 break;
             case 2:
+                setState(State.INTAKE_WAIT);
                 currentMiniIntakeSubstep = 0;
                 break;
         }
@@ -241,14 +265,17 @@ public class StateMachine {
                 if (intakeTimer1.seconds() > 0.15) {
                     robot.intakePincher.setPosition(Constants.intakePincherClosed);  //Close servo
                     currentPickupSequenceSubstep++;
-            }
-                break;
+                    break;
+                }
+            break;
             case 2:
                 //System.out.println("Timer1: " + timer1.seconds());
                 if (intakeTimer1.seconds() > 0.15) {
                     setState(State.HANDOFF);  //Move to Handoff
+
                     //intakeHandoffSequence();
                     currentPickupSequenceSubstep++;
+                    break;
                 }
                 break;
             case 3:
@@ -264,6 +291,7 @@ public class StateMachine {
                 robot.intakeRotate.setPosition(Constants.intakeRotateHandoffPosition);
                 robot.setIntakeSlide(Constants.intakeSlideHome);
                 robot.setElevator(Constants.elevatorHome);
+                robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
                 currentHandoffSubStep++;
                 if (robot.intakeSlide.getCurrentPosition() < 50){
                     break;
@@ -281,21 +309,27 @@ public class StateMachine {
                 }
                 break;
             case 2:
-                if (intakeTimer2.seconds() > 0.25){
+                if (intakeTimer2.seconds() > 0.5){
                     robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
                     currentHandoffSubStep++;
                     break;
                 }
                 break;
             case 3:
-                if (intakeTimer2.seconds() > 0.5){
+                if (intakeTimer2.seconds() > 1.5){
                     robot.intakePincher.setPosition((Constants.intakePincherOpen));
                     currentHandoffSubStep++;
                     break;
                 }
                 break;
             case 4:
-                //Sequence complete
+                if (intakeTimer2.seconds() > 2){
+                    robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
+                    currentHandoffSubStep++;
+                    break;
+                }
+                break;
+            case 5:
                 currentHandoffSubStep = 0;
                 break;
         }
