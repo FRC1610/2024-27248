@@ -88,7 +88,11 @@ public class Competition extends LinearOpMode {
             // Get joystick inputs
             y = -gamepad1.left_stick_y; // Forward/backward
             x = gamepad1.left_stick_x;  // Strafe
-            rotation = gamepad1.right_stick_x; // Rotation
+            if (gamepad1.right_stick_button) {
+                rotation = gamepad1.right_stick_x * 0.5; //Slow rotation mode when button pressed in
+            } else {
+                rotation = gamepad1.right_stick_x; // Rotation
+            }
 
             robot.mecanumDrive(x, y, rotation);
 
@@ -125,19 +129,6 @@ public class Competition extends LinearOpMode {
 
             } else {
                 // Position-based control
-                /*
-                if (gamepad1.y) {
-                    // Move to high chamber position
-                    robot.setElevator(Constants.elevatorHighChamber);
-                } else if (gamepad1.b) {
-                    // Move to mid-level position (example)
-                    robot.setElevator(Constants.elevatorIntake);
-                } else if (gamepad1.a) {
-                    // Move to low-level position (example)
-                    robot.setElevator(Constants.elevatorHome);
-                }
-
-                 */
 
                 if (gamepad1.dpad_right){
                     robot.IntakeRotate(-0.005);
@@ -210,7 +201,8 @@ public class Competition extends LinearOpMode {
 
             IntakeButtonWasPressed = IntakeButtonPressed; //Update previous button state
 */
-
+            /// Elevator Pincher Rotation Test
+            //TODO Remove this once State Machine handles this
             if (gamepad2.a){
                 robot.ElevatorPincherRotate(0.05);
             } else if (gamepad2.b) {
@@ -220,6 +212,8 @@ public class Competition extends LinearOpMode {
             }
             telemetry.addData("Elev Pinch Rotate", robot.elevatorPincherRotate.getPosition());
 
+            /// Elevator Pincher Test
+            //TODO Remove this once State Machine handles this
             if (gamepad2.y){
                 robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
             } else if (gamepad2.x) {
@@ -230,15 +224,16 @@ public class Competition extends LinearOpMode {
             boolean aPressed = false;
 
             ///STATE CHANGE BUTTON SETUP
+            //TODO Need button for High Basket but out of buttons - might need to get creative
             if (gamepad1.x) {
-                StateMachine.setState(State.HOME);
+                StateMachine.setState(State.HOME);  //X = HOME Position
             } else if (gamepad1.a && !aPressed) {
-                StateMachine.setState(State.PICKUP);
+                StateMachine.setState(State.PICKUP); //A = PICKUP Position
                 aPressed = true;
             } else if (gamepad1.b) {
-                StateMachine.setState(State.WALL_PICKUP);
+                StateMachine.setState(State.WALL_PICKUP); //B = WALL PICKUP Position
             } else if (gamepad1.y) {
-                StateMachine.setState(State.HIGHCHAMBER);
+                StateMachine.setState(State.HIGHCHAMBER); //Y = HIGH CHAMBER Position
             } else if (gamepad1.right_bumper &&
                     StateMachine.getState() == State.PICKUP ||
                     StateMachine.getState() == State.MINI_INTAKE ||
