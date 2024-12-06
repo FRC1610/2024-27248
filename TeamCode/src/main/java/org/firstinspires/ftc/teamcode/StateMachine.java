@@ -11,13 +11,19 @@ public class StateMachine {
         PICKUP_TO_HANDOFF,
         HIGHCHAMBER,
         HIGHBASKET,
-        WALL_TO_CHAMBER
+        WALL_TO_CHAMBER,
+        INTAKE_SEARCH,
+        MINI_INTAKE
     }
 
     private ElapsedTime intakeTimer1 = new ElapsedTime();
     private ElapsedTime intakeTimer2 = new ElapsedTime();
+    private ElapsedTime pickupTimer = new ElapsedTime();
     private int currentHandoffSubStep = 0;
     private int currentPickupSequenceSubstep = 0;
+    private int currentSearchSubstep = 0;
+    private int currentMiniIntakeSubstep = 0;
+    private int SearchSubstep = 0;
     private State currentState;
     private final RobotHardware robot;
 
@@ -27,11 +33,16 @@ public class StateMachine {
     }
 
     public void setState(State state) {
+        System.out.println("Transitioning to State: " + state);
         this.currentState = state;
         this.currentPickupSequenceSubstep = 0;
         this.currentHandoffSubStep = 0;
+        this.currentSearchSubstep = 0;
+        this.currentMiniIntakeSubstep = 0;
+        this.SearchSubstep = 0;
         intakeTimer1.reset();
         intakeTimer2.reset();
+        pickupTimer.reset();
         updatePositions();
     }
 
@@ -40,18 +51,27 @@ public class StateMachine {
             case HOME:
                 break;
             case PICKUP:
+                searchPosition();
                 break;
             case WALL_PICKUP:
                 break;
             case HANDOFF:
                 intakeHandoffSequence();
+                break;
             case PICKUP_TO_HANDOFF:
                 intakePickupSequence();
+                break;
             case HIGHCHAMBER:
                 break;
             case HIGHBASKET:
                 break;
             case WALL_TO_CHAMBER:
+                break;
+            case INTAKE_SEARCH:
+                intakeSearch();
+                break;
+            case MINI_INTAKE:
+                intakeMini();
                 break;
         }
     }
@@ -73,13 +93,15 @@ public class StateMachine {
                 break;
 
             case PICKUP: //Set floor pickup default search position (slide out, intake deployed)
-                robot.intakePincher.setPosition(Constants.intakePincherOpen);
-                robot.intakeRotate.setPosition(Constants.intakeRotateIntakePosition);
-                robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
-                robot.intakePincherRotate.setPosition(Constants.intakePincherRotateIntake);
-                robot.setIntakeSlide(Constants.intakeSlideIntake);
-                robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
+                searchPosition();
                 break;
+
+            case INTAKE_SEARCH:
+                intakeSearch();
+                break;
+
+            case MINI_INTAKE:
+                intakeMini();
 
             case HANDOFF: //Call the Handoff sequence
                 intakeHandoffSequence();
@@ -116,6 +138,60 @@ public class StateMachine {
         robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
         robot.setIntakeSlide(Constants.intakeSlideHome);
     }
+
+    private void searchPosition(){
+        switch (SearchSubstep){
+            case 0:
+                robot.intakePincher.setPosition(Constants.intakePincherOpen);
+                robot.intakeRotate.setPosition(Constants.intakeRotateIntakePosition);
+                robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
+                robot.intakePincherRotate.setPosition(Constants.intakePincherRotateIntake);
+                robot.setIntakeSlide(Constants.intakeSlideIntake);
+                robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
+                if (Math.abs(robot.intakeSlide.getCurrentPosition() - Constants.intakeSlideIntake) < 50){
+                    SearchSubstep++;
+                }
+                break;
+            case 1:
+                SearchSubstep = 0;
+                break;
+        }
+    }
+
+    private void intakeSearch(){
+        switch (currentSearchSubstep){
+            case 0:
+                //pickupTimer.reset();
+                robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
+                robot.intakePincher.setPosition(Constants.intakePincherOpen);
+                currentSearchSubstep++;
+                break;
+            case 1:
+                currentSearchSubstep = 0;
+                break;
+        }
+    }
+
+    private void intakeMini(){
+        switch (currentMiniIntakeSubstep){
+            case 0:
+                pickupTimer.reset();
+                robot.intakePincher.setPosition(Constants.intakePincherClosed);
+                currentMiniIntakeSubstep++;
+                break;
+            case 1:
+                if (pickupTimer.seconds() > 0.10){
+                    robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
+                    currentMiniIntakeSubstep++;
+                    break;
+                }
+                break;
+            case 2:
+                currentMiniIntakeSubstep = 0;
+                break;
+        }
+    }
+
     private void intakePickupSequence(){
         switch (currentPickupSequenceSubstep){
             case 0:
@@ -154,23 +230,24 @@ public class StateMachine {
                 if (robot.intakeSlide.getCurrentPosition() < 50){
                     break;
                 }
+                break;
             case 1:
                 //System.out.println("Timer2: " + timer2.seconds());
                 if (intakeTimer2.seconds() > 0.10){
                     robot.intakeLift.setPosition(Constants.intakeLiftHome);
                     robot.setIntakeSlide(Constants.intakeSlideHome);
                     robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHandoff);
-                    robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
+                    //robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
                     currentHandoffSubStep++;
                     //setIntakeState(IntakeState.HAND_OFF);
                 }
                 break;
             case 2:
-                robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
+                //robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
                 currentHandoffSubStep++;
                 break;
             case 3:
-                robot.intakePincher.setPosition((Constants.intakePincherOpen));
+                //robot.intakePincher.setPosition((Constants.intakePincherOpen));
                 currentHandoffSubStep++;
                 break;
             case 4:
