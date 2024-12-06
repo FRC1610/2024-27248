@@ -206,7 +206,7 @@ public class RobotHardware {
     /**
      * Pass desired position to elevator
      *
-     * @param elevatorPosition  Elevator position
+     * @param elevatorTargetPosition  Elevator position
      */
     public void setElevator (int elevatorTargetPosition){
         double elevatorPower = 0;

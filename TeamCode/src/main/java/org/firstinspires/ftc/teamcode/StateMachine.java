@@ -56,17 +56,17 @@ public class StateMachine {
             case HOME:
                 break;
             case PICKUP:
-                System.out.println("Currently in PICKUP update");
+                //System.out.println("Currently in PICKUP update");
                 searchPosition();
                 break;
             case WALL_PICKUP:
                 break;
             case HANDOFF:
-                System.out.println("Currently in HANDOFF update");
+                //System.out.println("Currently in HANDOFF update");
                 intakeHandoffSequence();
                 break;
             case PICKUP_TO_HANDOFF:
-                System.out.println("Currently in PICKUP_TO_UPDATE update");
+                //System.out.println("Currently in PICKUP_TO_UPDATE update");
                 intakePickupSequence();
                 break;
             case HIGHCHAMBER:
@@ -86,7 +86,7 @@ public class StateMachine {
             case DROPOFF:
                 break;
             case SEARCH_WAIT:
-                System.out.println("Currently in SEARCH_WAIT update");
+                //System.out.println("Currently in SEARCH_WAIT update");
                 //setState(State.SEARCH_WAIT);
                 break;
             case INTAKE_WAIT:
@@ -112,7 +112,7 @@ public class StateMachine {
                 break;
 
             case PICKUP: //Set floor pickup default search position (slide out, intake deployed)
-                System.out.println("Currently in PICKUP positions");
+                //System.out.println("Currently in PICKUP positions");
                 searchPosition();
                 break;
 
@@ -125,12 +125,12 @@ public class StateMachine {
                 break;
 
             case HANDOFF: //Call the Handoff sequence
-                System.out.println("Currently in HANDOFF positions");
+                //System.out.println("Currently in HANDOFF positions");
                 intakeHandoffSequence();
                 break;
 
             case PICKUP_TO_HANDOFF: //Results in a set of cases being called
-                System.out.println("Currently in PICKUP_TO_HANDOFF positions");
+                //System.out.println("Currently in PICKUP_TO_HANDOFF positions");
                 robot.intakePincher.setPosition(Constants.intakePincherClosed);
                 intakePickupSequence();
                 break;
@@ -149,15 +149,9 @@ public class StateMachine {
                 break;
 
             case DROPOFF:
-
                 break;
 
             case SEARCH_WAIT:
-                System.out.println("Currently in SEARCH_WAIT positions");
-                if (currentState == State.SEARCH_WAIT){
-                    System.out.println("Staying in SEARCH_WAIT");
-                    //Don't do anything plz
-                }
                 break;
 
             case INTAKE_WAIT:
