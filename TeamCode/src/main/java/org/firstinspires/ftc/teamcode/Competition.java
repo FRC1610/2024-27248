@@ -144,7 +144,8 @@ public class Competition extends LinearOpMode {
                     intakeSlidePower = Constants.intakeSlidePowerIn;
                 } else intakeSlidePower = 0;
 
-                if (StateMachine.getState() != State.PICKUP){
+                if (StateMachine.getState() != State.PICKUP ||
+                        StateMachine.getState() != State.PICKUP_TO_HANDOFF){
                 robot.runIntakeSlide(intakeSlidePower);
                 }
             }

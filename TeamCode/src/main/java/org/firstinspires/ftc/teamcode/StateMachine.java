@@ -14,7 +14,8 @@ public class StateMachine {
         WALL_TO_CHAMBER,
         INTAKE_SEARCH,
         MINI_INTAKE,
-        DROPOFF
+        DROPOFF,
+        SEARCH_WAIT
     }
 
     private ElapsedTime intakeTimer1 = new ElapsedTime();
@@ -78,6 +79,8 @@ public class StateMachine {
                 break;
             case DROPOFF:
                 break;
+            case SEARCH_WAIT:
+                break;
         }
     }
 
@@ -134,6 +137,9 @@ public class StateMachine {
             case DROPOFF:
 
                 break;
+
+            case SEARCH_WAIT:
+                break;
         }
     }
 
@@ -180,9 +186,11 @@ public class StateMachine {
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
                 if (Math.abs(robot.intakeSlide.getCurrentPosition() - Constants.intakeSlideIntake) < 50){
                     SearchSubstep++;
+                    break;
                 }
                 break;
             case 1:
+                setState(State.SEARCH_WAIT);
                 SearchSubstep = 0;
                 break;
         }
