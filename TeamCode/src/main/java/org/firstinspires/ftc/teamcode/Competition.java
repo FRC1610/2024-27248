@@ -100,16 +100,16 @@ public class Competition extends LinearOpMode {
 
             ///MANUAL CONTROL
 
-            if (gamepad1.back && !backButtonPreviouslyPressed) {
+            if (gamepad2.back && !backButtonPreviouslyPressed) {
                 manualControl = !manualControl; // Toggle control mode
             }
-            backButtonPreviouslyPressed = gamepad1.back; // Update previous state
+            backButtonPreviouslyPressed = gamepad2.back; // Update previous state
 
             if (manualControl) {
                 /// Manual elevator control using dpad
-                if (gamepad1.dpad_up) {
+                if (gamepad2.dpad_up) {
                     elevatorPower = Constants.elevatorPowerUp;
-                } else if (gamepad1.dpad_down) {
+                } else if (gamepad2.dpad_down) {
                     elevatorPower = Constants.elevatorPowerDown;
                 } else {
                     elevatorPower = 0;
@@ -119,9 +119,9 @@ public class Competition extends LinearOpMode {
                 robot.runElevator(elevatorPower);
 
                 ///Manual INTAKE SLIDE Control
-                if (gamepad1.dpad_right){
+                if (gamepad2.dpad_right){
                     intakeSlidePower = Constants.intakeSlidePowerOut;
-                } else if (gamepad1.dpad_left) {
+                } else if (gamepad2.dpad_left) {
                     intakeSlidePower = Constants.intakeSlidePowerIn;
                 }
                 else
@@ -182,7 +182,7 @@ public class Competition extends LinearOpMode {
              */
 
             ///RESET ENCODERS
-            if (gamepad1.start){
+            if (gamepad1.back){
                 robot.resetSlideEncoders();
             }
 
@@ -208,14 +208,23 @@ public class Competition extends LinearOpMode {
             /// Elevator Pincher Rotation Test
             //TODO Remove this once State Machine handles this
             if (gamepad2.a){
-                robot.ElevatorPincherRotate(0.05);
+                robot.elevatorPivot(0.01);
             } else if (gamepad2.b) {
-                robot.ElevatorPincherRotate(-0.05);
+                robot.elevatorPivot(-0.01);
             } else {
-                robot.ElevatorPincherRotate(0);
+                robot.elevatorPivot(0);
             }
 
+            //TODO Remove this once State Machine handles this
+            if (gamepad2.x){
+                robot.setElevatorPincher(0.05);
+            } else if (gamepad2.y) {
+                robot.setElevatorPincher(-0.05);
+            } else {
+                robot.setElevatorPincher(0);
+            }
 
+            telemetry.addData("Elev Pivot", robot.elevatorPivot.getPosition());
             telemetry.addData("Elev Pinch Rotate", robot.elevatorPincherRotate.getPosition());
 
             /*
@@ -232,32 +241,40 @@ public class Competition extends LinearOpMode {
 
             ///STATE CHANGE BUTTON SETUP
             //TODO Need button for High Basket but out of buttons - might need to get creative
-            if (gamepad1.x) {
+            if (gamepad1.start) {
                 StateMachine.setState(State.HOME);  //X = HOME Position
+            } else if (gamepad1.x){
+                StateMachine.setState(State.WALL_PICKUP);
             } else if (gamepad1.a && !aPressed) {
                 StateMachine.setState(State.PICKUP); //A = PICKUP Position
                 aPressed = true;
-            } else if (gamepad1.b) {
+            } else if (gamepad1.b && StateMachine.getState() != State.WALL_PICKUP) {
                 StateMachine.setState(State.WALL_PICKUP); //B = WALL PICKUP Position
-            } else if (gamepad1.y) {
-                StateMachine.setState(State.HIGHCHAMBER); //Y = HIGH CHAMBER Position
-            } else if (gamepad1.right_bumper &&
-                    !RightBumperPressed) {
-                StateMachine.setState(State.PICKUP_TO_HANDOFF);
-                RightBumperPressed = true;
+            } else if (gamepad1.y && StateMachine.getState() == State.WALL_PICKUP) {
+                StateMachine.setState(State.HIGH_CHAMBER); //Y = HIGH CHAMBER Position
+            } else if (gamepad1.y && StateMachine.getState() == State.HANDOFF_WAIT) {
+                StateMachine.setState(State.HIGH_BASKET);
             } else if (gamepad1.right_bumper &&
                     StateMachine.getState() == State.WALL_PICKUP
                     && !RightBumperPressed) {
                 StateMachine.setState(State.WALL_TO_CHAMBER);
                 RightBumperPressed = true;
-            } else if (gamepad1.left_bumper && !leftBumperPressed){
-                if (StateMachine.getState() == State.SEARCH_WAIT){
+            } else if (gamepad1.right_bumper &&
+                    !RightBumperPressed) {
+                StateMachine.setState(State.PICKUP_TO_HANDOFF);
+                RightBumperPressed = true;
+            } else if (gamepad1.left_bumper && !leftBumperPressed) {
+                if (StateMachine.getState() == State.SEARCH_WAIT) {
                     StateMachine.setState(State.MINI_INTAKE);
                 } else if (StateMachine.getState() == State.INTAKE_WAIT) {
                     StateMachine.setState(State.INTAKE_SEARCH);
+                } else if (StateMachine.getState() == State.WALL_TO_CHAMBER) {
+                    StateMachine.setState(State.SCORE_CHAMBER);
+                } else if (StateMachine.getState() == State.HIGH_BASKET){
+                    StateMachine.setState(State.HIGH_BASKET_SCORE);
                 }
                 leftBumperPressed = true;
-            } else if (!gamepad1.left_bumper){
+            } else if (!gamepad1.left_bumper) {
                 leftBumperPressed = false;
             }
 

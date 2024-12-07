@@ -89,6 +89,15 @@ public class RobotHardware {
         elevatorLift = myOpMode.hardwareMap.get(DcMotor.class, "elevatorLift");
         intakeSlide = myOpMode.hardwareMap.get(DcMotor.class,"intakeSlide");
 
+        // Drive motor brake mode
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Linear slide brake mode
+        intakeSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Set Directions
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
@@ -299,4 +308,9 @@ public class RobotHardware {
         elevatorPivot.setPosition(NewPosition);
     }
 
+    public void setElevatorPincher(double PosChange){
+        double CurrentPosition = elevatorPincher.getPosition();
+        double NewPosition = CurrentPosition + PosChange;
+        elevatorPincher.setPosition(NewPosition);
+    }
 }

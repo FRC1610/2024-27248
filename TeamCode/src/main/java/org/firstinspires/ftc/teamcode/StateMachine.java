@@ -9,24 +9,34 @@ public class StateMachine {
         WALL_PICKUP,
         HANDOFF,
         PICKUP_TO_HANDOFF,
-        HIGHCHAMBER,
-        HIGHBASKET,
+        HIGH_CHAMBER,
+        HIGH_BASKET,
         WALL_TO_CHAMBER,
         INTAKE_SEARCH,
         MINI_INTAKE,
         DROPOFF,
         SEARCH_WAIT,
         INTAKE_WAIT,
-        HANDOFF_WAIT
+        HANDOFF_WAIT,
+        SCORE_CHAMBER,
+        CHAMBER_WAIT,
+        HIGH_BASKET_SCORE,
+        HIGH_BASKET_WAIT
     }
 
     private ElapsedTime intakeTimer1 = new ElapsedTime();
     private ElapsedTime handoffTimer = new ElapsedTime();
     private ElapsedTime pickupTimer = new ElapsedTime();
+    private ElapsedTime wallPickupTimer = new ElapsedTime();
+    private ElapsedTime scoreChamberTimer = new ElapsedTime();
+    private ElapsedTime scoreHighBasketTimer = new ElapsedTime();
     private int currentHandoffSubStep = 0;
     private int currentPickupSequenceSubstep = 0;
     private int currentSearchSubstep = 0;
     private int currentMiniIntakeSubstep = 0;
+    private int currentScoreChamberSubstep = 0;
+    private int currentWallToChamberSubstep = 0;
+    private int currentHighBasketScoreSubstep = 0;
     private int SearchSubstep = 0;
     private int DropoffSubstep = 0;
     private State currentState;
@@ -44,11 +54,17 @@ public class StateMachine {
         this.currentHandoffSubStep = 0;
         this.currentSearchSubstep = 0;
         this.currentMiniIntakeSubstep = 0;
+        this.currentScoreChamberSubstep = 0;
+        this.currentWallToChamberSubstep = 0;
+        this.currentHighBasketScoreSubstep = 0;
         this.SearchSubstep = 0;
         this.DropoffSubstep = 0;
         intakeTimer1.reset();
         handoffTimer.reset();
         pickupTimer.reset();
+        wallPickupTimer.reset();
+        scoreChamberTimer.reset();
+        scoreHighBasketTimer.reset();
         updatePositions();
     }
 
@@ -70,11 +86,14 @@ public class StateMachine {
                 //System.out.println("Currently in PICKUP_TO_UPDATE update");
                 intakePickupSequence();
                 break;
-            case HIGHCHAMBER:
+            case HIGH_CHAMBER:
                 break;
-            case HIGHBASKET:
+            case HIGH_BASKET:
+                robot.setElevator(Constants.elevatorHighBasket);
+                robot.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
                 break;
             case WALL_TO_CHAMBER:
+                wallToChamber();
                 break;
             case INTAKE_SEARCH:
                 intakeSearch();
@@ -94,6 +113,14 @@ public class StateMachine {
                 //setState(State.INTAKE_WAIT);
                 break;
             case HANDOFF_WAIT:
+                break;
+            case SCORE_CHAMBER:
+                scoreChamber();
+                break;
+            case CHAMBER_WAIT:
+                break;
+            case HIGH_BASKET_SCORE:
+                highBasketScore();
                 break;
         }
     }
@@ -139,9 +166,10 @@ public class StateMachine {
                 robot.setElevator(Constants.elevatorHome);
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotWallPickup);
                 robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
+                robot.elevatorPincherRotate.setPosition(Constants.elevatorPincherRotateHome);
                 break;
 
-            case HIGHCHAMBER:
+            case HIGH_CHAMBER:
                 intakeAllHome(); //Make sure the intake is inside frame
                 robot.setElevator(Constants.elevatorHighChamber);
                 robot.elevatorPivot(Constants.elevatorPivotBasket);
@@ -155,6 +183,24 @@ public class StateMachine {
 
             case INTAKE_WAIT:
                 break;
+
+            case WALL_TO_CHAMBER:
+                wallToChamber();
+                break;
+
+            case SCORE_CHAMBER:
+                scoreChamber();
+                break;
+
+            case CHAMBER_WAIT:
+                break;
+
+            case HIGH_BASKET_SCORE:
+                highBasketScore();
+                break;
+
+            case HIGH_BASKET_WAIT:
+                break;
         }
     }
 
@@ -167,6 +213,93 @@ public class StateMachine {
         robot.setIntakeSlide(Constants.intakeSlideHome);
     }
 
+    private void highBasketScore(){
+        switch (currentHighBasketScoreSubstep){
+            case 0:
+                scoreHighBasketTimer.reset();
+                robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
+                currentHighBasketScoreSubstep++;
+                break;
+            case 1:
+                if (scoreHighBasketTimer.seconds() > 0.25){
+                    robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
+                    currentHighBasketScoreSubstep++;
+                    break;
+                }
+                break;
+            case 2:
+                if (scoreHighBasketTimer.seconds() > 0.75){
+                    robot.setElevator(Constants.elevatorHome);
+                    currentHighBasketScoreSubstep++;
+                    break;
+                }
+                break;
+            case 3:
+                currentHighBasketScoreSubstep = 0;
+                setState(State.HIGH_BASKET_WAIT);
+                break;
+        }
+    }
+
+    private void wallToChamber(){
+        System.out.println("Wall Timer " + wallPickupTimer.seconds());
+        System.out.println("Wall Substep " + currentWallToChamberSubstep);
+        switch (currentWallToChamberSubstep){
+            case 0:
+                wallPickupTimer.reset();
+                robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
+                currentWallToChamberSubstep++;
+                break;
+            case 1:
+                if (wallPickupTimer.seconds() > 1.5){
+                    robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
+                    robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
+                    robot.setElevator(Constants.elevatorHighChamber);
+                    robot.elevatorPincherRotate.setPosition(Constants.elevatorPincherRotateHandoff);
+                    currentWallToChamberSubstep++;
+                    break;
+                }
+                break;
+            case 2:
+                currentWallToChamberSubstep = 0;
+                break;
+        }
+    }
+
+    private void scoreChamber(){
+        System.out.println("Score Chamber Timer " + scoreChamberTimer.seconds());
+        System.out.println("Score Chamber Substep " + currentScoreChamberSubstep);
+        System.out.println("Elevator Pos: " + robot.elevatorLift.getCurrentPosition());
+        switch (currentScoreChamberSubstep){
+            case 0:
+                scoreChamberTimer.reset();
+                robot.elevatorPivot.setPosition(Constants.elevatorPivotChamber);
+                currentScoreChamberSubstep++;
+                break;
+            case 1:
+                if (scoreChamberTimer.seconds() > 0.5){
+                    robot.setElevator(Constants.elevatorHighChamberScore);
+                    currentScoreChamberSubstep++;
+                    break;
+                }
+                break;
+            case 2:
+                if (scoreChamberTimer.seconds() > 2.5) {
+                    robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
+                    currentScoreChamberSubstep++;
+                    break;
+                }
+                break;
+            case 3:
+                robot.setElevator(Constants.elevatorHome);
+                currentScoreChamberSubstep++;
+                break;
+            case 4:
+                currentScoreChamberSubstep = 0;
+                setState(State.CHAMBER_WAIT);
+                break;
+        }
+    }
     private void dropoffSequence(){
         switch (DropoffSubstep){
             case 0:
@@ -294,7 +427,8 @@ public class StateMachine {
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
                 robot.elevatorPincherRotate.setPosition(Constants.elevatorPincherRotateHandoff);
                 robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
-                if (robot.intakeSlide.getCurrentPosition() < 10){
+                robot.intakeLift.setPosition(Constants.intakeLiftHandoff);
+                if (robot.intakeSlide.getCurrentPosition() < 15){
                     handoffTimer.reset();
                     currentHandoffSubStep++;
                     break;
@@ -303,7 +437,7 @@ public class StateMachine {
             case 1:
                 //System.out.println("Timer2: " + timer2.seconds());
                 //if (handoffTimer.seconds() > 0.15){
-                    robot.intakeLift.setPosition(Constants.intakeLiftHandoff);
+
                     currentHandoffSubStep++;
                 //}
                 break;
