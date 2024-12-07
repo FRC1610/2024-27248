@@ -47,6 +47,8 @@ public class Competition extends LinearOpMode {
         boolean IntakeClosed = true;
         boolean IntakeButtonWasPressed = false;
         boolean RightBumperPressed = false;
+        boolean aPressed = false;
+        boolean leftBumperPressed = false;
         double PosChange = 0.0;
 
         robot.init();  //Hardware configuration in RobotHardware.java
@@ -88,7 +90,11 @@ public class Competition extends LinearOpMode {
             // Get joystick inputs
             y = -gamepad1.left_stick_y; // Forward/backward
             x = gamepad1.left_stick_x;  // Strafe
-            rotation = gamepad1.right_stick_x; // Rotation
+            if (gamepad1.right_stick_button) {
+                rotation = gamepad1.right_stick_x * 0.5; //Slow rotation mode when button pressed in
+            } else {
+                rotation = gamepad1.right_stick_x; // Rotation
+            }
 
             robot.mecanumDrive(x, y, rotation);
 
@@ -125,26 +131,25 @@ public class Competition extends LinearOpMode {
 
             } else {
                 // Position-based control
-                /*
-                if (gamepad1.y) {
-                    // Move to high chamber position
-                    robot.setElevator(Constants.elevatorHighChamber);
-                } else if (gamepad1.b) {
-                    // Move to mid-level position (example)
-                    robot.setElevator(Constants.elevatorIntake);
-                } else if (gamepad1.a) {
-                    // Move to low-level position (example)
-                    robot.setElevator(Constants.elevatorHome);
-                }
-
-                 */
 
                 if (gamepad1.dpad_right){
-                    robot.IntakeRotate(-0.01);
+                    robot.IntakeRotate(-0.005);
                 } else if (gamepad1.dpad_left) {
-                    robot.IntakeRotate(.01);
+                    robot.IntakeRotate(.005);
                 } else robot.IntakeRotate(0);
 
+                if (gamepad1.dpad_up && StateMachine.getState() == State.PICKUP){
+                    if (robot.intakeSlide.getCurrentPosition() < Constants.intakeSlideMax) {
+                        intakeSlidePower = Constants.intakeSlidePowerOut;
+                    }
+                } else if (gamepad1.dpad_down && StateMachine.getState() == State.PICKUP) {
+                    intakeSlidePower = Constants.intakeSlidePowerIn;
+                } else intakeSlidePower = 0;
+
+                if (StateMachine.getState() != State.PICKUP ||
+                        StateMachine.getState() != State.PICKUP_TO_HANDOFF){
+                robot.runIntakeSlide(intakeSlidePower);
+                }
             }
 
             /*
@@ -185,47 +190,85 @@ public class Competition extends LinearOpMode {
 
             //Intake Pincher
             boolean IntakeButtonPressed = gamepad1.left_bumper; //Check if button pressed
-
+/*
             if (IntakeButtonPressed && !IntakeButtonWasPressed){ //Button pressed in this loop
                 IntakeClosed = !IntakeClosed; //Toggle position state
                 if (IntakeClosed){
-                    robot.CloseIntakePincher(); //Move to position 1
+                    //robot.CloseIntakePincher(); //Move to position 1
+                    StateMachine.setState(State.MINI_INTAKE);
                 } else {
-                    robot.OpenIntakePincher(); //Move to position 2
+                    //robot.OpenIntakePincher(); //Move to position 2
+                    StateMachine.setState(State.INTAKE_SEARCH);
                 }
             }
 
             IntakeButtonWasPressed = IntakeButtonPressed; //Update previous button state
+*/
+
+            /// Elevator Pincher Rotation Test
+            //TODO Remove this once State Machine handles this
+            if (gamepad2.a){
+                robot.ElevatorPincherRotate(0.05);
+            } else if (gamepad2.b) {
+                robot.ElevatorPincherRotate(-0.05);
+            } else {
+                robot.ElevatorPincherRotate(0);
+            }
+
+
+            telemetry.addData("Elev Pinch Rotate", robot.elevatorPincherRotate.getPosition());
 
             /*
-            if (gamepad1.right_trigger > 0.1){
-                robot.IntakePincherRotate(0.05);
-            } else if (gamepad1.left_trigger > 0.1) {
-                robot.IntakePincherRotate(-0.05);
-            } else {
-                robot.IntakePincherRotate(0);
+            /// Elevator Pincher Test
+            //TODO Remove this once State Machine handles this
+            if (gamepad2.y){
+                robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
+            } else if (gamepad2.x) {
+                robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
             }
+
              */
+            telemetry.addData("Elev Pinch Pos", robot.elevatorPincher.getPosition());
 
             ///STATE CHANGE BUTTON SETUP
+            //TODO Need button for High Basket but out of buttons - might need to get creative
             if (gamepad1.x) {
-                StateMachine.setState(State.HOME);
-            } else if (gamepad1.a) {
-                StateMachine.setState(State.PICKUP);
+                StateMachine.setState(State.HOME);  //X = HOME Position
+            } else if (gamepad1.a && !aPressed) {
+                StateMachine.setState(State.PICKUP); //A = PICKUP Position
+                aPressed = true;
             } else if (gamepad1.b) {
-                StateMachine.setState(State.WALLPICKUP);
+                StateMachine.setState(State.WALL_PICKUP); //B = WALL PICKUP Position
             } else if (gamepad1.y) {
-                StateMachine.setState(State.HIGHCHAMBER);
-            } else if (gamepad1.right_bumper && StateMachine.getState() == State.PICKUP && !RightBumperPressed){
+                StateMachine.setState(State.HIGHCHAMBER); //Y = HIGH CHAMBER Position
+            } else if (gamepad1.right_bumper &&
+                    !RightBumperPressed) {
                 StateMachine.setState(State.PICKUP_TO_HANDOFF);
                 RightBumperPressed = true;
-            } else if (gamepad1.right_bumper && StateMachine.getState() == State.WALLPICKUP && !RightBumperPressed) {
-                StateMachine.setState(State.WALLTOCHAMBER);
+            } else if (gamepad1.right_bumper &&
+                    StateMachine.getState() == State.WALL_PICKUP
+                    && !RightBumperPressed) {
+                StateMachine.setState(State.WALL_TO_CHAMBER);
                 RightBumperPressed = true;
+            } else if (gamepad1.left_bumper && !leftBumperPressed){
+                if (StateMachine.getState() == State.SEARCH_WAIT){
+                    StateMachine.setState(State.MINI_INTAKE);
+                } else if (StateMachine.getState() == State.INTAKE_WAIT) {
+                    StateMachine.setState(State.INTAKE_SEARCH);
+                }
+                leftBumperPressed = true;
+            } else if (!gamepad1.left_bumper){
+                leftBumperPressed = false;
             }
+
+            //IntakeButtonWasPressed = IntakeButtonPressed; //Update previous button state
 
             if (!gamepad1.right_bumper) {
                 RightBumperPressed = false;
+            }
+
+            if (!gamepad1.a){
+                aPressed = false;
             }
 
             if (gamepad1.right_trigger > 0.1){
@@ -236,7 +279,7 @@ public class Competition extends LinearOpMode {
                 robot.IntakePincherRotate(0);
             }
 
-            StateMachine.update();
+            StateMachine.update(); //Update state machine in case of long running tasks
             telemetry.addData("State", StateMachine.getState());
 
             //telemetry.addData("Intake Button Pressed", IntakeButtonPressed);

@@ -22,19 +22,22 @@ public class Constants {
     ///ELEVATOR SERVO POSITIONS
     //Elevator Pivot
     public static final double elevatorPivotHome = 1.0;
-    public static final double elevatorPivotHandoff = 0.16;
+    public static final double elevatorPivotHandoff = 0.125; //.16
     public static final double elevatorPivotWallPickup = 0.90;
     public static final double elevatorPivotVertical = 0.50;
+    public static final double elevatorPivotBasket = 0.75;
     //Elevator Pincher
-    public static final double elevatorPincherHome = 0.5;
-    public static final double elevatorPincherOpen = 1.0;
-    public static final double elevatorPincherClosed = 0.0;
+    public static final double elevatorPincherHome = 0.8;
+    public static final double elevatorPincherOpen = 0.2;
+    public static final double elevatorPincherClosed = 0.80;
+
     //Elevator Pincher Rotate
-    public static final double elevatorPincherRotateHome = 0.5;
+    public static final double elevatorPincherRotateHome = 0.1;
+    public static final double elevatorPincherRotateHandoff = 0.8;
 
     ///INTAKE SLIDE POWER
-    public static final double intakeSlidePowerOut = 0.85;
-    public static final double intakeSlidePowerIn = -0.75;
+    public static final double intakeSlidePowerOut = 1.0;
+    public static final double intakeSlidePowerIn = -0.85;
 
     ///INTAKE SERVO POSITIONS
     //Intake Pincher
@@ -42,15 +45,17 @@ public class Constants {
     public static final double intakePincherOpen = 0.60;
     //Intake Lift
     public static final double intakeLiftFullBack = 0.12;
+    public static final double intakeLiftHandoff = 0.21;
     public static final double intakeLiftHome = 0.30;
-    public static final double intakeLiftSearchPosition = 0.60;
-    public static final double intakeLiftIntakePosition = 0.62;
+    public static final double intakeLiftSearchPosition = 0.61;
+    public static final double intakeLiftIntakePosition = 0.64;
+    public static final double intakeLiftDropoffPosition = 0.45;
     //Intake Rotate
     public static final double intakeRotateHome = 0.40;
     public static final double intakeRotateIntakePosition = 0.80;
     public static final double intakeRotateHandoffPosition = 0.80;
     //Intake Pincher Rotate
-    public static final double intakePincherRotateIntake = 0.80;
-    public static final double intakePincherRotateHandoff = 0.80;
-    public static final double intakePincherRotateHome = 1;
+    public static final double intakePincherRotateIntake = 0.085;
+    public static final double intakePincherRotateHandoff = 0.085;
+    public static final double intakePincherRotateHome = 0.085;
 }
