@@ -204,6 +204,7 @@ public class Competition extends LinearOpMode {
 
             IntakeButtonWasPressed = IntakeButtonPressed; //Update previous button state
 */
+
             /// Elevator Pincher Rotation Test
             //TODO Remove this once State Machine handles this
             if (gamepad2.a){
@@ -213,8 +214,11 @@ public class Competition extends LinearOpMode {
             } else {
                 robot.ElevatorPincherRotate(0);
             }
+
+
             telemetry.addData("Elev Pinch Rotate", robot.elevatorPincherRotate.getPosition());
 
+            /*
             /// Elevator Pincher Test
             //TODO Remove this once State Machine handles this
             if (gamepad2.y){
@@ -222,6 +226,8 @@ public class Competition extends LinearOpMode {
             } else if (gamepad2.x) {
                 robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
             }
+
+             */
             telemetry.addData("Elev Pinch Pos", robot.elevatorPincher.getPosition());
 
             ///STATE CHANGE BUTTON SETUP
