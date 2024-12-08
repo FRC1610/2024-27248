@@ -5,12 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.LED;
-
-import org.firstinspires.ftc.robotcore.external.Const;
 
 public class RobotHardware {
 
@@ -31,10 +27,11 @@ public class RobotHardware {
     Servo elevatorPivot = null;
     Servo elevatorPincher = null;
     Servo elevatorPincherRotate = null;
+    Servo rgbLight = null;
     Limelight3A limelight = null;
     GoBildaPinpointDriver odo = null; // Declare OpMode member for the Odometry Computer
-    private RevBlinkinLedDriver blinkinLedDriver = null;
-    private RevBlinkinLedDriver.BlinkinPattern pattern = null;
+    //private RevBlinkinLedDriver blinkinLedDriver = null;
+    //private RevBlinkinLedDriver.BlinkinPattern pattern = null;
     private DigitalChannel allianceButton = null;
     private LED LED_red = null;
     private LED LED_green = null;
@@ -65,6 +62,7 @@ public class RobotHardware {
         LED_green = myOpMode.hardwareMap.get(LED.class, "LED_green");
         LED_red = myOpMode.hardwareMap.get(LED.class, "LED_red");
 
+        /*
         ///Blinkin Setup
         blinkinLedDriver = myOpMode.hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         allianceButton = myOpMode.hardwareMap.get(DigitalChannel.class,"allianceButton");
@@ -78,6 +76,10 @@ public class RobotHardware {
             LED_green.on();
         }
         blinkinLedDriver.setPattern(pattern);
+
+         */
+
+        rgbLight = myOpMode.hardwareMap.get(Servo.class, "rgbLight");
 
         ///Motor Setup
         // Define and Initialize Motors (note: need to use reference to actual OpMode).
