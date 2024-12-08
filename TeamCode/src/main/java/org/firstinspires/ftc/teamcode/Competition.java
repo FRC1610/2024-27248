@@ -99,7 +99,7 @@ public class Competition extends LinearOpMode {
 
             ///MANUAL CONTROL
 
-            if (gamepad2.back && !backButtonPreviouslyPressed) {
+            if (gamepad2.back && !backButtonPreviouslyPressed) {  //This requires gamepad2 which is normally not in use
                 manualControl = !manualControl; // Toggle control mode
             }
             backButtonPreviouslyPressed = gamepad2.back; // Update previous state
@@ -155,7 +155,7 @@ public class Competition extends LinearOpMode {
             ///RESET ENCODERS
             if (gamepad1.back){
                 robot.resetSlideEncoders();
-                StateMachine.setState(State.HOME);
+                StateMachine.setState(State.HOME);  //Reset State when encoders are reset
             }
 
             ///INTAKE
@@ -239,8 +239,6 @@ public class Competition extends LinearOpMode {
                 leftBumperPressed = false;
             }
 
-            //IntakeButtonWasPressed = IntakeButtonPressed; //Update previous button state
-
             if (!gamepad1.right_bumper) {
                 RightBumperPressed = false;
             }
@@ -260,7 +258,6 @@ public class Competition extends LinearOpMode {
             StateMachine.update(); //Update state machine in case of long running tasks
             telemetry.addData("State", StateMachine.getState());
 
-            //telemetry.addData("Intake Button Pressed", IntakeButtonPressed);
 
             telemetry.addData("Elevator Pos", robot.elevatorLift.getCurrentPosition());
             telemetry.addData("Intake Slide Pos", robot.intakeSlide.getCurrentPosition());
