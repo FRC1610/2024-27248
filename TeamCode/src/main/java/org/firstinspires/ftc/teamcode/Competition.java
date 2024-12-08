@@ -30,17 +30,17 @@ public class Competition extends LinearOpMode {
 
         ///Variable Setup
         //Odometry
-        double oldTime;
+        double oldTime = 0;
 
         //Mecanum Drive
-        double x;
-        double y;
-        double rotation;
+        double x = 0;
+        double y = 0;
+        double rotation = 0;
 
         //Elevator
         boolean manualControl = false; // Default to position-based control
         boolean backButtonPreviouslyPressed = false; // To track toggle state
-        double elevatorPower;
+        double elevatorPower = 0;
 
         //Intake
         //boolean IntakeClosed = true;
@@ -104,7 +104,7 @@ public class Competition extends LinearOpMode {
             }
             backButtonPreviouslyPressed = gamepad2.back; // Update previous state
 
-            double intakeSlidePower;
+            double intakeSlidePower = 0;
             if (manualControl) {
                 /// Manual elevator control using dpad
                 if (gamepad2.dpad_up) {

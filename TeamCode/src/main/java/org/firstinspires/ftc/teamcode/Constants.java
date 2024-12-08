@@ -48,7 +48,7 @@ public class Constants {
     public static final double intakePincherOpen = 0.60;
     //Intake Lift
     public static final double intakeLiftFullBack = 0.12;
-    public static final double intakeLiftHandoff = 0.20;
+    public static final double intakeLiftHandoff = 0.25;
     public static final double intakeLiftHome = 0.30;
     public static final double intakeLiftSearchPosition = 0.60;
     public static final double intakeLiftIntakePosition = 0.64;
