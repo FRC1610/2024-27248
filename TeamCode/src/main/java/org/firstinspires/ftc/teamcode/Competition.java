@@ -184,6 +184,7 @@ public class Competition extends LinearOpMode {
             ///RESET ENCODERS
             if (gamepad1.back){
                 robot.resetSlideEncoders();
+                StateMachine.setState(State.HOME);
             }
 
             ///INTAKE
@@ -250,7 +251,9 @@ public class Competition extends LinearOpMode {
             /// Y
             } else if (gamepad1.y && StateMachine.getState() == State.WALL_PICKUP) {  //Y + WALL_PICKUP = HIGH_CHAMBER
                 StateMachine.setState(State.HIGH_CHAMBER);
-            } else if (gamepad1.y && StateMachine.getState() == State.HANDOFF_WAIT) { //Y + HANDOFF_WAIT = HIGH_BASKEt
+            } else if (gamepad1.y && StateMachine.getState() == State.INTAKE_WAIT) { //Y + INTAKE_WAIT = HANDOFF
+                StateMachine.setState(State.HANDOFF);
+            } else if (gamepad1.y && StateMachine.getState() == State.HANDOFF_WAIT) {
                 StateMachine.setState(State.HIGH_BASKET);
             /// RB
             } else if (gamepad1.right_bumper &&
@@ -259,6 +262,7 @@ public class Competition extends LinearOpMode {
                 StateMachine.setState(State.WALL_TO_CHAMBER);
                 RightBumperPressed = true;
             } else if (gamepad1.right_bumper &&
+                    StateMachine.getState() != State.HANDOFF_WAIT &&
                     !RightBumperPressed) {
                 StateMachine.setState(State.PICKUP_RETRACT);
                 RightBumperPressed = true;

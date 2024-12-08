@@ -287,9 +287,9 @@ public class StateMachine {
     }
 
     private void scoreChamber(){
-        System.out.println("Score Chamber Timer " + scoreChamberTimer.seconds());
-        System.out.println("Score Chamber Substep " + currentScoreChamberSubstep);
-        System.out.println("Elevator Pos: " + robot.elevatorLift.getCurrentPosition());
+        //System.out.println("Score Chamber Timer " + scoreChamberTimer.seconds());
+        //System.out.println("Score Chamber Substep " + currentScoreChamberSubstep);
+        //System.out.println("Elevator Pos: " + robot.elevatorLift.getCurrentPosition());
         switch (currentScoreChamberSubstep){
             case 0:
                 scoreChamberTimer.reset();
@@ -321,24 +321,24 @@ public class StateMachine {
         }
     }
     private void dropoffSequence(){
+        System.out.println("Dropoff Substep " + DropoffSubstep);
         switch (DropoffSubstep){
             case 0:
                 intakeAllHome(); //Make sure the intake is retracted
-
-                DropoffSubstep++;  //Move to next step
-                break;
-            case 1:
-                if (robot.intakeSlide.getCurrentPosition() < 15){ //Make sure intake is nearly completely retracted
-                    robot.intakeLift.setPosition(Constants.intakeLiftDropoffPosition);
-                    robot.intakeRotate.setPosition(Constants.intakeRotateHome); //This should already be in home from intakeAllHome
-                    dropoffTimer.reset();
+                if (robot.intakeSlide.getCurrentPosition() < 15){
                     DropoffSubstep++;  //Move to next step
                     break;
                 }
                 break;
+            case 1:
+                //robot.intakeLift.setPosition(Constants.intakeLiftDropoffPosition);
+                robot.intakeRotate.setPosition(Constants.intakeRotateHome); //This should already be in home from intakeAllHome
+                dropoffTimer.reset();
+                DropoffSubstep++;  //Move to next step
+                break;
             case 2:
+                robot.intakePincher.setPosition(Constants.intakePincherOpen);
                 if (dropoffTimer.seconds() > 0.25){ //Give the pincher time to open
-                    robot.intakePincher.setPosition(Constants.intakePincherOpen);
                     DropoffSubstep++;  //Move to next step
                     break;
                 }
@@ -433,12 +433,12 @@ public class StateMachine {
                     robot.intakeLift.setPosition(Constants.intakeLiftHandoff);
                     //Elevator
                     robot.setElevator(Constants.elevatorHome);
-                    robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
+                    robot.elevatorPivot.setPosition(Constants.elevatorPivotWait);
                     robot.elevatorPincherRotate.setPosition(Constants.elevatorPincherRotateHandoff);
                     robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
                     if (robot.intakeSlide.getCurrentPosition() < 15){
                         //handoffTimer.reset();
-                        currentHandoffSubStep++;  //Move to next step
+                        currentPickupSequenceSubstep++;  //Move to next step
                         break;
                     }
                 }
@@ -486,14 +486,14 @@ public class StateMachine {
                 }
                 break;
             case 3:
-                if (handoffTimer.seconds() > 0.75){
+                if (handoffTimer.seconds() > 1.5){
                     robot.intakePincher.setPosition(Constants.intakePincherOpen);
                     currentHandoffSubStep++;  //Move to next step
                     break;
                 }
                 break;
             case 4:
-                if (handoffTimer.seconds() > 1.0){
+                if (handoffTimer.seconds() > 2.0){
                     robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
                     currentHandoffSubStep++;  //Move to next step
                     break;

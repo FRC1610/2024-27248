@@ -17,13 +17,14 @@ public class Constants {
 
     ///INTAKE SLIDE SETPOINTS
     public static final int intakeSlideHome = 0;
-    public static final int intakeSlideIntake = 300;
+    public static final int intakeSlideIntake = 1000;
     public static final int intakeSlideMax = 550;
 
     ///ELEVATOR SERVO POSITIONS
     //Elevator Pivot
     public static final double elevatorPivotHome = 1.0;
     public static final double elevatorPivotHandoff = 0.14; //.125
+    public static final double elevatorPivotWait = 0.30;
     public static final double elevatorPivotWallPickup = 0.91;
     public static final double elevatorPivotVertical = 0.50;
     public static final double elevatorPivotBasket = 0.75;
@@ -47,7 +48,7 @@ public class Constants {
     public static final double intakePincherOpen = 0.60;
     //Intake Lift
     public static final double intakeLiftFullBack = 0.12;
-    public static final double intakeLiftHandoff = 0.21;
+    public static final double intakeLiftHandoff = 0.20;
     public static final double intakeLiftHome = 0.30;
     public static final double intakeLiftSearchPosition = 0.60;
     public static final double intakeLiftIntakePosition = 0.64;
