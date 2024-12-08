@@ -147,7 +147,7 @@ public class Competition extends LinearOpMode {
                 } else intakeSlidePower = 0;
 
                 if (StateMachine.getState() != State.PICKUP ||
-                        StateMachine.getState() != State.PICKUP_TO_HANDOFF){
+                        StateMachine.getState() != State.PICKUP_RETRACT){
                 robot.runIntakeSlide(intakeSlidePower);
                 }
             }
@@ -226,34 +226,33 @@ public class Competition extends LinearOpMode {
 
             telemetry.addData("Elev Pivot", robot.elevatorPivot.getPosition());
             telemetry.addData("Elev Pinch Rotate", robot.elevatorPincherRotate.getPosition());
-
-            /*
-            /// Elevator Pincher Test
-            //TODO Remove this once State Machine handles this
-            if (gamepad2.y){
-                robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
-            } else if (gamepad2.x) {
-                robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
-            }
-
-             */
             telemetry.addData("Elev Pinch Pos", robot.elevatorPincher.getPosition());
 
             ///STATE CHANGE BUTTON SETUP
-            //TODO Need button for High Basket but out of buttons - might need to get creative
+            //TODO Maybe rearrange this
+            /// START
             if (gamepad1.start) {
-                StateMachine.setState(State.HOME);  //X = HOME Position
+                StateMachine.setState(State.HOME);  //START = HOME Position
+            /// X
             } else if (gamepad1.x){
                 StateMachine.setState(State.WALL_PICKUP);
+            /// A
             } else if (gamepad1.a && !aPressed) {
                 StateMachine.setState(State.PICKUP); //A = PICKUP Position
                 aPressed = true;
-            } else if (gamepad1.b && StateMachine.getState() != State.WALL_PICKUP) {
-                StateMachine.setState(State.WALL_PICKUP); //B = WALL PICKUP Position
-            } else if (gamepad1.y && StateMachine.getState() == State.WALL_PICKUP) {
-                StateMachine.setState(State.HIGH_CHAMBER); //Y = HIGH CHAMBER Position
-            } else if (gamepad1.y && StateMachine.getState() == State.HANDOFF_WAIT) {
+            /// B
+            } else if (gamepad1.b && StateMachine.getState() == State.INTAKE_WAIT) {
+                StateMachine.setState(State.DROPOFF);
+            } else if (gamepad1.b &&
+                    StateMachine.getState() != State.WALL_PICKUP &&
+                    StateMachine.getState() != State.DROPOFF) { //B = WALL PICKUP Position
+                StateMachine.setState(State.WALL_PICKUP);
+            /// Y
+            } else if (gamepad1.y && StateMachine.getState() == State.WALL_PICKUP) {  //Y + WALL_PICKUP = HIGH_CHAMBER
+                StateMachine.setState(State.HIGH_CHAMBER);
+            } else if (gamepad1.y && StateMachine.getState() == State.HANDOFF_WAIT) { //Y + HANDOFF_WAIT = HIGH_BASKEt
                 StateMachine.setState(State.HIGH_BASKET);
+            /// RB
             } else if (gamepad1.right_bumper &&
                     StateMachine.getState() == State.WALL_PICKUP
                     && !RightBumperPressed) {
@@ -261,12 +260,13 @@ public class Competition extends LinearOpMode {
                 RightBumperPressed = true;
             } else if (gamepad1.right_bumper &&
                     !RightBumperPressed) {
-                StateMachine.setState(State.PICKUP_TO_HANDOFF);
+                StateMachine.setState(State.PICKUP_RETRACT);
                 RightBumperPressed = true;
+            /// LB
             } else if (gamepad1.left_bumper && !leftBumperPressed) {
                 if (StateMachine.getState() == State.SEARCH_WAIT) {
                     StateMachine.setState(State.MINI_INTAKE);
-                } else if (StateMachine.getState() == State.INTAKE_WAIT) {
+                } else if (StateMachine.getState() == State.PICKUP_WAIT) {
                     StateMachine.setState(State.INTAKE_SEARCH);
                 } else if (StateMachine.getState() == State.WALL_TO_CHAMBER) {
                     StateMachine.setState(State.SCORE_CHAMBER);
