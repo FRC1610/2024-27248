@@ -30,26 +30,25 @@ public class Competition extends LinearOpMode {
 
         ///Variable Setup
         //Odometry
-        double oldTime = 0;
+        double oldTime;
 
         //Mecanum Drive
-        double x = 0;
-        double y = 0;
-        double rotation = 0;
+        double x;
+        double y;
+        double rotation;
 
         //Elevator
         boolean manualControl = false; // Default to position-based control
         boolean backButtonPreviouslyPressed = false; // To track toggle state
-        double elevatorPower = 0;
-        double intakeSlidePower = 0;
+        double elevatorPower;
 
         //Intake
-        boolean IntakeClosed = true;
-        boolean IntakeButtonWasPressed = false;
+        //boolean IntakeClosed = true;
+        //boolean IntakeButtonWasPressed = false;
         boolean RightBumperPressed = false;
         boolean aPressed = false;
         boolean leftBumperPressed = false;
-        double PosChange = 0.0;
+        //double PosChange = 0.0;
 
         robot.init();  //Hardware configuration in RobotHardware.java
 
@@ -105,6 +104,7 @@ public class Competition extends LinearOpMode {
             }
             backButtonPreviouslyPressed = gamepad2.back; // Update previous state
 
+            double intakeSlidePower;
             if (manualControl) {
                 /// Manual elevator control using dpad
                 if (gamepad2.dpad_up) {
@@ -152,35 +152,6 @@ public class Competition extends LinearOpMode {
                 }
             }
 
-            /*
-            if (gamepad1.dpad_up){
-                elevatorPower = 0.75;
-            } else if (gamepad1.dpad_down) {
-                elevatorPower = -0.50;
-            }
-            else
-                elevatorPower = 0;
-
-            robot.runElevator(elevatorPower);
-
-            //Elevator Position
-            if (gamepad1.y){
-                robot.setElevator(Constants.elevatorHighChamber);
-            }
-
-             */
-
-            /*
-            ///TEST ELEVATOR PIVOT
-            if (gamepad1.dpad_right){
-                robot.elevatorPivot(0.01);
-            } else if (gamepad1.dpad_left) {
-                robot.elevatorPivot(-.01);
-            } else robot.elevatorPivot(0);
-            telemetry.addData("Elev Pivot Pos", robot.elevatorPivot.getPosition());
-
-             */
-
             ///RESET ENCODERS
             if (gamepad1.back){
                 robot.resetSlideEncoders();
@@ -191,20 +162,6 @@ public class Competition extends LinearOpMode {
 
             //Intake Pincher
             boolean IntakeButtonPressed = gamepad1.left_bumper; //Check if button pressed
-/*
-            if (IntakeButtonPressed && !IntakeButtonWasPressed){ //Button pressed in this loop
-                IntakeClosed = !IntakeClosed; //Toggle position state
-                if (IntakeClosed){
-                    //robot.CloseIntakePincher(); //Move to position 1
-                    StateMachine.setState(State.MINI_INTAKE);
-                } else {
-                    //robot.OpenIntakePincher(); //Move to position 2
-                    StateMachine.setState(State.INTAKE_SEARCH);
-                }
-            }
-
-            IntakeButtonWasPressed = IntakeButtonPressed; //Update previous button state
-*/
 
             /// Elevator Pincher Rotation Test
             //TODO Remove this once State Machine handles this

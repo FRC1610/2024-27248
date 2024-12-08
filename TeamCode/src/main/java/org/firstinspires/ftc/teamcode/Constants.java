@@ -17,7 +17,7 @@ public class Constants {
 
     ///INTAKE SLIDE SETPOINTS
     public static final int intakeSlideHome = 0;
-    public static final int intakeSlideIntake = 1000;
+    public static final int intakeSlideIntake = 800;
     public static final int intakeSlideMax = 550;
 
     ///ELEVATOR SERVO POSITIONS
