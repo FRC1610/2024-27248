@@ -129,23 +129,25 @@ public class StateMachine {
                 dropoffSequence();
                 break;
             case SEARCH_WAIT:
-                //System.out.println("Currently in SEARCH_WAIT update");
-                //setState(State.SEARCH_WAIT);
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
                 break;
             case PICKUP_WAIT:
-                //setState(State.PICKUP_WAIT);
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
                 break;
             case HANDOFF_WAIT:
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
                 break;
             case SCORE_CHAMBER:
                 scoreChamber();
                 break;
             case CHAMBER_WAIT:
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
                 break;
             case HIGH_BASKET_SCORE:
                 highBasketScore();
                 break;
             case INTAKE_WAIT:
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
                 break;
         }
     }
@@ -157,6 +159,7 @@ public class StateMachine {
     private void updatePositions() {
         switch (currentState) {
             case HOME: //Set all positions to home
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.GREEN);
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotHome);
                 robot.setElevator(Constants.elevatorHome);
                 intakeAllHome();
@@ -164,6 +167,7 @@ public class StateMachine {
 
             case PICKUP: //Set floor pickup default search position (slide out, intake deployed)
                 //System.out.println("Currently in PICKUP positions");
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.VIOLET);
                 searchPosition();
                 break;
 
@@ -186,11 +190,13 @@ public class StateMachine {
 
             case PICKUP_RETRACT: //Results in a set of cases being called
                 //System.out.println("Currently in PICKUP_RETRACT positions");
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.AZURE);
                 robot.intakePincher.setPosition(Constants.intakePincherClosed);
                 intakePickupSequence();
                 break;
 
             case WALL_PICKUP: //Set the position to pickup specimen from HP wall, claw open
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.BLUE);
                 intakeAllHome();
                 robot.setElevator(Constants.elevatorHome);
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotWallPickup);
@@ -205,6 +211,7 @@ public class StateMachine {
                 break;
 
             case HIGH_BASKET:
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.RED);
                 robot.setElevator(Constants.elevatorHighBasket);
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
                 break;
