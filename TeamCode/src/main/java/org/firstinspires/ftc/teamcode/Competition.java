@@ -175,9 +175,9 @@ public class Competition extends LinearOpMode {
 
             //TODO Remove this once State Machine handles this
             if (gamepad2.x){
-                robot.setElevatorPincher(0.05);
+                robot.setElevatorPincher(0.01);
             } else if (gamepad2.y) {
-                robot.setElevatorPincher(-0.05);
+                robot.setElevatorPincher(-0.01);
             } else {
                 robot.setElevatorPincher(0);
             }

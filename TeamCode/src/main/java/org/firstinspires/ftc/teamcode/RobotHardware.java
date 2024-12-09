@@ -6,7 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.LED;
+import org.firstinspires.ftc.teamcode.rgbIndicator.LEDColors;
+//import com.qualcomm.robotcore.hardware.LED;
 
 public class RobotHardware {
 
@@ -27,14 +28,15 @@ public class RobotHardware {
     Servo elevatorPivot = null;
     Servo elevatorPincher = null;
     Servo elevatorPincherRotate = null;
-    Servo rgbLight = null;
+    //Servo rgbLight = null;
     Limelight3A limelight = null;
     GoBildaPinpointDriver odo = null; // Declare OpMode member for the Odometry Computer
+    rgbIndicator rgbIndicator = null;
     //private RevBlinkinLedDriver blinkinLedDriver = null;
     //private RevBlinkinLedDriver.BlinkinPattern pattern = null;
     private DigitalChannel allianceButton = null;
-    private LED LED_red = null;
-    private LED LED_green = null;
+    //private LED LED_red = null;
+    //private LED LED_green = null;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public RobotHardware(LinearOpMode opmode) {
@@ -49,18 +51,20 @@ public class RobotHardware {
      */
     public void init()    {
 
+        rgbIndicator = new rgbIndicator(myOpMode.hardwareMap, "rgbLight");
+        rgbIndicator.setColor(LEDColors.YELLOW);
+
         ///GoBilda Odometry Pod Setup
         //Deploy to Control Hub to make Odometry Pod show in hardware selection list
         odo = myOpMode.hardwareMap.get(GoBildaPinpointDriver.class, "odo");
-        //TODO Set Odometry Offsets
-        odo.setOffsets(-84.0, -168.0); //these are tuned for 3110-0002-0001 Product Insight #1
+        odo.setOffsets(-100.0, -65.0);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
         odo.resetPosAndIMU();
 
         ///REV LED Setup
-        LED_green = myOpMode.hardwareMap.get(LED.class, "LED_green");
-        LED_red = myOpMode.hardwareMap.get(LED.class, "LED_red");
+        //LED_green = myOpMode.hardwareMap.get(LED.class, "LED_green");
+        //LED_red = myOpMode.hardwareMap.get(LED.class, "LED_red");
 
         /*
         ///Blinkin Setup
@@ -78,8 +82,6 @@ public class RobotHardware {
         blinkinLedDriver.setPattern(pattern);
 
          */
-
-        rgbLight = myOpMode.hardwareMap.get(Servo.class, "rgbLight");
 
         ///Motor Setup
         // Define and Initialize Motors (note: need to use reference to actual OpMode).

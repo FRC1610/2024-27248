@@ -271,8 +271,8 @@ public class StateMachine {
                 currentWallToChamberSubstep++;  //Move to next step
                 break;
             case 1:
-                if (wallPickupTimer.seconds() > 1.5){
-                    robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
+                if (wallPickupTimer.seconds() > 0.75){
+                    //robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
                     robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
                     robot.setElevator(Constants.elevatorHighChamber);
                     robot.elevatorPincherRotate.setPosition(Constants.elevatorPincherRotateHandoff);
@@ -337,15 +337,18 @@ public class StateMachine {
                 DropoffSubstep++;  //Move to next step
                 break;
             case 2:
-                robot.intakePincher.setPosition(Constants.intakePincherOpen);
                 if (dropoffTimer.seconds() > 0.25){ //Give the pincher time to open
+                    robot.intakePincher.setPosition(Constants.intakePincherOpen);
                     DropoffSubstep++;  //Move to next step
                     break;
                 }
                 break;
             case 3:
-                DropoffSubstep = 0;
-                setState(State.WALL_PICKUP); //Giant assumption that you only want to dropoff if you're going to wall pickup
+                if (dropoffTimer.seconds() > 0.5){
+                    DropoffSubstep = 0;
+                    setState(State.WALL_PICKUP); //Giant assumption that you only want to dropoff if you're going to wall pickup
+                    break;
+                }
                 break;
         }
     }
@@ -472,34 +475,27 @@ public class StateMachine {
                 }
                 break;
             case 1:
-                //System.out.println("Timer2: " + timer2.seconds());
-                //if (handoffTimer.seconds() > 0.15){
-
-                    currentHandoffSubStep++;  //Move to next step
-                //}
-                break;
-            case 2:
-                if (handoffTimer.seconds() > 0.4){
+                if (handoffTimer.seconds() > 0.25){
                     robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
                     currentHandoffSubStep++;  //Move to next step
                     break;
                 }
                 break;
-            case 3:
-                if (handoffTimer.seconds() > 1.5){
+            case 2:
+                if (handoffTimer.seconds() > 0.6){
                     robot.intakePincher.setPosition(Constants.intakePincherOpen);
                     currentHandoffSubStep++;  //Move to next step
                     break;
                 }
                 break;
-            case 4:
-                if (handoffTimer.seconds() > 2.0){
+            case 3:
+                if (handoffTimer.seconds() > 0.9){
                     robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
                     currentHandoffSubStep++;  //Move to next step
                     break;
                 }
                 break;
-            case 5:
+            case 4:
                 currentHandoffSubStep = 0;
                 setState(State.HANDOFF_WAIT);
                 break;
