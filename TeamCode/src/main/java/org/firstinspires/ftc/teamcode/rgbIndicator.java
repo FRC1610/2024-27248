@@ -1,3 +1,8 @@
+/*
+Class for the GoBilda LED Indicator
+https://www.gobilda.com/rgb-indicator-light-pwm-controlled/
+ */
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -7,9 +12,9 @@ public class rgbIndicator {
     private Servo rgbLight;
 
     public class LEDColors {
-        // Predefined color values based on PWM positions
+        // Predefined color values based on PWM positions per GoBilda Product Insight #4
         public static final double OFF = 0.0;
-        public static final double RED = 0.277;
+        public static final double RED = 0.277; //This doesn't work - need to adjust
         public static final double ORANGE = 0.333;
         public static final double YELLOW = 0.388;
         public static final double SAGE = 0.444;
