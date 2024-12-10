@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -19,8 +20,8 @@ public class RobotHardware {
     private DcMotor rightFront = null;
     private DcMotor leftBack = null;
     private DcMotor rightBack = null;
-    DcMotor elevatorLift = null;
-    DcMotor intakeSlide = null;
+    DcMotorEx elevatorLift = null;
+    DcMotorEx intakeSlide = null;
     Servo intakePincher = null;
     Servo intakeRotate = null;
     Servo intakeLift = null;
@@ -90,8 +91,8 @@ public class RobotHardware {
         leftBack = myOpMode.hardwareMap.get(DcMotor.class, "leftBack");
         rightBack = myOpMode.hardwareMap.get(DcMotor.class, "rightBack");
 
-        elevatorLift = myOpMode.hardwareMap.get(DcMotor.class, "elevatorLift");
-        intakeSlide = myOpMode.hardwareMap.get(DcMotor.class,"intakeSlide");
+        elevatorLift = myOpMode.hardwareMap.get(DcMotorEx.class, "elevatorLift");
+        intakeSlide = myOpMode.hardwareMap.get(DcMotorEx.class,"intakeSlide");
 
         // Drive motor brake mode
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -36,7 +38,8 @@ public class StateMachine {
         SCORE_CHAMBER, //Score chamber sequence
         CHAMBER_WAIT,
         HIGH_BASKET_SCORE, //Score high basket sequence
-        HIGH_BASKET_WAIT
+        HIGH_BASKET_WAIT,
+        GO_HOME
     }
 
     private ElapsedTime intakeTimer1 = new ElapsedTime();
@@ -46,6 +49,9 @@ public class StateMachine {
     private ElapsedTime scoreChamberTimer = new ElapsedTime();
     private ElapsedTime scoreHighBasketTimer = new ElapsedTime();
     private ElapsedTime dropoffTimer = new ElapsedTime();
+    private ElapsedTime homingTimerElevator = new ElapsedTime();
+    private ElapsedTime homingTimerIntake = new ElapsedTime();
+    private ElapsedTime homingSequenceTimer = new ElapsedTime();
     private int currentHandoffSubStep = 0;
     private int currentPickupSequenceSubstep = 0;
     private int currentSearchSubstep = 0;
@@ -55,8 +61,11 @@ public class StateMachine {
     private int currentHighBasketScoreSubstep = 0;
     private int SearchSubstep = 0;
     private int DropoffSubstep = 0;
+    private int HomingSubstep = 0;
     private State currentState;
     private final RobotHardware robot;
+    private boolean homingElevatorComplete = false;
+    private boolean homingIntakeComplete = false;
 
     public StateMachine(RobotHardware hardware) {
         this.robot = hardware;
@@ -77,6 +86,7 @@ public class StateMachine {
         this.currentHighBasketScoreSubstep = 0;
         this.SearchSubstep = 0;
         this.DropoffSubstep = 0;
+        this.HomingSubstep = 0;
 
         //Reset all timers
         intakeTimer1.reset();
@@ -86,6 +96,9 @@ public class StateMachine {
         scoreChamberTimer.reset();
         scoreHighBasketTimer.reset();
         dropoffTimer.reset();
+        homingTimerElevator.reset();
+        homingTimerIntake.reset();
+        homingSequenceTimer.reset();
 
         updatePositions();
     }
@@ -149,6 +162,10 @@ public class StateMachine {
             case INTAKE_WAIT:
                 robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
                 break;
+            case GO_HOME:
+                HomingSequence();
+                break;
+
         }
     }
 
@@ -211,7 +228,7 @@ public class StateMachine {
                 break;
 
             case HIGH_BASKET:
-                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.RED);
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.INDIGO);
                 robot.setElevator(Constants.elevatorHighBasket);
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
                 break;
@@ -228,9 +245,66 @@ public class StateMachine {
                 highBasketScore();
                 break;
 
+            case GO_HOME:
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.RED);
+                HomingSequence();
+                break;
+
         }
     }
-
+    private void HomingSequence(){
+        System.out.println("Homing Sequence Substep: " + HomingSubstep);
+        System.out.println("Homing Sequence Timer: " + homingSequenceTimer.seconds());
+        System.out.println("Homing Timer Elevator: " + homingTimerElevator.seconds());
+        System.out.println("Homing Elevator Velocity: " + robot.elevatorLift.getVelocity());
+        System.out.println("Homing Elevator Complete: " + homingElevatorComplete);
+        System.out.println("Homing Timer Intake: " + homingTimerElevator.seconds());
+        System.out.println("Homing Intake Velocity: " + robot.intakeSlide.getVelocity());
+        System.out.println("Homing Intake Complete: " + homingIntakeComplete);
+        switch (HomingSubstep) {
+            case 0:
+                homingSequenceTimer.reset();
+                robot.elevatorLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.intakeSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.runElevator(Constants.elevatorPowerHome);
+                robot.runIntakeSlide(Constants.intakeSlidePowerHome);
+                HomingSubstep++;
+                break;
+            case 1:
+                if (homingSequenceTimer.seconds() > 2.5){ //break out if this runs for too long
+                    HomingSubstep++;
+                    break;
+                }
+                if (robot.elevatorLift.getVelocity() <= 5.0) {
+                    homingTimerElevator.reset();
+                    if (homingTimerElevator.seconds() > 0.2) {
+                        robot.runElevator(0);
+                        homingElevatorComplete = true;
+                    }
+                }
+                if (robot.intakeSlide.getVelocity() <= 5.0) {
+                    homingTimerIntake.reset();
+                    if (homingTimerIntake.seconds() > 0.2) {
+                        robot.runIntakeSlide(0);
+                        homingIntakeComplete = true;
+                    }
+                }
+                if (homingElevatorComplete && homingIntakeComplete){
+                    HomingSubstep++;
+                    break;
+                }
+                break;
+            case 2:
+                robot.elevatorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.resetSlideEncoders();
+                HomingSubstep = 0;
+                homingElevatorComplete = false;
+                homingIntakeComplete = false;
+                setState(State.HOME);
+                break;
+        }
+    }
     private void intakeAllHome(){
         ///Set all intake positions to home
         robot.intakePincher.setPosition(Constants.intakePincherClosed);

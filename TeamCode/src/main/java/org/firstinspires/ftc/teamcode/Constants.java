@@ -14,6 +14,7 @@ public class Constants {
     ///ELEVATOR POWER
     public static final double elevatorPowerUp = 0.85;
     public static final double elevatorPowerDown = -0.50;
+    public static final double elevatorPowerHome = -0.25;
 
     ///INTAKE SLIDE SETPOINTS
     public static final int intakeSlideHome = 0;
@@ -41,6 +42,7 @@ public class Constants {
     ///INTAKE SLIDE POWER
     public static final double intakeSlidePowerOut = 0.85;
     public static final double intakeSlidePowerIn = -0.85;
+    public static final double intakeSlidePowerHome = -0.25;
 
     ///INTAKE SERVO POSITIONS
     //Intake Pincher

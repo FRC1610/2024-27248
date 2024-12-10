@@ -154,8 +154,8 @@ public class Competition extends LinearOpMode {
 
             ///RESET ENCODERS
             if (gamepad1.back){
-                robot.resetSlideEncoders();
-                StateMachine.setState(State.HOME);  //Reset State when encoders are reset
+                //robot.resetSlideEncoders();
+                StateMachine.setState(State.GO_HOME);  //Reset State when encoders are reset
             }
 
             ///INTAKE
@@ -242,6 +242,8 @@ public class Competition extends LinearOpMode {
             if (!gamepad1.right_bumper) {
                 RightBumperPressed = false;
             }
+
+
 
             if (!gamepad1.a){
                 aPressed = false;
