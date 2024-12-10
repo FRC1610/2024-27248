@@ -355,13 +355,23 @@ public class StateMachine {
                 if (wallPickupTimer.seconds() > 0.75){
                     //robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
                     robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
-                    robot.setElevator(Constants.elevatorHighChamber);
-                    robot.elevatorPincherRotate.setPosition(Constants.elevatorPincherRotateHandoff);
+                    robot.setElevator(Constants.elevatorHighChamberScore);
+                    //robot.setElevator(Constants.elevatorHighChamber);
                     currentWallToChamberSubstep++;  //Move to next step
                     break;
                 }
                 break;
             case 2:
+                if (wallPickupTimer.seconds() > 1.0){
+                    robot.elevatorPincherRotate.setPosition(Constants.elevatorPincherRotateHandoff);
+                    currentWallToChamberSubstep++;
+                    break;
+                }
+                break;
+            case 3:
+                currentWallToChamberSubstep++;
+                break;
+            case 4:
                 currentWallToChamberSubstep = 0;
                 break;
         }
@@ -379,21 +389,24 @@ public class StateMachine {
                 break;
             case 1:
                 if (scoreChamberTimer.seconds() > 0.5){
-                    robot.setElevator(Constants.elevatorHighChamberScore);
+                    //robot.setElevator(Constants.elevatorHighChamberScore);
                     currentScoreChamberSubstep++;  //Move to next step
                     break;
                 }
                 break;
             case 2:
-                if (scoreChamberTimer.seconds() > 2.5) {
-                    robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
-                    currentScoreChamberSubstep++;  //Move to next step
+                if (scoreChamberTimer.seconds() > 1.0) {
+                    robot.setElevator(Constants.elevatorHome);
+                    currentScoreChamberSubstep++;
                     break;
                 }
                 break;
             case 3:
-                robot.setElevator(Constants.elevatorHome);
-                currentScoreChamberSubstep++;  //Move to next step
+                if (scoreChamberTimer.seconds() > 1.5) {
+                    robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
+                    currentScoreChamberSubstep++;  //Move to next step
+                    break;
+                }
                 break;
             case 4:
                 currentScoreChamberSubstep = 0;

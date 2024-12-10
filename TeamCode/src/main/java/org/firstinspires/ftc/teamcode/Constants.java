@@ -7,7 +7,7 @@ public class Constants {
     //public static final int elevatorIntake = 250;
     //public static final int elevatorWallPickup = 500;
     public static final int elevatorHighChamber = 450;
-    public static final int elevatorHighChamberScore = 400;
+    public static final int elevatorHighChamberScore = 100; //400
     public static final int elevatorLowBasket = 1750; //TODO Measure This
     public static final int elevatorHighBasket = 2450;
 
