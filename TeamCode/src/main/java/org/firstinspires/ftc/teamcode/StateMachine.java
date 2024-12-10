@@ -271,18 +271,18 @@ public class StateMachine {
                 HomingSubstep++;
                 break;
             case 1:
-                if (homingSequenceTimer.seconds() > 2.5){ //break out if this runs for too long
+                if (homingSequenceTimer.seconds() > 3.0){ //break out if this runs for too long
                     HomingSubstep++;
                     break;
                 }
-                if (robot.elevatorLift.getVelocity() <= 5.0) {
+                if (robot.elevatorLift.getVelocity() >= -50.0) {
                     homingTimerElevator.reset();
                     if (homingTimerElevator.seconds() > 0.2) {
                         robot.runElevator(0);
                         homingElevatorComplete = true;
                     }
                 }
-                if (robot.intakeSlide.getVelocity() <= 5.0) {
+                if (robot.intakeSlide.getVelocity() >= -50.0) {
                     homingTimerIntake.reset();
                     if (homingTimerIntake.seconds() > 0.2) {
                         robot.runIntakeSlide(0);

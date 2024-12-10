@@ -4,17 +4,17 @@ public class Constants {
     ///ELEVATOR SETPOINTS
     public static final int elevatorHome = 0;
     public static final int elevatorMax = 3500;
-    public static final int elevatorIntake = 250;
-    public static final int elevatorWallPickup = 500;
+    //public static final int elevatorIntake = 250;
+    //public static final int elevatorWallPickup = 500;
     public static final int elevatorHighChamber = 450;
     public static final int elevatorHighChamberScore = 400;
-    public static final int elevatorLowBasket = 2000;
-    public static final int elevatorHighBasket = 2500;
+    public static final int elevatorLowBasket = 1750; //TODO Measure This
+    public static final int elevatorHighBasket = 2450;
 
     ///ELEVATOR POWER
     public static final double elevatorPowerUp = 0.85;
     public static final double elevatorPowerDown = -0.50;
-    public static final double elevatorPowerHome = -0.25;
+    public static final double elevatorPowerHome = -0.33;
 
     ///INTAKE SLIDE SETPOINTS
     public static final int intakeSlideHome = 0;

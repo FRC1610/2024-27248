@@ -29,7 +29,6 @@ public class RobotHardware {
     Servo elevatorPivot = null;
     Servo elevatorPincher = null;
     Servo elevatorPincherRotate = null;
-    //Servo rgbLight = null;
     Limelight3A limelight = null;
     GoBildaPinpointDriver odo = null; // Declare OpMode member for the Odometry Computer
     rgbIndicator rgbIndicator = null;
@@ -85,14 +84,11 @@ public class RobotHardware {
          */
 
         ///Motor Setup
-        // Define and Initialize Motors (note: need to use reference to actual OpMode).
+        // Define and Initialize Drive Motors
         leftFront  = myOpMode.hardwareMap.get(DcMotor.class, "leftFront");
         rightFront = myOpMode.hardwareMap.get(DcMotor.class, "rightFront");
         leftBack = myOpMode.hardwareMap.get(DcMotor.class, "leftBack");
         rightBack = myOpMode.hardwareMap.get(DcMotor.class, "rightBack");
-
-        elevatorLift = myOpMode.hardwareMap.get(DcMotorEx.class, "elevatorLift");
-        intakeSlide = myOpMode.hardwareMap.get(DcMotorEx.class,"intakeSlide");
 
         // Drive motor brake mode
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -100,16 +96,25 @@ public class RobotHardware {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        // Linear slide brake mode
-        intakeSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //Run Using Encoder
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Set Directions
         rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.REVERSE);
-        elevatorLift.setDirection(DcMotor.Direction.REVERSE);
-        intakeSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // If there are encoders connected, switch to RUN_USING_ENCODER mode for greater accuracy
+        ///Linear Slide Motor Setup
+        elevatorLift = myOpMode.hardwareMap.get(DcMotorEx.class, "elevatorLift");
+        intakeSlide = myOpMode.hardwareMap.get(DcMotorEx.class,"intakeSlide");
+
+        elevatorLift.setDirection(DcMotor.Direction.REVERSE);
+        intakeSlide.setDirection(DcMotor.Direction.REVERSE);
+
+        intakeSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         elevatorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         elevatorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -225,7 +230,7 @@ public class RobotHardware {
     public void setElevator (int elevatorTargetPosition){
         double elevatorPower = 0;
         int ElevatorCurrentPosition = elevatorLift.getCurrentPosition();
-        if (elevatorTargetPosition < ElevatorCurrentPosition){
+        if (elevatorTargetPosition > ElevatorCurrentPosition){
             elevatorPower = Constants.elevatorPowerUp;
         } else
             elevatorPower = Constants.elevatorPowerDown;
