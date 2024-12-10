@@ -46,6 +46,8 @@ public class SampleAutonomous extends LinearOpMode
             robot.drive( -12, 0.60, 0.15);
             robot.strafe(-12, 0.60, 0.15);
 
+            sleep(500);
+
             // Drive a large rectangle, turning at each corner
             robot.drive(  12, 0.60, 0.25);
             robot.turnTo(90, 0.45, 0.5);
@@ -55,9 +57,6 @@ public class SampleAutonomous extends LinearOpMode
             robot.turnTo(270, 0.45, 0.5);
             robot.drive(  12, 0.60, 0.25);
             robot.turnTo(0, 0.45, 0.5);
-
-            sleep(500);
-
 
         }
     }

@@ -176,8 +176,6 @@ public class SimplifiedOdometryRobot {
         if (showTelemetry) {
             myOpMode.telemetry.addData("rawDrive: ", rawDriveOdometer);
             myOpMode.telemetry.addData("rawStrafe: ", rawStrafeOdometer);
-            myOpMode.telemetry.addData("Drive Distance: ", driveDistance);
-            myOpMode.telemetry.addData("Strafe Distance: ", strafeDistance);
             myOpMode.telemetry.addData("Odom Ax:Lat", "%6d %6d", rawDriveOdometer - driveOdometerOffset, rawStrafeOdometer - strafeOdometerOffset);
             myOpMode.telemetry.addData("Dist Ax:Lat", "%5.2f %5.2f", driveDistance, strafeDistance);
             myOpMode.telemetry.addData("Head Deg:Rate", "%5.2f %5.2f", heading, turnRate);
@@ -195,7 +193,6 @@ public class SimplifiedOdometryRobot {
      */
     public void drive(double distanceInches, double power, double holdTime) {
         resetOdometry();
-
         driveController.reset(distanceInches, power);   // achieve desired drive distance
         strafeController.reset(0);              // Maintain zero strafe drift
         yawController.reset();                          // Maintain last turn heading
