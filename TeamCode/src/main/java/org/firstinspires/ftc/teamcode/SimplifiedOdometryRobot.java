@@ -24,9 +24,9 @@ import java.util.List;
 
 public class SimplifiedOdometryRobot {
     // Adjust these numbers to suit your robot.
-    private final double ODOM_INCHES_PER_COUNT   = 0.002969;   //  GoBilda Odometry Pod (1/226.8)
-    private final boolean INVERT_DRIVE_ODOMETRY  = true;       //  When driving FORWARD, the odometry value MUST increase.  If it does not, flip the value of this constant.
-    private final boolean INVERT_STRAFE_ODOMETRY = true;       //  When strafing to the LEFT, the odometry value MUST increase.  If it does not, flip the value of this constant.
+    private final double ODOM_INCHES_PER_COUNT   = 1.0;   //  Set the odometry pod to output in inches so this can be set to 1
+    private final boolean INVERT_DRIVE_ODOMETRY  = false;       //  When driving FORWARD, the odometry value MUST increase.  If it does not, flip the value of this constant.
+    private final boolean INVERT_STRAFE_ODOMETRY = false;       //  When strafing to the LEFT, the odometry value MUST increase.  If it does not, flip the value of this constant.
 
     private static final double DRIVE_GAIN          = 0.03;    // Strength of axial position control
     private static final double DRIVE_ACCEL         = 2.0;     // Acceleration limit.  Percent Power change per second.  1.0 = 0-100% power in 1 sec.
@@ -82,7 +82,7 @@ public class SimplifiedOdometryRobot {
     private double headingOffset    = 0; // Used to offset heading
 
     private double turnRate           = 0; // Latest Robot Turn Rate from IMU
-    private boolean showTelemetry     = false;
+    private boolean showTelemetry     = true;
 
     // Robot Constructor
     public SimplifiedOdometryRobot(LinearOpMode opmode, RobotHardware hardware) {
@@ -153,27 +153,31 @@ public class SimplifiedOdometryRobot {
      * @return true
      */
     public boolean readSensors() {
+        hardware.odo.update();
         Pose2D pos = hardware.odo.getPosition();
-        rawDriveOdometer = (int) (pos.getX(DistanceUnit.MM) * (INVERT_DRIVE_ODOMETRY ? -1 : 1));
-        rawStrafeOdometer = (int) (pos.getY(DistanceUnit.MM) * (INVERT_STRAFE_ODOMETRY ? -1 : 1));
+        rawDriveOdometer = (int) (pos.getX(DistanceUnit.INCH) * (INVERT_DRIVE_ODOMETRY ? -1 : 1));
+        rawStrafeOdometer = (int) (pos.getY(DistanceUnit.INCH) * (INVERT_STRAFE_ODOMETRY ? -1 : 1));
         driveDistance = (rawDriveOdometer - driveOdometerOffset) * ODOM_INCHES_PER_COUNT;
         strafeDistance = (rawStrafeOdometer - strafeOdometerOffset) * ODOM_INCHES_PER_COUNT;
 
         Pose2D vel = hardware.odo.getVelocity();
-        vel.getHeading(AngleUnit.DEGREES);
-
+        //vel.getHeading(AngleUnit.DEGREES);
 
         //TODO fix this
         //YawPitchRollAngles orientation = hardware.odo.getRobotYawPitchRollAngles();
         //AngularVelocity angularVelocity = hardware.odo.getRobotAngularVelocity(AngleUnit.DEGREES);
         //YawPitchRollAngles orientation =
-        AngularVelocity angularVelocity = vel.getHeading(AngleUnit.DEGREES);
+        //double angularVelocity = hardware.odo.getHeadingVelocity();
 
-        rawHeading  = vel.getHeading(AngleUnit.DEGREES);
+        rawHeading  = pos.getHeading(AngleUnit.DEGREES);
         heading     = rawHeading - headingOffset;
-        turnRate    = angularVelocity.zRotationRate;
+        turnRate    = vel.getHeading(AngleUnit.DEGREES);
 
         if (showTelemetry) {
+            myOpMode.telemetry.addData("rawDrive: ", rawDriveOdometer);
+            myOpMode.telemetry.addData("rawStrafe: ", rawStrafeOdometer);
+            myOpMode.telemetry.addData("Drive Distance: ", driveDistance);
+            myOpMode.telemetry.addData("Strafe Distance: ", strafeDistance);
             myOpMode.telemetry.addData("Odom Ax:Lat", "%6d %6d", rawDriveOdometer - driveOdometerOffset, rawStrafeOdometer - strafeOdometerOffset);
             myOpMode.telemetry.addData("Dist Ax:Lat", "%5.2f %5.2f", driveDistance, strafeDistance);
             myOpMode.telemetry.addData("Head Deg:Rate", "%5.2f %5.2f", heading, turnRate);
