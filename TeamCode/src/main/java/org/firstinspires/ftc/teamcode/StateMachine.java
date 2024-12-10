@@ -388,27 +388,20 @@ public class StateMachine {
                 currentScoreChamberSubstep++;  //Move to next step
                 break;
             case 1:
-                if (scoreChamberTimer.seconds() > 0.5){
-                    //robot.setElevator(Constants.elevatorHighChamberScore);
-                    currentScoreChamberSubstep++;  //Move to next step
-                    break;
-                }
-                break;
-            case 2:
-                if (scoreChamberTimer.seconds() > 1.0) {
+                if (scoreChamberTimer.seconds() > 0.75) {
                     robot.setElevator(Constants.elevatorHome);
                     currentScoreChamberSubstep++;
                     break;
                 }
                 break;
-            case 3:
-                if (scoreChamberTimer.seconds() > 1.5) {
+            case 2:
+                if (scoreChamberTimer.seconds() > 1.0) {
                     robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
                     currentScoreChamberSubstep++;  //Move to next step
                     break;
                 }
                 break;
-            case 4:
+            case 3:
                 currentScoreChamberSubstep = 0;
                 setState(State.CHAMBER_WAIT);
                 break;
