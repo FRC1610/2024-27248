@@ -39,15 +39,30 @@ public class SampleAutonomous extends LinearOpMode
         if (opModeIsActive())
         {
             // Note, this example takes more than 30 seconds to execute, so turn OFF the auto timer.
+            robot.turnTo(90,0.25,.25);
+            System.out.println("Turn complete.");
+            System.out.println("Beginning drive.");
+            robot.drive(5,0.25,.15);
+
+            /*
+            robot.drive(  3, 0.20, 0.25);
+            System.out.println("Drive 1 finished. Beginning next.");
+            robot.turnTo(90, 0.25, 0.5);
+            System.out.println("Turn 1 finished. Beginning next.");
+            robot.drive(  3, 0.20, 0.25);
+            System.out.println("Drive 2 finished. Beginning next.");
+            robot.turnTo(180, 0.25, 0.5);
+            System.out.println("Turn 2 finished. Beginning next.");
+             */
 
             // Drive the path again without turning.
-            robot.drive(  12, 0.60, 0.15);
-            robot.strafe( 12, 0.60, 0.15);
-            robot.drive( -12, 0.60, 0.15);
-            robot.strafe(-12, 0.60, 0.15);
+            //robot.drive(  12, 0.60, 0.15);
+            //robot.strafe( 12, 0.60, 0.15);
+            //robot.drive( -12, 0.60, 0.15);
+            //robot.strafe(-12, 0.60, 0.15);
 
             sleep(500);
-
+            /*
             // Drive a large rectangle, turning at each corner
             robot.drive(  12, 0.60, 0.25);
             robot.turnTo(90, 0.45, 0.5);
@@ -57,7 +72,7 @@ public class SampleAutonomous extends LinearOpMode
             robot.turnTo(270, 0.45, 0.5);
             robot.drive(  12, 0.60, 0.25);
             robot.turnTo(0, 0.45, 0.5);
-
+             */
         }
     }
 }

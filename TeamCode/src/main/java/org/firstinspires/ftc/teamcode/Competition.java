@@ -87,12 +87,12 @@ public class Competition extends LinearOpMode {
             ///MECANUM DRIVE
 
             // Get joystick inputs
-            y = -gamepad1.left_stick_y; // Forward/backward
-            x = gamepad1.left_stick_x;  // Strafe
+            y = -gamepad1.left_stick_y * 0.75; // Forward/backward - multiply by 0.75 to scale speed down
+            x = gamepad1.left_stick_x * 0.75;  // Strafe - multiply by 0.75 to scale speed down
             if (gamepad1.right_stick_button) {
-                rotation = gamepad1.right_stick_x * 0.5; //Slow rotation mode when button pressed in
+                rotation = gamepad1.right_stick_x * 0.45; //Slow rotation mode when button pressed in
             } else {
-                rotation = gamepad1.right_stick_x; // Rotation
+                rotation = gamepad1.right_stick_x * 0.75; // Rotation - multiply by 0.75 to scale speed down
             }
 
             robot.mecanumDrive(x, y, rotation);

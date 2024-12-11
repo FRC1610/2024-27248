@@ -21,6 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 import java.util.List;
+import java.util.Locale;
 
 public class SimplifiedOdometryRobot {
     // Adjust these numbers to suit your robot.
@@ -40,10 +41,10 @@ public class SimplifiedOdometryRobot {
     private static final double STRAFE_DEADBAND     = 0.2;     // Error less than this causes zero output.  Must be smaller than DRIVE_TOLERANCE
     private static final double STRAFE_MAX_AUTO     = 0.6;     // "default" Maximum Lateral power limit during autonomous
 
-    private static final double YAW_GAIN            = 0.018;    // Strength of Yaw position control
+    private static final double YAW_GAIN            = 0.01;    // Strength of Yaw position control //default 0.18
     private static final double YAW_ACCEL           = 3.0;     // Acceleration limit.  Percent Power change per second.  1.0 = 0-100% power in 1 sec.
     private static final double YAW_TOLERANCE       = 1.0;     // Controller is is "inPosition" if position error is < +/- this amount
-    private static final double YAW_DEADBAND        = 0.25;    // Error less than this causes zero output.  Must be smaller than DRIVE_TOLERANCE
+    private static final double YAW_DEADBAND        = 0.49;    // Error less than this causes zero output.  Must be smaller than DRIVE_TOLERANCE //default 0.25
     private static final double YAW_MAX_AUTO        = 0.6;     // "default" Maximum Yaw power limit during autonomous
 
     // Public Members
@@ -153,6 +154,7 @@ public class SimplifiedOdometryRobot {
      * @return true
      */
     public boolean readSensors() {
+        System.out.println("Reading sensors.");
         hardware.odo.update();
         Pose2D pos = hardware.odo.getPosition();
         rawDriveOdometer = (int) (pos.getX(DistanceUnit.INCH) * (INVERT_DRIVE_ODOMETRY ? -1 : 1));
@@ -163,7 +165,6 @@ public class SimplifiedOdometryRobot {
         Pose2D vel = hardware.odo.getVelocity();
         //vel.getHeading(AngleUnit.DEGREES);
 
-        //TODO fix this
         //YawPitchRollAngles orientation = hardware.odo.getRobotYawPitchRollAngles();
         //AngularVelocity angularVelocity = hardware.odo.getRobotAngularVelocity(AngleUnit.DEGREES);
         //YawPitchRollAngles orientation =
@@ -174,8 +175,13 @@ public class SimplifiedOdometryRobot {
         turnRate    = vel.getHeading(AngleUnit.DEGREES);
 
         if (showTelemetry) {
-            myOpMode.telemetry.addData("rawDrive: ", rawDriveOdometer);
-            myOpMode.telemetry.addData("rawStrafe: ", rawStrafeOdometer);
+            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
+            myOpMode.telemetry.addData("Position", data);
+            String velocity = String.format(Locale.US, "{XVel: %.3f, YVel: %.3f, HVel: %.3f}", vel.getX(DistanceUnit.INCH), vel.getY(DistanceUnit.INCH), vel.getHeading(AngleUnit.DEGREES));
+            myOpMode.telemetry.addData("Velocity", velocity);
+
+            myOpMode.telemetry.addData("Drive Raw:Offset: ","%6d %6d", rawDriveOdometer, driveOdometerOffset);
+            myOpMode.telemetry.addData("Strafe Raw:Offset: ","%6d %6d", rawStrafeOdometer, strafeOdometerOffset);
             myOpMode.telemetry.addData("Odom Ax:Lat", "%6d %6d", rawDriveOdometer - driveOdometerOffset, rawStrafeOdometer - strafeOdometerOffset);
             myOpMode.telemetry.addData("Dist Ax:Lat", "%5.2f %5.2f", driveDistance, strafeDistance);
             myOpMode.telemetry.addData("Head Deg:Rate", "%5.2f %5.2f", heading, turnRate);
@@ -273,6 +279,7 @@ public class SimplifiedOdometryRobot {
             myOpMode.sleep(10);
         }
         stopRobot();
+        resetHeading(); //TODO remove if this doesn't fix issue
     }
 
 
@@ -327,12 +334,15 @@ public class SimplifiedOdometryRobot {
      * Set odometry counts and distances to zero.
      */
     public void resetOdometry() {
+        System.out.println("Resetting Odometry.");
         readSensors();
         driveOdometerOffset = rawDriveOdometer;
+        System.out.println("Reset odo: driveOdometerOffset: " + driveOdometerOffset);
         driveDistance = 0.0;
         driveController.reset(0);
 
         strafeOdometerOffset = rawStrafeOdometer;
+        System.out.println("Reset odo: strafeOdometerOffset: " + strafeOdometerOffset);
         strafeDistance = 0.0;
         strafeController.reset(0);
     }
@@ -341,6 +351,7 @@ public class SimplifiedOdometryRobot {
      * Reset the robot heading to zero degrees, and also lock that heading into heading controller.
      */
     public void resetHeading() {
+        System.out.println("Resetting Heading.");
         readSensors();
         headingOffset = rawHeading;
         yawController.reset(0);
