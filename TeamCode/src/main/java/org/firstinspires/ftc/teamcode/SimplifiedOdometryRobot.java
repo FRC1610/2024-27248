@@ -38,7 +38,7 @@ public class SimplifiedOdometryRobot {
     private static final double STRAFE_GAIN         = 0.03;    // Strength of lateral position control
     private static final double STRAFE_ACCEL        = 1.5;     // Acceleration limit.  Percent Power change per second.  1.0 = 0-100% power in 1 sec.
     private static final double STRAFE_TOLERANCE    = 0.5;     // Controller is is "inPosition" if position error is < +/- this amount
-    private static final double STRAFE_DEADBAND     = 0.2;     // Error less than this causes zero output.  Must be smaller than DRIVE_TOLERANCE
+    private static final double STRAFE_DEADBAND     = 0.49;     // Error less than this causes zero output.  Must be smaller than DRIVE_TOLERANCE
     private static final double STRAFE_MAX_AUTO     = 0.6;     // "default" Maximum Lateral power limit during autonomous
 
     private static final double YAW_GAIN            = 0.01;    // Strength of Yaw position control //default 0.18
@@ -177,14 +177,20 @@ public class SimplifiedOdometryRobot {
         if (showTelemetry) {
             String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
             myOpMode.telemetry.addData("Position", data);
+            System.out.println("Pinpoint: " + data);
             String velocity = String.format(Locale.US, "{XVel: %.3f, YVel: %.3f, HVel: %.3f}", vel.getX(DistanceUnit.INCH), vel.getY(DistanceUnit.INCH), vel.getHeading(AngleUnit.DEGREES));
             myOpMode.telemetry.addData("Velocity", velocity);
-
+            System.out.println("Pinpoint: " + velocity);
             myOpMode.telemetry.addData("Drive Raw:Offset: ","%6d %6d", rawDriveOdometer, driveOdometerOffset);
+            System.out.println("Raw Drive Odo: " + rawDriveOdometer + "| Drive Odo Offset: " + driveOdometerOffset);
             myOpMode.telemetry.addData("Strafe Raw:Offset: ","%6d %6d", rawStrafeOdometer, strafeOdometerOffset);
+            System.out.println("Raw Strafe Odo: " + rawStrafeOdometer + "| Strafe Odo Offset: " + strafeOdometerOffset );
             myOpMode.telemetry.addData("Odom Ax:Lat", "%6d %6d", rawDriveOdometer - driveOdometerOffset, rawStrafeOdometer - strafeOdometerOffset);
+
             myOpMode.telemetry.addData("Dist Ax:Lat", "%5.2f %5.2f", driveDistance, strafeDistance);
+            System.out.println("Calc Drive Distance: " + driveDistance + "| Calc Strafe Distance: " + strafeDistance);
             myOpMode.telemetry.addData("Head Deg:Rate", "%5.2f %5.2f", heading, turnRate);
+            System.out.println("Calc Heading: " + heading + "| Calc Rate: " + turnRate);
         }
         return true;  // do this so this function can be included in the condition for a while loop to keep values fresh.
     }
@@ -208,6 +214,9 @@ public class SimplifiedOdometryRobot {
 
             // implement desired axis powers
             moveRobot(driveController.getOutput(driveDistance), strafeController.getOutput(strafeDistance), yawController.getOutput(heading));
+            System.out.println("moveRobot Drive: " + driveController.getOutput(driveDistance));
+            System.out.println("moveRobot Strafe: " + strafeController.getOutput(strafeDistance));
+            System.out.println("moveRobot Heading: " + yawController.getOutput(heading));
 
             // Time to exit?
             if (driveController.inPosition() && yawController.inPosition()) {
@@ -318,7 +327,9 @@ public class SimplifiedOdometryRobot {
 
         if (showTelemetry) {
             myOpMode.telemetry.addData("Axes D:S:Y", "%5.2f %5.2f %5.2f", drive, strafe, yaw);
+            System.out.println("Drive: " + drive + " | Strafe: " + strafe + " | Yaw: " + yaw);
             myOpMode.telemetry.addData("Wheels lf:rf:lb:rb", "%5.2f %5.2f %5.2f %5.2f", lF, rF, lB, rB);
+            System.out.println("Wheels | lF:" + lF + " | rF: " + rF + " | lB: " + lB + " | rB: " + rB);
             myOpMode.telemetry.update(); //  Assume this is the last thing done in the loop.
         }
     }
@@ -337,12 +348,12 @@ public class SimplifiedOdometryRobot {
         System.out.println("Resetting Odometry.");
         readSensors();
         driveOdometerOffset = rawDriveOdometer;
-        System.out.println("Reset odo: driveOdometerOffset: " + driveOdometerOffset);
+        System.out.println("Reset odo: New driveOdometerOffset: " + driveOdometerOffset);
         driveDistance = 0.0;
         driveController.reset(0);
 
         strafeOdometerOffset = rawStrafeOdometer;
-        System.out.println("Reset odo: strafeOdometerOffset: " + strafeOdometerOffset);
+        System.out.println("Reset odo: New strafeOdometerOffset: " + strafeOdometerOffset);
         strafeDistance = 0.0;
         strafeController.reset(0);
     }
@@ -354,6 +365,7 @@ public class SimplifiedOdometryRobot {
         System.out.println("Resetting Heading.");
         readSensors();
         headingOffset = rawHeading;
+        System.out.println("Reset Heading: New headingOffset: " + headingOffset);
         yawController.reset(0);
         heading = 0;
     }
