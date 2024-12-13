@@ -75,10 +75,10 @@ public class SimplifiedOdometryRobot {
     //private IMU imu;
     private ElapsedTime holdTimer = new ElapsedTime();  // User for any motion requiring a hold time or timeout.
 
-    private int rawDriveOdometer    = 0; // Unmodified axial odometer count
-    private int driveOdometerOffset = 0; // Used to offset axial odometer
-    private int rawStrafeOdometer   = 0; // Unmodified lateral odometer count
-    private int strafeOdometerOffset= 0; // Used to offset lateral odometer
+    private double rawDriveOdometer    = 0; // Unmodified axial odometer count
+    private double driveOdometerOffset = 0; // Used to offset axial odometer
+    private double rawStrafeOdometer   = 0; // Unmodified lateral odometer count
+    private double strafeOdometerOffset= 0; // Used to offset lateral odometer
     private double rawHeading       = 0; // Unmodified heading (degrees)
     private double headingOffset    = 0; // Used to offset heading
 
@@ -157,10 +157,10 @@ public class SimplifiedOdometryRobot {
         System.out.println("Reading sensors.");
         hardware.odo.update();
         Pose2D pos = hardware.odo.getPosition();
-        rawDriveOdometer = (int) (pos.getX(DistanceUnit.INCH) * (INVERT_DRIVE_ODOMETRY ? -1 : 1));
-        rawStrafeOdometer = (int) (pos.getY(DistanceUnit.INCH) * (INVERT_STRAFE_ODOMETRY ? -1 : 1));
-        driveDistance = (rawDriveOdometer - driveOdometerOffset) * ODOM_INCHES_PER_COUNT;
-        strafeDistance = (rawStrafeOdometer - strafeOdometerOffset) * ODOM_INCHES_PER_COUNT;
+        rawDriveOdometer = pos.getX(DistanceUnit.INCH);
+        rawStrafeOdometer = pos.getY(DistanceUnit.INCH);
+        driveDistance = (rawDriveOdometer - driveOdometerOffset);
+        strafeDistance = (rawStrafeOdometer - strafeOdometerOffset);
 
         Pose2D vel = hardware.odo.getVelocity();
         //vel.getHeading(AngleUnit.DEGREES);
@@ -181,16 +181,16 @@ public class SimplifiedOdometryRobot {
             String velocity = String.format(Locale.US, "{XVel: %.3f, YVel: %.3f, HVel: %.3f}", vel.getX(DistanceUnit.INCH), vel.getY(DistanceUnit.INCH), vel.getHeading(AngleUnit.DEGREES));
             myOpMode.telemetry.addData("Velocity", velocity);
             System.out.println("Pinpoint: " + velocity);
-            myOpMode.telemetry.addData("Drive Raw:Offset: ","%6d %6d", rawDriveOdometer, driveOdometerOffset);
-            System.out.println("Raw Drive Odo: " + rawDriveOdometer + "| Drive Odo Offset: " + driveOdometerOffset);
-            myOpMode.telemetry.addData("Strafe Raw:Offset: ","%6d %6d", rawStrafeOdometer, strafeOdometerOffset);
-            System.out.println("Raw Strafe Odo: " + rawStrafeOdometer + "| Strafe Odo Offset: " + strafeOdometerOffset );
-            myOpMode.telemetry.addData("Odom Ax:Lat", "%6d %6d", rawDriveOdometer - driveOdometerOffset, rawStrafeOdometer - strafeOdometerOffset);
+            myOpMode.telemetry.addData("Drive Raw:Offset: ","%.6f %.6f", rawDriveOdometer, driveOdometerOffset);
+            System.out.println("Raw Drive Odo: " + rawDriveOdometer + " | Drive Odo Offset: " + driveOdometerOffset);
+            myOpMode.telemetry.addData("Strafe Raw:Offset: ","%.6f %.6f", rawStrafeOdometer, strafeOdometerOffset);
+            System.out.println("Raw Strafe Odo: " + rawStrafeOdometer + " | Strafe Odo Offset: " + strafeOdometerOffset );
+            myOpMode.telemetry.addData("Odom Ax:Lat", "%.6f %.6f", rawDriveOdometer - driveOdometerOffset, rawStrafeOdometer - strafeOdometerOffset);
 
             myOpMode.telemetry.addData("Dist Ax:Lat", "%5.2f %5.2f", driveDistance, strafeDistance);
-            System.out.println("Calc Drive Distance: " + driveDistance + "| Calc Strafe Distance: " + strafeDistance);
+            System.out.println("Calc Drive Distance: " + driveDistance + " | Calc Strafe Distance: " + strafeDistance);
             myOpMode.telemetry.addData("Head Deg:Rate", "%5.2f %5.2f", heading, turnRate);
-            System.out.println("Calc Heading: " + heading + "| Calc Rate: " + turnRate);
+            System.out.println("Calc Heading: " + heading + " | Calc Rate: " + turnRate);
         }
         return true;  // do this so this function can be included in the condition for a while loop to keep values fresh.
     }
@@ -288,7 +288,6 @@ public class SimplifiedOdometryRobot {
             myOpMode.sleep(10);
         }
         stopRobot();
-        resetHeading(); //TODO remove if this doesn't fix issue
     }
 
 
