@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.StateMachine.State;
 
 //@Disabled
-@Autonomous(name="Auto High Basket", group="Auto")
-public class AutoHighBasket extends LinearOpMode {
+@Autonomous(name="Auto High Basket x1 + Touch Low Bar", group="Auto")
+public class AutoHighBasketTouchLow extends LinearOpMode {
     org.firstinspires.ftc.teamcode.RobotHardware hardware = new RobotHardware(this);
     private SimplifiedOdometryRobot robot = new SimplifiedOdometryRobot(this, hardware);
     StateMachine StateMachine;
