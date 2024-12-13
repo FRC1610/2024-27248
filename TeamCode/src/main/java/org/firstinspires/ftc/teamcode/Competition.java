@@ -265,8 +265,8 @@ public class Competition extends LinearOpMode {
             telemetry.addData("Intake Slide Pos", robot.intakeSlide.getCurrentPosition());
             telemetry.addData("Intake Pincher Pos",robot.intakePincher.getPosition());
             telemetry.addData("Intake Rotate Pos",robot.intakeRotate.getPosition());
-            telemetry.addData("Intake Pincher Pos",robot.intakeLift.getPosition());
-            telemetry.addData("Intake Pincher Pos",robot.intakePincherRotate.getPosition());
+            telemetry.addData("Intake Lift Pos",robot.intakeLift.getPosition());
+            telemetry.addData("Intake Pincher Rotate",robot.intakePincherRotate.getPosition());
             telemetry.update();
         }
     }

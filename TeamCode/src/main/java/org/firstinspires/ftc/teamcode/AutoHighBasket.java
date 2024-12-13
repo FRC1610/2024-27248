@@ -23,16 +23,21 @@ public class AutoHighBasket extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()){
-            StateMachine.update();
             AutoTimer.reset();
-            StateMachine.setState(State.HANDOFF_WAIT);
-            robot.drive(12,0.6,.25);
-            robot.turnTo(90,.60,.25);
             StateMachine.setState(State.HIGH_BASKET);
-            robot.drive(12,0.6,.25); //This is where it breaks
+            sleep(2000);
+            //hardware.elevatorPincherRotate.setPosition(Constants.elevatorPincherRotateAutoBasket);
+            robot.drive(-14.5,0.6,.25);
             StateMachine.setState(State.HIGH_BASKET_SCORE);
-            robot.drive(-12,0.6,.25);
+            sleep(1500);
+            StateMachine.setState(State.HOME);
             sleep(500);
+            robot.strafe(16,0.6,.25);
+            robot.drive(14.5, 0.6, .25);
+            robot.strafe(36, 0.6, .25);
+            robot.drive(13,0.6,.25);
+            StateMachine.setState(State.AUTO_TOUCH_LOW_BAR);
+            sleep(15000);
         }
     }
 }

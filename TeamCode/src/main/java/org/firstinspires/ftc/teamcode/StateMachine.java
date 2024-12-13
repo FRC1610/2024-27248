@@ -39,7 +39,8 @@ public class StateMachine {
         CHAMBER_WAIT,
         HIGH_BASKET_SCORE, //Score high basket sequence
         HIGH_BASKET_WAIT,
-        GO_HOME
+        GO_HOME,
+        AUTO_TOUCH_LOW_BAR
     }
 
     private ElapsedTime intakeTimer1 = new ElapsedTime();
@@ -52,6 +53,7 @@ public class StateMachine {
     private ElapsedTime homingTimerElevator = new ElapsedTime();
     private ElapsedTime homingTimerIntake = new ElapsedTime();
     private ElapsedTime homingSequenceTimer = new ElapsedTime();
+    private ElapsedTime TouchLowBarTimer = new ElapsedTime();
     private int currentHandoffSubStep = 0;
     private int currentPickupSequenceSubstep = 0;
     private int currentSearchSubstep = 0;
@@ -59,6 +61,7 @@ public class StateMachine {
     private int currentScoreChamberSubstep = 0;
     private int currentWallToChamberSubstep = 0;
     private int currentHighBasketScoreSubstep = 0;
+    private int currentTouchLowBarSubstep = 0;
     private int SearchSubstep = 0;
     private int DropoffSubstep = 0;
     private int HomingSubstep = 0;
@@ -84,6 +87,7 @@ public class StateMachine {
         this.currentScoreChamberSubstep = 0;
         this.currentWallToChamberSubstep = 0;
         this.currentHighBasketScoreSubstep = 0;
+        this.currentTouchLowBarSubstep = 0;
         this.SearchSubstep = 0;
         this.DropoffSubstep = 0;
         this.HomingSubstep = 0;
@@ -99,6 +103,7 @@ public class StateMachine {
         homingTimerElevator.reset();
         homingTimerIntake.reset();
         homingSequenceTimer.reset();
+        TouchLowBarTimer.reset();
 
         updatePositions();
     }
@@ -124,6 +129,7 @@ public class StateMachine {
             case HIGH_CHAMBER:
                 break;
             case HIGH_BASKET:
+                robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
                 robot.setElevator(Constants.elevatorHighBasket);
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
                 break;
@@ -250,6 +256,11 @@ public class StateMachine {
                 HomingSequence();
                 break;
 
+            case AUTO_TOUCH_LOW_BAR:
+                //TouchLowBarSequence();
+                robot.setElevator(Constants.elevatorLowBar);
+                robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
+                break;
         }
     }
     private void HomingSequence(){
@@ -313,6 +324,32 @@ public class StateMachine {
         robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
         robot.setIntakeSlide(Constants.intakeSlideHome);
     }
+    private void TouchLowBarSequence(){
+        System.out.println("Touch Low Bar Substep: " + currentTouchLowBarSubstep);
+        System.out.println("TouchLow Bar Timer: " + TouchLowBarTimer.seconds());
+        switch (currentTouchLowBarSubstep){
+            case 0:
+                TouchLowBarTimer.reset();
+                robot.setElevator(Constants.elevatorLowBar);
+                currentTouchLowBarSubstep++;
+                break;
+            case 1:
+                if (TouchLowBarTimer.seconds() > 1.0){
+                    robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
+                    currentTouchLowBarSubstep++;
+                    break;
+                }
+                break;
+            case 2:
+                if (TouchLowBarTimer.seconds() > 1.5){
+                    currentTouchLowBarSubstep++;
+                    break;
+                }
+            case 3:
+                currentTouchLowBarSubstep = 0;
+                break;
+        }
+    }
 
     private void highBasketScore(){
         switch (currentHighBasketScoreSubstep){
@@ -369,9 +406,6 @@ public class StateMachine {
                 }
                 break;
             case 3:
-                currentWallToChamberSubstep++;
-                break;
-            case 4:
                 currentWallToChamberSubstep = 0;
                 break;
         }
@@ -419,7 +453,7 @@ public class StateMachine {
                 break;
             case 1:
                 //robot.intakeLift.setPosition(Constants.intakeLiftDropoffPosition);
-                robot.intakeRotate.setPosition(Constants.intakeRotateHome); //This should already be in home from intakeAllHome
+                robot.intakeRotate.setPosition(Constants.intakeRotateDropoff);
                 dropoffTimer.reset();
                 DropoffSubstep++;  //Move to next step
                 break;
