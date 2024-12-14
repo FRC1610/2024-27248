@@ -41,7 +41,6 @@ public class AutoHighBasketx4 extends LinearOpMode {
             hardware.setIntakeSlide(Constants.autoIntakeSlideBasketLeft);
             runtime.reset();
             while (opModeIsActive() &&
-                    //runtime.seconds() < 2.5 &&
                     hardware.intakeSlide.isBusy()
             ) {
                 hardware.intakeLift.setPosition(Constants.autoIntakeLift);
@@ -63,7 +62,6 @@ public class AutoHighBasketx4 extends LinearOpMode {
             ///Intake Retract to Handoff Position
             hardware.setIntakeSlide(Constants.intakeSlideHome);
             while (opModeIsActive() &&
-                    //runtime.seconds() < 2.5 &&
                     hardware.intakeSlide.isBusy()
             ) {
                 hardware.intakeRotate.setPosition(Constants.intakeRotateHandoffPosition);
@@ -84,7 +82,6 @@ public class AutoHighBasketx4 extends LinearOpMode {
             hardware.setElevator(Constants.elevatorHighBasket);
             //runtime.reset();
             while (opModeIsActive() &&
-                    //runtime.seconds() < 2.5 &&
                     hardware.elevatorLift.isBusy()
             ) {
                 hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
@@ -100,7 +97,6 @@ public class AutoHighBasketx4 extends LinearOpMode {
             hardware.setIntakeSlide(Constants.autoIntakeSlideBasketCenter);
             runtime.reset();
             while (opModeIsActive() &&
-                    //runtime.seconds() < 3.0 &&
                     hardware.intakeSlide.isBusy()
             ) {
                 hardware.intakeLift.setPosition(Constants.autoIntakeLift);
@@ -122,7 +118,6 @@ public class AutoHighBasketx4 extends LinearOpMode {
             ///Intake Retract to Handoff Position
             hardware.setIntakeSlide(Constants.intakeSlideHome);
             while (opModeIsActive() &&
-                    //runtime.seconds() < 2.5 &&
                     hardware.intakeSlide.isBusy()
             ) {
                 hardware.intakeRotate.setPosition(Constants.intakeRotateHandoffPosition);
@@ -143,7 +138,6 @@ public class AutoHighBasketx4 extends LinearOpMode {
             hardware.setElevator(Constants.elevatorHighBasket);
             //runtime.reset();
             while (opModeIsActive() &&
-                    //runtime.seconds() < 2.5 &&
                     hardware.elevatorLift.isBusy()
             ) {
                 hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
@@ -184,7 +178,6 @@ public class AutoHighBasketx4 extends LinearOpMode {
             ///Intake Retract to Handoff Position
             hardware.setIntakeSlide(Constants.intakeSlideHome);
             while (opModeIsActive() &&
-                    //runtime.seconds() < 2.5 &&
                     hardware.intakeSlide.isBusy()
             ) {
                 hardware.intakeRotate.setPosition(Constants.intakeRotateHandoffPosition);
@@ -206,9 +199,7 @@ public class AutoHighBasketx4 extends LinearOpMode {
             robot.strafe(10.25,0.6,0);
 
             hardware.setElevator(Constants.elevatorHighBasket);
-            //runtime.reset();
             while (opModeIsActive() &&
-                    //runtime.seconds() < 2.5 &&
                     hardware.elevatorLift.isBusy()
             ) {
                 hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
