@@ -77,7 +77,7 @@ public class AutoHighBasketx4 extends LinearOpMode {
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
             sleep(400);
             hardware.intakePincher.setPosition(Constants.intakePincherOpen);
-            sleep(400);
+            sleep(375);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
             sleep(700);
 
@@ -90,7 +90,7 @@ public class AutoHighBasketx4 extends LinearOpMode {
                 hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
             }
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
-            sleep(700);
+            sleep(675);
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
             sleep(400);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
@@ -136,7 +136,7 @@ public class AutoHighBasketx4 extends LinearOpMode {
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
             sleep(400);
             hardware.intakePincher.setPosition(Constants.intakePincherOpen);
-            sleep(400);
+            sleep(375);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
             sleep(700);
 
@@ -149,7 +149,7 @@ public class AutoHighBasketx4 extends LinearOpMode {
                 hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
             }
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
-            sleep(700);
+            sleep(675);
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
             sleep(400);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
@@ -198,7 +198,7 @@ public class AutoHighBasketx4 extends LinearOpMode {
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
             sleep(400);
             hardware.intakePincher.setPosition(Constants.intakePincherOpen);
-            sleep(400);
+            sleep(375);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
             sleep(700);
 
@@ -214,11 +214,11 @@ public class AutoHighBasketx4 extends LinearOpMode {
                 hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
             }
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
-            sleep(700);
+            sleep(675);
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
             sleep(250);
-            //robot.drive(6,0.6,0.25);
-            hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
+            hardware.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
+            robot.drive(6,0.6,0);
             hardware.setElevator(Constants.elevatorHome);
             sleep(2500);
 

@@ -282,7 +282,7 @@ public class StateMachine {
                 HomingSubstep++;
                 break;
             case 1:
-                if (homingSequenceTimer.seconds() > 3.0){ //break out if this runs for too long
+                if (homingSequenceTimer.seconds() > 1.5){ //break out if this runs for too long
                     HomingSubstep++;
                     break;
                 }
