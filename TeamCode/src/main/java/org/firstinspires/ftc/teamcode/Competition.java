@@ -75,10 +75,10 @@ public class Competition extends LinearOpMode {
             double frequency = 1 / loopTime;
             oldTime = newTime;
             Pose2D pos = robot.odo.getPosition();
-            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.MM), pos.getY(DistanceUnit.MM), pos.getHeading(AngleUnit.DEGREES));
+            String data = String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", pos.getX(DistanceUnit.INCH), pos.getY(DistanceUnit.INCH), pos.getHeading(AngleUnit.DEGREES));
             telemetry.addData("Position", data);
             Pose2D vel = robot.odo.getVelocity();
-            String velocity = String.format(Locale.US, "{XVel: %.3f, YVel: %.3f, HVel: %.3f}", vel.getX(DistanceUnit.MM), vel.getY(DistanceUnit.MM), vel.getHeading(AngleUnit.DEGREES));
+            String velocity = String.format(Locale.US, "{XVel: %.3f, YVel: %.3f, HVel: %.3f}", vel.getX(DistanceUnit.INCH), vel.getY(DistanceUnit.INCH), vel.getHeading(AngleUnit.DEGREES));
             telemetry.addData("Velocity", velocity);
             telemetry.addData("Status", robot.odo.getDeviceStatus());
             telemetry.addData("Pinpoint Frequency", robot.odo.getFrequency()); //prints/gets the current refresh rate of the Pinpoint
@@ -87,12 +87,12 @@ public class Competition extends LinearOpMode {
             ///MECANUM DRIVE
 
             // Get joystick inputs
-            y = -gamepad1.left_stick_y; // Forward/backward
-            x = gamepad1.left_stick_x;  // Strafe
+            y = -gamepad1.left_stick_y * 0.75; // Forward/backward - multiply by 0.75 to scale speed down
+            x = gamepad1.left_stick_x * 0.75;  // Strafe - multiply by 0.75 to scale speed down
             if (gamepad1.right_stick_button) {
-                rotation = gamepad1.right_stick_x * 0.5; //Slow rotation mode when button pressed in
+                rotation = gamepad1.right_stick_x * 0.45; //Slow rotation mode when button pressed in
             } else {
-                rotation = gamepad1.right_stick_x; // Rotation
+                rotation = gamepad1.right_stick_x * 0.75; // Rotation - multiply by 0.75 to scale speed down
             }
 
             robot.mecanumDrive(x, y, rotation);
@@ -265,8 +265,8 @@ public class Competition extends LinearOpMode {
             telemetry.addData("Intake Slide Pos", robot.intakeSlide.getCurrentPosition());
             telemetry.addData("Intake Pincher Pos",robot.intakePincher.getPosition());
             telemetry.addData("Intake Rotate Pos",robot.intakeRotate.getPosition());
-            telemetry.addData("Intake Pincher Pos",robot.intakeLift.getPosition());
-            telemetry.addData("Intake Pincher Pos",robot.intakePincherRotate.getPosition());
+            telemetry.addData("Intake Lift Pos",robot.intakeLift.getPosition());
+            telemetry.addData("Intake Pincher Rotate",robot.intakePincherRotate.getPosition());
             telemetry.update();
         }
     }

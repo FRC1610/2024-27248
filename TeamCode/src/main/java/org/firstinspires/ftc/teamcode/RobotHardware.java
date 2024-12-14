@@ -16,10 +16,10 @@ public class RobotHardware {
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
-    private DcMotor leftFront = null;
-    private DcMotor rightFront = null;
-    private DcMotor leftBack = null;
-    private DcMotor rightBack = null;
+    DcMotor leftFront = null;
+    DcMotor rightFront = null;
+    DcMotor leftBack = null;
+    DcMotor rightBack = null;
     DcMotorEx elevatorLift = null;
     DcMotorEx intakeSlide = null;
     Servo intakePincher = null;
@@ -85,10 +85,10 @@ public class RobotHardware {
 
         ///Motor Setup
         // Define and Initialize Drive Motors
-        leftFront  = myOpMode.hardwareMap.get(DcMotor.class, "leftFront");
-        rightFront = myOpMode.hardwareMap.get(DcMotor.class, "rightFront");
-        leftBack = myOpMode.hardwareMap.get(DcMotor.class, "leftBack");
-        rightBack = myOpMode.hardwareMap.get(DcMotor.class, "rightBack");
+        leftFront  = myOpMode.hardwareMap.get(DcMotorEx.class, "leftFront");
+        rightFront = myOpMode.hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftBack = myOpMode.hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightBack = myOpMode.hardwareMap.get(DcMotorEx.class, "rightBack");
 
         // Drive motor brake mode
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
