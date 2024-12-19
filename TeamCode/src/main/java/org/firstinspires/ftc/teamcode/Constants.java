@@ -49,12 +49,13 @@ public class Constants {
     ///INTAKE SERVO POSITIONS
     //Intake Pincher
     public static final double intakePincherClosed = 0;
-    public static final double intakePincherOpen = 0.60;
+    public static final double intakePincherOpen = 0.7; //Original 0.60
+    public static final double intakePincherOpenAuto = 0.75;
     //Intake Lift
     public static final double intakeLiftFullBack = 0.12;
     public static final double intakeLiftHandoff = 0.25;
     public static final double intakeLiftHome = 0.30;
-    public static final double intakeLiftSearchPosition = 0.60;
+    public static final double intakeLiftSearchPosition = 0.55; //Original 0.60
     public static final double intakeLiftIntakePosition = 0.64;
     public static final double intakeLiftDropoffPosition = 0.45;
     //Intake Rotate
