@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 /* STATE FLOW
 
-HOME > PICKUP > SEARCH_WAIT > PICKUP_RETRACT > INTAKE_WAIT
+HOME > PICKUP > SEARCH_HALF > PICKUP_RETRACT > INTAKE_WAIT
 
 INTAKE_WAIT > HANDOFF //TODO
 INTAKE_WAIT > DROPOFF //TODO
@@ -32,7 +31,7 @@ public class StateMachine {
         MINI_INTAKE, //Lower and pickup but don't retract
         INTAKE_WAIT, //Wait after retracting intake
         DROPOFF, //Rotate and drop onto side shield
-        SEARCH_WAIT, //Hold in search position
+        SEARCH_HALF, //Hold in search position
         PICKUP_WAIT, //Hold in pickup position after mini intake
         HANDOFF_WAIT, //Wait after handoff
         SCORE_CHAMBER, //Score chamber sequence
@@ -40,7 +39,8 @@ public class StateMachine {
         HIGH_BASKET_SCORE, //Score high basket sequence
         HIGH_BASKET_WAIT,
         GO_HOME,
-        AUTO_TOUCH_LOW_BAR
+        AUTO_TOUCH_LOW_BAR,
+        SEARCH_WAIT
     }
 
     private ElapsedTime intakeTimer1 = new ElapsedTime();
@@ -147,7 +147,7 @@ public class StateMachine {
             case DROPOFF:
                 dropoffSequence();
                 break;
-            case SEARCH_WAIT:
+            case SEARCH_HALF:
                 robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
                 break;
             case PICKUP_WAIT:
@@ -260,6 +260,9 @@ public class StateMachine {
                 //TouchLowBarSequence();
                 robot.setElevator(Constants.elevatorLowBar);
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
+                break;
+
+            case SEARCH_WAIT:
                 break;
         }
     }
@@ -481,16 +484,16 @@ public class StateMachine {
                 robot.intakeRotate.setPosition(Constants.intakeRotateIntakePosition);
                 robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
                 robot.intakePincherRotate.setPosition(Constants.intakePincherRotateIntake);
-                robot.setIntakeSlide(Constants.intakeSlideIntake);
+                robot.setIntakeSlide(Constants.intakeSlideHalf);
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
                 robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
-                if (Math.abs(robot.intakeSlide.getCurrentPosition() - Constants.intakeSlideIntake) < 50){
+                if (Math.abs(robot.intakeSlide.getCurrentPosition() - Constants.intakeSlideHalf) < 50){
                     SearchSubstep++;  //Move to next step
                     break;
                 }
                 break;
             case 1:
-                setState(State.SEARCH_WAIT);
+                setState(State.SEARCH_HALF);
                 SearchSubstep = 0;
                 break;
         }

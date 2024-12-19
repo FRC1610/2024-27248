@@ -195,7 +195,8 @@ public class Competition extends LinearOpMode {
             } else if (gamepad1.x){
                 StateMachine.setState(State.WALL_PICKUP);
             /// A
-            } else if (gamepad1.a && !aPressed) {
+            } else if (gamepad1.a && //TODO Make this a toggle between pickup half and full positions
+                    !aPressed) {
                 StateMachine.setState(State.PICKUP); //A = PICKUP Position
                 aPressed = true;
             /// B
@@ -242,8 +243,6 @@ public class Competition extends LinearOpMode {
             if (!gamepad1.right_bumper) {
                 RightBumperPressed = false;
             }
-
-
 
             if (!gamepad1.a){
                 aPressed = false;
