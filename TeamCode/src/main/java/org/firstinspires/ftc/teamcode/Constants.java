@@ -3,14 +3,12 @@ package org.firstinspires.ftc.teamcode;
 public class Constants {
     ///ELEVATOR SETPOINTS
     public static final int elevatorHome = 0;
-    public static final int elevatorMax = 3500;
-    //public static final int elevatorIntake = 250;
-    //public static final int elevatorWallPickup = 500;
+    //public static final int elevatorMax = 3500;
     public static final int elevatorHighChamber = 450;
     public static final int elevatorLowBar = 500;
     public static final int elevatorHighChamberScore = 100; //400
     public static final int elevatorLowBasket = 1750; //TODO Measure This
-    public static final int elevatorHighBasket = 2400; //2450 original
+    public static final int elevatorHighBasket = 2375; //2400 original
 
     ///ELEVATOR POWER
     public static final double elevatorPowerUp = 0.95;
@@ -20,7 +18,7 @@ public class Constants {
     ///INTAKE SLIDE SETPOINTS
     public static final int intakeSlideHome = 0;
     public static final int intakeSlideHalf = 900;
-    public static final int intakeSlideIntake = 1750;
+    public static final int intakeSlideFull = 1750;
     public static final int intakeSlideMax = 1800;
 
     ///ELEVATOR SERVO POSITIONS

@@ -138,15 +138,15 @@ public class Competition extends LinearOpMode {
                     robot.IntakeRotate(.005);
                 } else robot.IntakeRotate(0);
 
-                if (gamepad1.dpad_up && StateMachine.getState() == State.PICKUP){
+                if (gamepad1.dpad_up && StateMachine.getState() == State.PICKUP_SEARCH_HALF){
                     if (robot.intakeSlide.getCurrentPosition() < Constants.intakeSlideMax) {
                         intakeSlidePower = Constants.intakeSlidePowerOut;
                     }
-                } else if (gamepad1.dpad_down && StateMachine.getState() == State.PICKUP) {
+                } else if (gamepad1.dpad_down && StateMachine.getState() == State.PICKUP_SEARCH_HALF) {
                     intakeSlidePower = Constants.intakeSlidePowerIn;
                 } else intakeSlidePower = 0;
 
-                if (StateMachine.getState() != State.PICKUP ||
+                if (StateMachine.getState() != State.PICKUP_SEARCH_HALF ||
                         StateMachine.getState() != State.PICKUP_RETRACT){
                 robot.runIntakeSlide(intakeSlidePower);
                 }
@@ -192,20 +192,42 @@ public class Competition extends LinearOpMode {
             if (gamepad1.start) {
                 StateMachine.setState(State.HOME);  //START = HOME Position
             /// X
-            } else if (gamepad1.x){
+            } else if (gamepad1.x) {
                 StateMachine.setState(State.WALL_PICKUP);
+
+            } else if (gamepad1.a && !aPressed) {
+                aPressed = true; // Register the button press
+
+                // Toggle logic based on the current state
+                if (StateMachine.getState() == State.SEARCH_FULL
+                      //  || StateMachine.getState() == State.PICKUP_SEARCH_FULL
+                ) {StateMachine.setState(State.PICKUP_SEARCH_HALF); // Switch to PICKUP_SEARCH_HALF
+                } else if (StateMachine.getState() == State.SEARCH_HALF
+                      //  || StateMachine.getState() == State.PICKUP_SEARCH_HALF
+                ) {StateMachine.setState(State.PICKUP_SEARCH_FULL); // Switch to PICKUP_SEARCH_FULL
+                } else StateMachine.setState(State.PICKUP_SEARCH_HALF);
+
+
+/*
             /// A
-            } else if (gamepad1.a && //TODO Make this a toggle between pickup half and full positions
-                    !aPressed) {
-                StateMachine.setState(State.PICKUP); //A = PICKUP Position
-                aPressed = true;
+            } else if (gamepad1.a && StateMachine.getState() != State.SEARCH_HALF ||
+                    gamepad1.a && StateMachine.getState() != State.PICKUP_SEARCH_FULL) {
+                StateMachine.setState(State.PICKUP_SEARCH_HALF); //A = PICKUP_SEARCH_HALF Position
+                //aPressed = true;
+            } else if (gamepad1.a && StateMachine.getState() != State.SEARCH_FULL ||
+                    gamepad1.a && StateMachine.getState() != State.PICKUP_SEARCH_HALF ){
+                StateMachine.setState(State.PICKUP_SEARCH_FULL);
+
             /// B
             } else if (gamepad1.b && StateMachine.getState() == State.INTAKE_WAIT) {
                 StateMachine.setState(State.DROPOFF);
             } else if (gamepad1.b &&
                     StateMachine.getState() != State.WALL_PICKUP &&
-                    StateMachine.getState() != State.DROPOFF) { //B = WALL PICKUP Position
+                    StateMachine.getState() != State.DROPOFF) { //B = WALL PICKUP_SEARCH_HALF Position
                 StateMachine.setState(State.WALL_PICKUP);
+*/
+
+
             /// Y
             } else if (gamepad1.y && StateMachine.getState() == State.WALL_PICKUP) {  //Y + WALL_PICKUP = HIGH_CHAMBER
                 StateMachine.setState(State.HIGH_CHAMBER);
@@ -213,6 +235,9 @@ public class Competition extends LinearOpMode {
                 StateMachine.setState(State.HANDOFF);
             } else if (gamepad1.y && StateMachine.getState() == State.HANDOFF_WAIT) {
                 StateMachine.setState(State.HIGH_BASKET);
+
+
+
             /// RB
             } else if (gamepad1.right_bumper &&
                     StateMachine.getState() == State.WALL_PICKUP

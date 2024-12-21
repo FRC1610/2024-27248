@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 /* STATE FLOW
 
-HOME > PICKUP > SEARCH_HALF > PICKUP_RETRACT > INTAKE_WAIT
+HOME > PICKUP_SEARCH_HALF > SEARCH_HALF > PICKUP_RETRACT > INTAKE_WAIT
 
 INTAKE_WAIT > HANDOFF //TODO
 INTAKE_WAIT > DROPOFF //TODO
@@ -20,7 +20,8 @@ HANDOFF > HIGH_BASKET > HIGH_BASKET_WAIT > HIGH_BASKET_SCORE > HOME
 public class StateMachine {
     public enum State {
         HOME,  //All positions home
-        PICKUP, //Search Position
+        PICKUP_SEARCH_HALF, //Search Half Extended Position
+        PICKUP_SEARCH_FULL, //Search Full Extended Position
         WALL_PICKUP, //Wall Pickup Position
         HANDOFF, //Execute Handoff Sequence
         PICKUP_RETRACT, //Pickup and retract intake
@@ -31,7 +32,8 @@ public class StateMachine {
         MINI_INTAKE, //Lower and pickup but don't retract
         INTAKE_WAIT, //Wait after retracting intake
         DROPOFF, //Rotate and drop onto side shield
-        SEARCH_HALF, //Hold in search position
+        SEARCH_HALF, //Hold in search half position
+        SEARCH_FULL, //Hold in search full position
         PICKUP_WAIT, //Hold in pickup position after mini intake
         HANDOFF_WAIT, //Wait after handoff
         SCORE_CHAMBER, //Score chamber sequence
@@ -65,6 +67,8 @@ public class StateMachine {
     private int SearchSubstep = 0;
     private int DropoffSubstep = 0;
     private int HomingSubstep = 0;
+
+
     private State currentState;
     private final RobotHardware robot;
     private boolean homingElevatorComplete = false;
@@ -112,9 +116,12 @@ public class StateMachine {
         switch (currentState){
             case HOME:
                 break;
-            case PICKUP:
-                //System.out.println("Currently in PICKUP update");
-                searchPosition();
+            case PICKUP_SEARCH_HALF:
+                //System.out.println("Currently in PICKUP_SEARCH_HALF update");
+                searchPositionHalf();
+                break;
+            case PICKUP_SEARCH_FULL:
+                searchPositionFull();
                 break;
             case WALL_PICKUP:
                 break;
@@ -188,10 +195,15 @@ public class StateMachine {
                 intakeAllHome();
                 break;
 
-            case PICKUP: //Set floor pickup default search position (slide out, intake deployed)
-                //System.out.println("Currently in PICKUP positions");
+            case PICKUP_SEARCH_HALF: //Set floor pickup default search position (slide out, intake deployed)
+                //System.out.println("Currently in PICKUP_SEARCH_HALF positions");
                 robot.rgbIndicator.setColor(rgbIndicator.LEDColors.VIOLET);
-                searchPosition();
+                searchPositionHalf();
+                break;
+
+            case PICKUP_SEARCH_FULL:
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.VIOLET);
+                searchPositionFull();
                 break;
 
             case INTAKE_SEARCH:
@@ -477,7 +489,7 @@ public class StateMachine {
         }
     }
 
-    private void searchPosition(){
+    private void searchPositionHalf(){
         switch (SearchSubstep){
             case 0:
                 robot.intakePincher.setPosition(Constants.intakePincherOpen);
@@ -494,6 +506,28 @@ public class StateMachine {
                 break;
             case 1:
                 setState(State.SEARCH_HALF);
+                SearchSubstep = 0;
+                break;
+        }
+    }
+
+    private void searchPositionFull(){
+        switch (SearchSubstep){
+            case 0:
+                robot.intakePincher.setPosition(Constants.intakePincherOpen);
+                //robot.intakeRotate.setPosition(Constants.intakeRotateIntakePosition);
+                //robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
+                //robot.intakePincherRotate.setPosition(Constants.intakePincherRotateIntake);
+                robot.setIntakeSlide(Constants.intakeSlideFull);
+                robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
+                robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
+                if (Math.abs(robot.intakeSlide.getCurrentPosition() - Constants.intakeSlideFull) < 50){
+                    SearchSubstep++;  //Move to next step
+                    break;
+                }
+                break;
+            case 1:
+                setState(State.SEARCH_FULL);
                 SearchSubstep = 0;
                 break;
         }
