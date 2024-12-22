@@ -207,7 +207,7 @@ public class Competition extends LinearOpMode {
                       //  || StateMachine.getState() == State.PICKUP_SEARCH_HALF
                 ) {StateMachine.setState(State.PICKUP_SEARCH_FULL); // Switch to PICKUP_SEARCH_FULL
                 } else StateMachine.setState(State.PICKUP_SEARCH_HALF);
-
+            }
 
 /*
             /// A
@@ -218,16 +218,14 @@ public class Competition extends LinearOpMode {
             } else if (gamepad1.a && StateMachine.getState() != State.SEARCH_FULL ||
                     gamepad1.a && StateMachine.getState() != State.PICKUP_SEARCH_HALF ){
                 StateMachine.setState(State.PICKUP_SEARCH_FULL);
-
+*/
             /// B
-            } else if (gamepad1.b && StateMachine.getState() == State.INTAKE_WAIT) {
+            else if (gamepad1.b && StateMachine.getState() == State.INTAKE_WAIT) {
                 StateMachine.setState(State.DROPOFF);
             } else if (gamepad1.b &&
                     StateMachine.getState() != State.WALL_PICKUP &&
                     StateMachine.getState() != State.DROPOFF) { //B = WALL PICKUP_SEARCH_HALF Position
                 StateMachine.setState(State.WALL_PICKUP);
-*/
-
 
             /// Y
             } else if (gamepad1.y && StateMachine.getState() == State.WALL_PICKUP) {  //Y + WALL_PICKUP = HIGH_CHAMBER

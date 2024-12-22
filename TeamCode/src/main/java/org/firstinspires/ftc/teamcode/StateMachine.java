@@ -586,7 +586,7 @@ public class StateMachine {
                     currentPickupSequenceSubstep++;  //Move to next step
                     break;
                 }
-            break;
+                break;
             case 2:
                 if (intakeTimer1.seconds() > 0.35){ //Give intake servo time to close
                     //Intake

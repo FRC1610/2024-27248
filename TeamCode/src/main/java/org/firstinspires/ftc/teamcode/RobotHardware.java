@@ -232,7 +232,9 @@ public class RobotHardware {
     public void setElevator (int elevatorTargetPosition){
         double elevatorPower = 0;
         int ElevatorCurrentPosition = elevatorLift.getCurrentPosition();
-        if (elevatorTargetPosition > ElevatorCurrentPosition){
+        if (elevatorTargetPosition < 0 ){
+            elevatorPower = 0;
+        } else if (elevatorTargetPosition > ElevatorCurrentPosition){
             elevatorPower = Constants.elevatorPowerUp;
         } else
             elevatorPower = Constants.elevatorPowerDown;
@@ -250,7 +252,9 @@ public class RobotHardware {
     public void setIntakeSlide (int intakeSlideTargetPosition){
         double intakeSlidePower = 0;
         int intakeSlideCurrentPosition = intakeSlide.getCurrentPosition();
-        if (intakeSlideTargetPosition > intakeSlideCurrentPosition){
+        if (intakeSlideTargetPosition <0 ){
+            intakeSlidePower = 0;
+        } else if (intakeSlideTargetPosition > intakeSlideCurrentPosition){
             intakeSlidePower = Constants.intakeSlidePowerOut;
         } else
             intakeSlidePower = Constants.intakeSlidePowerIn;

@@ -4,11 +4,20 @@ public class Constants {
     ///ELEVATOR SETPOINTS
     public static final int elevatorHome = 0;
     //public static final int elevatorMax = 3500;
+    ///1150RPM SETTINGS
+    public static final int elevatorHighChamber = 450; //TODO Measure This
+    public static final int elevatorLowBar = 500;   //TODO Measure This
+    public static final int elevatorHighChamberScore = 100; //TODO Measure This
+    public static final int elevatorLowBasket = 1750; //TODO Measure This
+    public static final int elevatorHighBasket = 975;
+
+    /* 435RPM OLD SETTINGS
     public static final int elevatorHighChamber = 450;
     public static final int elevatorLowBar = 500;
     public static final int elevatorHighChamberScore = 100; //400
     public static final int elevatorLowBasket = 1750; //TODO Measure This
     public static final int elevatorHighBasket = 2375; //2400 original
+    */
 
     ///ELEVATOR POWER
     public static final double elevatorPowerUp = 0.95;
@@ -16,10 +25,12 @@ public class Constants {
     public static final double elevatorPowerHome = -0.35;
 
     ///INTAKE SLIDE SETPOINTS
+    ///
+    ///
     public static final int intakeSlideHome = 0;
     public static final int intakeSlideHalf = 900;
     public static final int intakeSlideFull = 1750;
-    public static final int intakeSlideMax = 1800;
+    public static final int intakeSlideMax = 2000;
 
     ///ELEVATOR SERVO POSITIONS
     //Elevator Pivot
@@ -72,11 +83,11 @@ public class Constants {
     //AUTO INTAKE SLIDE
     public static final int autoIntakeSlideBasketLeft = 1775;
     public static final int autoIntakeSlideBasketCenter = 2000;
-    public static final int autoIntakeSlideBasketRight = 1600;
+    //public static final int autoIntakeSlideBasketRight = 1600;
     //AUTO INTAKE ROTATE
     public static final double autoIntakeRotateBasketLeft = 0.935;
     public static final double autoIntakeRotateBasketCenter = 0.6;
-    public static final double autoIntakeRotateBasketRight = 0.75;
+    //public static final double autoIntakeRotateBasketRight = 0.75;
     //AUTO PINCHER ROTATE
     public static final double autoIntakePincherRotateBasketLeft = 0.64;
     public static final double autoIntakePincherRotateBasketCenter = 0.26;
