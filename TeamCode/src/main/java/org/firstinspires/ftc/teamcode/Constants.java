@@ -15,13 +15,13 @@ public class Constants {
     public static final int elevatorHighChamber = 450;
     public static final int elevatorLowBar = 500;
     public static final int elevatorHighChamberScore = 100; //400
-    public static final int elevatorLowBasket = 1750; //TODO Measure This
+    public static final int elevatorLowBasket = 1750;
     public static final int elevatorHighBasket = 2375; //2400 original
     */
 
     ///ELEVATOR POWER
-    public static final double elevatorPowerUp = 0.95;
-    public static final double elevatorPowerDown = -0.85;
+    public static final double elevatorPowerUp = 1.0;
+    public static final double elevatorPowerDown = -0.75;
     public static final double elevatorPowerHome = -0.35;
 
     ///INTAKE SLIDE SETPOINTS
