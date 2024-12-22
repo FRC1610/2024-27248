@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.drivers.rgbIndicator;
+
 
 /* STATE FLOW
 
@@ -492,14 +494,14 @@ public class StateMachine {
     private void searchPositionHalf(){
         switch (SearchSubstep){
             case 0:
+                robot.setIntakeSlide(Constants.intakeSlideHalf);
                 robot.intakePincher.setPosition(Constants.intakePincherOpen);
                 robot.intakeRotate.setPosition(Constants.intakeRotateIntakePosition);
                 robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
                 robot.intakePincherRotate.setPosition(Constants.intakePincherRotateIntake);
-                robot.setIntakeSlide(Constants.intakeSlideHalf);
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
                 robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
-                if (Math.abs(robot.intakeSlide.getCurrentPosition() - Constants.intakeSlideHalf) < 50){
+                if (Math.abs(robot.intakeSlide.getCurrentPosition() - Constants.intakeSlideHalf) < 15){
                     SearchSubstep++;  //Move to next step
                     break;
                 }
@@ -514,14 +516,14 @@ public class StateMachine {
     private void searchPositionFull(){
         switch (SearchSubstep){
             case 0:
+                robot.setIntakeSlide(Constants.intakeSlideFull);
                 robot.intakePincher.setPosition(Constants.intakePincherOpen);
                 //robot.intakeRotate.setPosition(Constants.intakeRotateIntakePosition);
                 //robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
                 //robot.intakePincherRotate.setPosition(Constants.intakePincherRotateIntake);
-                robot.setIntakeSlide(Constants.intakeSlideFull);
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
                 robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
-                if (Math.abs(robot.intakeSlide.getCurrentPosition() - Constants.intakeSlideFull) < 50){
+                if (Math.abs(robot.intakeSlide.getCurrentPosition() - Constants.intakeSlideFull) < 15){
                     SearchSubstep++;  //Move to next step
                     break;
                 }

@@ -1,18 +1,21 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.RobotHardware;
+import org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot;
+import org.firstinspires.ftc.teamcode.StateMachine;
 import org.firstinspires.ftc.teamcode.StateMachine.State;
 
-//@Disabled
+@Disabled
 @Autonomous(name="Auto High Basket x1 + Touch Low Bar", group="Auto")
 public class AutoHighBasketTouchLow extends LinearOpMode {
     org.firstinspires.ftc.teamcode.RobotHardware hardware = new RobotHardware(this);
     private SimplifiedOdometryRobot robot = new SimplifiedOdometryRobot(this, hardware);
-    StateMachine StateMachine;
+    org.firstinspires.ftc.teamcode.StateMachine StateMachine;
     private ElapsedTime AutoTimer = new ElapsedTime();
 
     @Override
@@ -39,5 +42,24 @@ public class AutoHighBasketTouchLow extends LinearOpMode {
             StateMachine.setState(State.AUTO_TOUCH_LOW_BAR);
             sleep(15000);
         }
+    }
+
+    /**
+     * Executes a given state in the StateMachine and waits for its completion.
+     *
+     * @param targetState The state to execute.
+     */
+    private void executeState(StateMachine.State targetState) {
+        StateMachine.setState(targetState);
+
+        // Loop until the state is complete or the OpMode is stopped
+        while (opModeIsActive() && StateMachine.getState() == targetState) {
+            StateMachine.update(); // Allow the state machine to process substeps
+            telemetry.addData("State", targetState);
+            telemetry.update();
+        }
+
+        // Optional delay to avoid immediate transitions
+        sleep(100);
     }
 }

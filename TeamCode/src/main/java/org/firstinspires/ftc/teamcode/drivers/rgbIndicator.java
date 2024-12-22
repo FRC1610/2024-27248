@@ -3,7 +3,7 @@ Class for the GoBilda LED Indicator
 https://www.gobilda.com/rgb-indicator-light-pwm-controlled/
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.drivers;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;

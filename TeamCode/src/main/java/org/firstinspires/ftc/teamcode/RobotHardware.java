@@ -4,10 +4,12 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import org.firstinspires.ftc.teamcode.rgbIndicator.LEDColors;
+
+import org.firstinspires.ftc.teamcode.drivers.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.drivers.rgbIndicator;
+import org.firstinspires.ftc.teamcode.drivers.rgbIndicator.LEDColors;
 //import com.qualcomm.robotcore.hardware.LED;
 
 public class RobotHardware {
@@ -16,22 +18,22 @@ public class RobotHardware {
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
-    DcMotor leftFront = null;
-    DcMotor rightFront = null;
-    DcMotor leftBack = null;
-    DcMotor rightBack = null;
-    DcMotorEx elevatorLift = null;
-    DcMotorEx intakeSlide = null;
-    Servo intakePincher = null;
-    Servo intakeRotate = null;
-    Servo intakeLift = null;
-    Servo intakePincherRotate = null;
-    Servo elevatorPivot = null;
-    Servo elevatorPincher = null;
-    Servo elevatorPincherRotate = null;
+    public DcMotor leftFront = null;
+    public DcMotor rightFront = null;
+    public DcMotor leftBack = null;
+    public DcMotor rightBack = null;
+    public DcMotorEx elevatorLift = null;
+    public DcMotorEx intakeSlide = null;
+    public Servo intakePincher = null;
+    public Servo intakeRotate = null;
+    public Servo intakeLift = null;
+    public Servo intakePincherRotate = null;
+    public Servo elevatorPivot = null;
+    public Servo elevatorPincher = null;
+    public Servo elevatorPincherRotate = null;
     Limelight3A limelight = null;
     GoBildaPinpointDriver odo = null; // Declare OpMode member for the Odometry Computer
-    rgbIndicator rgbIndicator = null;
+    org.firstinspires.ftc.teamcode.drivers.rgbIndicator rgbIndicator = null;
     //private RevBlinkinLedDriver blinkinLedDriver = null;
     //private RevBlinkinLedDriver.BlinkinPattern pattern = null;
     private DigitalChannel allianceButton = null;
@@ -248,7 +250,7 @@ public class RobotHardware {
     public void setIntakeSlide (int intakeSlideTargetPosition){
         double intakeSlidePower = 0;
         int intakeSlideCurrentPosition = intakeSlide.getCurrentPosition();
-        if (intakeSlideTargetPosition < intakeSlideCurrentPosition){
+        if (intakeSlideTargetPosition > intakeSlideCurrentPosition){
             intakeSlidePower = Constants.intakeSlidePowerOut;
         } else
             intakeSlidePower = Constants.intakeSlidePowerIn;
