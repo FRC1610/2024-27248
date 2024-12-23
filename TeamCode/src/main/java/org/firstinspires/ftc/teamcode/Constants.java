@@ -26,11 +26,20 @@ public class Constants {
 
     ///INTAKE SLIDE SETPOINTS
     ///
-    ///
+    ///312 RPM SETTINGS
+    /*
     public static final int intakeSlideHome = 0;
     public static final int intakeSlideHalf = 900;
     public static final int intakeSlideFull = 1750;
     public static final int intakeSlideMax = 2000;
+
+     */
+
+    ///1150 RPM SETTINGS
+    public static final int intakeSlideHome = 0;
+    public static final int intakeSlideHalf = 250;
+    public static final int intakeSlideFull = 500;
+    public static final int intakeSlideMax = 550;
 
     ///ELEVATOR SERVO POSITIONS
     //Elevator Pivot

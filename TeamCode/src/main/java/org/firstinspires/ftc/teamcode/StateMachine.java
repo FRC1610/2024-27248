@@ -69,8 +69,6 @@ public class StateMachine {
     private int SearchSubstep = 0;
     private int DropoffSubstep = 0;
     private int HomingSubstep = 0;
-
-
     private State currentState;
     private final RobotHardware robot;
     private boolean homingElevatorComplete = false;
@@ -115,6 +113,13 @@ public class StateMachine {
     }
 
     public void update(){ //This is called from the OpMode to make sure long sequences are able to complete
+        if (currentState == State.HOME) {
+            robot.disableHoldIntake(); // Disable hold logic when transitioning to HOME
+        } else {
+            robot.enableHoldIntake(); // Re-enable hold logic for other states
+        }
+        robot.holdIntakeSlidePosition(); // Maintain position when enabled
+
         switch (currentState){
             case HOME:
                 break;
@@ -159,11 +164,14 @@ public class StateMachine {
             case SEARCH_HALF:
                 robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
                 break;
+            case SEARCH_FULL:
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.GREEN);
+                break;
             case PICKUP_WAIT:
                 robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
                 break;
             case HANDOFF_WAIT:
-                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
+                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.ORANGE);
                 break;
             case SCORE_CHAMBER:
                 scoreChamber();
@@ -276,19 +284,18 @@ public class StateMachine {
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
                 break;
 
-            case SEARCH_WAIT:
-                break;
         }
     }
     private void HomingSequence(){
-        System.out.println("Homing Sequence Substep: " + HomingSubstep);
-        System.out.println("Homing Sequence Timer: " + homingSequenceTimer.seconds());
-        System.out.println("Homing Timer Elevator: " + homingTimerElevator.seconds());
-        System.out.println("Homing Elevator Velocity: " + robot.elevatorLift.getVelocity());
-        System.out.println("Homing Elevator Complete: " + homingElevatorComplete);
-        System.out.println("Homing Timer Intake: " + homingTimerElevator.seconds());
-        System.out.println("Homing Intake Velocity: " + robot.intakeSlide.getVelocity());
-        System.out.println("Homing Intake Complete: " + homingIntakeComplete);
+        //System.out.println("Homing Sequence Substep: " + HomingSubstep);
+        //System.out.println("Homing Sequence Timer: " + homingSequenceTimer.seconds());
+        //System.out.println("Homing Timer Elevator: " + homingTimerElevator.seconds());
+        //System.out.println("Homing Elevator Velocity: " + robot.elevatorLift.getVelocity());
+        //System.out.println("Homing Elevator Complete: " + homingElevatorComplete);
+        //System.out.println("Homing Timer Intake: " + homingTimerElevator.seconds());
+        //System.out.println("Homing Intake Velocity: " + robot.intakeSlide.getVelocity());
+        //System.out.println("Homing Intake Complete: " + homingIntakeComplete);
+
         switch (HomingSubstep) {
             case 0:
                 homingSequenceTimer.reset();

@@ -31,6 +31,8 @@ public class RobotHardware {
     public Servo elevatorPivot = null;
     public Servo elevatorPincher = null;
     public Servo elevatorPincherRotate = null;
+    private int intakeSlideLastPosition = 0;
+    private boolean holdIntakeEnabled = true; // Controls whether to hold position
     Limelight3A limelight = null;
     GoBildaPinpointDriver odo = null; // Declare OpMode member for the Odometry Computer
     org.firstinspires.ftc.teamcode.drivers.rgbIndicator rgbIndicator = null;
@@ -109,18 +111,23 @@ public class RobotHardware {
         rightBack.setDirection(DcMotor.Direction.REVERSE);
 
         ///Linear Slide Motor Setup
+        //ELEVATOR
         elevatorLift = myOpMode.hardwareMap.get(DcMotorEx.class, "elevatorLift");
-        intakeSlide = myOpMode.hardwareMap.get(DcMotorEx.class,"intakeSlide");
-
         elevatorLift.setDirection(DcMotor.Direction.REVERSE);
-        intakeSlide.setDirection(DcMotor.Direction.REVERSE);
-
-        intakeSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        elevatorLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        elevatorLift.setTargetPositionTolerance(5);
         elevatorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        elevatorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elevatorLift.setTargetPosition(Constants.elevatorHome);
+        elevatorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //INTAKE
+        intakeSlide = myOpMode.hardwareMap.get(DcMotorEx.class,"intakeSlide");
+        intakeSlide.setDirection(DcMotor.Direction.REVERSE);
+        intakeSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeSlide.setTargetPositionTolerance(5);
         intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeSlide.setTargetPosition(Constants.intakeSlideHome);
+        intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Define and initialize ALL installed servos.
         ///Intake Servos
@@ -251,6 +258,7 @@ public class RobotHardware {
      */
     public void setIntakeSlide (int intakeSlideTargetPosition){
         double intakeSlidePower = 0;
+        intakeSlideLastPosition = intakeSlideTargetPosition;
         int intakeSlideCurrentPosition = intakeSlide.getCurrentPosition();
         if (intakeSlideTargetPosition <0 ){
             intakeSlidePower = 0;
@@ -262,6 +270,22 @@ public class RobotHardware {
         intakeSlide.setTargetPosition(intakeSlideTargetPosition);
         intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         intakeSlide.setPower(intakeSlidePower);
+    }
+
+    public void holdIntakeSlidePosition (){
+        if (holdIntakeEnabled) {
+            intakeSlide.setTargetPosition(intakeSlideLastPosition);
+            intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            intakeSlide.setPower(0.1); // Minimal power to hold position
+        }
+    }
+
+    public void disableHoldIntake() {
+        holdIntakeEnabled = false;
+    }
+
+    public void enableHoldIntake() {
+        holdIntakeEnabled = true;
     }
 
     /**
