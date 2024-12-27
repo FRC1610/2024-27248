@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -31,6 +32,10 @@ public class RobotHardware {
     public Servo elevatorPivot = null;
     public Servo elevatorPincher = null;
     public Servo elevatorPincherRotate = null;
+    public Servo intakeLeft = null;
+    public Servo intakeRight = null;
+    public DigitalChannel intakeTouch = null;
+    public ColorSensor intakeColor = null;
     private int intakeSlideLastPosition = 0;
     private boolean holdIntakeEnabled = true; // Controls whether to hold position
     Limelight3A limelight = null;
@@ -87,7 +92,7 @@ public class RobotHardware {
 
          */
 
-        ///Motor Setup
+        ///Drive Motor Setup
         // Define and Initialize Drive Motors
         leftFront  = myOpMode.hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = myOpMode.hardwareMap.get(DcMotorEx.class, "rightFront");
@@ -142,6 +147,14 @@ public class RobotHardware {
 
         intakePincherRotate = myOpMode.hardwareMap.get(Servo.class, "intakePincherRotate");
         intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
+
+        //Active Intake Servos
+        intakeLeft = myOpMode.hardwareMap.get(Servo.class, "intakeLeft");
+        intakeRight = myOpMode.hardwareMap.get(Servo.class, "intakeRight");
+
+        //Intake Sensors
+        intakeTouch = myOpMode.hardwareMap.get(DigitalChannel.class,"intakeTouch");
+        intakeColor = myOpMode.hardwareMap.get(ColorSensor.class, "intakeColor");
 
         ///Elevator Servos
         elevatorPivot = myOpMode.hardwareMap.get(Servo.class, "elevatorPivot");
@@ -352,5 +365,18 @@ public class RobotHardware {
         double CurrentPosition = elevatorPincher.getPosition();
         double NewPosition = CurrentPosition + PosChange;
         elevatorPincher.setPosition(NewPosition);
+    }
+
+    public void runIntake(String Direction) {
+        if ("IN".equalsIgnoreCase(Direction)) {
+            intakeLeft.setPosition(1.0);  // Full speed in
+            intakeRight.setPosition(0.0); // Full speed in (opposite)
+        } else if ("OUT".equalsIgnoreCase(Direction)) {
+            intakeLeft.setPosition(0.0);  // Full speed out
+            intakeRight.setPosition(1.0); // Full speed out (opposite)
+        } else {
+            intakeLeft.setPosition(0.5);  // Stop
+            intakeRight.setPosition(0.5); // Stop
+        }
     }
 }

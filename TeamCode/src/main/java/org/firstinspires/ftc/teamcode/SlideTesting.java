@@ -77,6 +77,15 @@ public class SlideTesting extends LinearOpMode {
             robot.setElevator(ElevatorTargetPosition);
             robot.setIntakeSlide(IntakeTargetPosition);
 
+            //Active Intake Testing
+            if (gamepad1.right_bumper){
+                robot.runIntake("IN");
+            } else if (gamepad1.left_bumper) {
+                robot.runIntake("OUT");
+            } else {
+                robot.runIntake("STOP");
+            }
+
             //Reset button trackers
             if (!gamepad1.dpad_up){
                 dPadUp = false;
@@ -96,6 +105,11 @@ public class SlideTesting extends LinearOpMode {
 
             telemetry.addData("Elevator Pos: ", robot.elevatorLift.getCurrentPosition());
             telemetry.addData("Intake Pos: ", robot.intakeSlide.getCurrentPosition());
+            telemetry.addData("Intake Touch: ", robot.intakeTouch.getState());
+            telemetry.addData("Intake Color ARGB: ", robot.intakeColor.argb());
+            telemetry.addData("Intake Color R: ", robot.intakeColor.red());
+            telemetry.addData("Intake Color G: ", robot.intakeColor.green());
+            telemetry.addData("Intake Color B: ", robot.intakeColor.blue());
             telemetry.update();
 
         }
