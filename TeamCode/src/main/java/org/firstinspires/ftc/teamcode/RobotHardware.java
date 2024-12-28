@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -154,7 +155,8 @@ public class RobotHardware {
 
         //Intake Sensors
         intakeTouch = myOpMode.hardwareMap.get(DigitalChannel.class,"intakeTouch");
-        intakeColor = myOpMode.hardwareMap.get(ColorSensor.class, "intakeColor");
+        intakeTouch.setMode(DigitalChannel.Mode.INPUT);
+        intakeColor = myOpMode.hardwareMap.get(RevColorSensorV3.class, "intakeColor");
 
         ///Elevator Servos
         elevatorPivot = myOpMode.hardwareMap.get(Servo.class, "elevatorPivot");
@@ -368,10 +370,10 @@ public class RobotHardware {
     }
 
     public void runIntake(String Direction) {
-        if ("IN".equalsIgnoreCase(Direction)) {
+        if ("OUT".equalsIgnoreCase(Direction)) {
             intakeLeft.setPosition(1.0);  // Full speed in
             intakeRight.setPosition(0.0); // Full speed in (opposite)
-        } else if ("OUT".equalsIgnoreCase(Direction)) {
+        } else if ("IN".equalsIgnoreCase(Direction) && intakeTouch.getState()) {
             intakeLeft.setPosition(0.0);  // Full speed out
             intakeRight.setPosition(1.0); // Full speed out (opposite)
         } else {
