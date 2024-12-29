@@ -39,6 +39,14 @@ public class RobotHardware {
     public ColorSensor intakeColor = null;
     private int intakeSlideLastPosition = 0;
     private boolean holdIntakeEnabled = true; // Controls whether to hold position
+    public boolean allianceColorRed = false;
+    public boolean allianceColorBlue = false;
+
+    public enum ActiveIntake{
+        IN,
+        OUT,
+        STOP
+    }
     Limelight3A limelight = null;
     GoBildaPinpointDriver odo = null; // Declare OpMode member for the Odometry Computer
     org.firstinspires.ftc.teamcode.drivers.rgbIndicator rgbIndicator = null;
@@ -62,7 +70,16 @@ public class RobotHardware {
     public void init()    {
 
         rgbIndicator = new rgbIndicator(myOpMode.hardwareMap, "rgbLight");
-        rgbIndicator.setColor(LEDColors.YELLOW);
+        //rgbIndicator.setColor(LEDColors.YELLOW);
+
+        allianceButton = myOpMode.hardwareMap.get(DigitalChannel.class, "allianceButton");
+        if (allianceButton.getState()){
+            allianceColorRed = true;
+            rgbIndicator.setColor(LEDColors.RED);
+        } else {
+            allianceColorBlue = true;
+            rgbIndicator.setColor(LEDColors.BLUE);
+        }
 
         ///GoBilda Odometry Pod Setup
         //Deploy to Control Hub to make Odometry Pod show in hardware selection list
@@ -369,14 +386,14 @@ public class RobotHardware {
         elevatorPincher.setPosition(NewPosition);
     }
 
-    public void runIntake(String Direction) {
-        if ("OUT".equalsIgnoreCase(Direction)) {
+    public void runIntake(ActiveIntake Direction) {
+        if (Direction == ActiveIntake.OUT) {
             intakeLeft.setPosition(1.0);  // Full speed in
             intakeRight.setPosition(0.0); // Full speed in (opposite)
-        } else if ("IN".equalsIgnoreCase(Direction) && intakeTouch.getState()) {
+        } else if (Direction == ActiveIntake.IN && intakeTouch.getState()) {
             intakeLeft.setPosition(0.0);  // Full speed out
             intakeRight.setPosition(1.0); // Full speed out (opposite)
-        } else {
+        } else if (Direction == ActiveIntake.STOP){
             intakeLeft.setPosition(0.5);  // Stop
             intakeRight.setPosition(0.5); // Stop
         }

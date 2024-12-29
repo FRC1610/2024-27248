@@ -79,11 +79,15 @@ public class SlideTesting extends LinearOpMode {
 
             //Active Intake Testing
             if (gamepad1.right_bumper){
-                robot.runIntake("IN");
+                robot.runIntake(RobotHardware.ActiveIntake.IN);
             } else if (gamepad1.left_bumper) {
-                robot.runIntake("OUT");
+                robot.runIntake(RobotHardware.ActiveIntake.OUT);
             } else {
-                robot.runIntake("STOP");
+                robot.runIntake(RobotHardware.ActiveIntake.STOP);
+            }
+
+            if (gamepad1.a && StateMachine.getState() != org.firstinspires.ftc.teamcode.StateMachine.State.INTAKE_COLOR_CHECK){
+                StateMachine.setState(org.firstinspires.ftc.teamcode.StateMachine.State.INTAKE_COLOR_CHECK);
             }
 
             //Reset button trackers
@@ -110,7 +114,11 @@ public class SlideTesting extends LinearOpMode {
             telemetry.addData("Intake Color R: ", robot.intakeColor.red());
             telemetry.addData("Intake Color G: ", robot.intakeColor.green());
             telemetry.addData("Intake Color B: ", robot.intakeColor.blue());
+            telemetry.addData("Detected Color: ", StateMachine.detectedColor);
+            telemetry.addData("State: ", StateMachine.getState());
             telemetry.update();
+
+            StateMachine.update();
 
         }
 

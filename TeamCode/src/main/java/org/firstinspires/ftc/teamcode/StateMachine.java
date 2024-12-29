@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drivers.rgbIndicator;
+
+import java.util.Set;
 
 
 /* STATE FLOW
@@ -44,7 +48,15 @@ public class StateMachine {
         HIGH_BASKET_WAIT,
         GO_HOME,
         AUTO_TOUCH_LOW_BAR,
-        SEARCH_WAIT
+        SEARCH_WAIT,
+        INTAKE_COLOR_CHECK
+    }
+
+    public enum DetectedColor {
+        YELLOW,
+        RED,
+        BLUE,
+        NONE
     }
 
     private ElapsedTime intakeTimer1 = new ElapsedTime();
@@ -58,6 +70,8 @@ public class StateMachine {
     private ElapsedTime homingTimerIntake = new ElapsedTime();
     private ElapsedTime homingSequenceTimer = new ElapsedTime();
     private ElapsedTime TouchLowBarTimer = new ElapsedTime();
+    private ElapsedTime ColorCheckEjectTimer = new ElapsedTime();
+    private ElapsedTime IntakeTimer = new ElapsedTime();
     private int currentHandoffSubStep = 0;
     private int currentPickupSequenceSubstep = 0;
     private int currentSearchSubstep = 0;
@@ -69,10 +83,14 @@ public class StateMachine {
     private int SearchSubstep = 0;
     private int DropoffSubstep = 0;
     private int HomingSubstep = 0;
+    private int ColorCheckSubstep = 0;
+    public DetectedColor detectedColor = DetectedColor.NONE;  // Variable to track the current color
     private State currentState;
     private final RobotHardware robot;
     private boolean homingElevatorComplete = false;
     private boolean homingIntakeComplete = false;
+    private boolean isIntakeTimerReset = false;  // Track whether the timer is reset
+    private boolean isEjectTimerReset = false;
 
     public StateMachine(RobotHardware hardware) {
         this.robot = hardware;
@@ -95,6 +113,7 @@ public class StateMachine {
         this.SearchSubstep = 0;
         this.DropoffSubstep = 0;
         this.HomingSubstep = 0;
+        this.ColorCheckSubstep = 0;
 
         //Reset all timers
         intakeTimer1.reset();
@@ -108,6 +127,8 @@ public class StateMachine {
         homingTimerIntake.reset();
         homingSequenceTimer.reset();
         TouchLowBarTimer.reset();
+        ColorCheckEjectTimer.reset();
+        IntakeTimer.reset();
 
         updatePositions();
     }
@@ -168,7 +189,7 @@ public class StateMachine {
                 robot.rgbIndicator.setColor(rgbIndicator.LEDColors.GREEN);
                 break;
             case PICKUP_WAIT:
-                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
+                //robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
                 break;
             case HANDOFF_WAIT:
                 robot.rgbIndicator.setColor(rgbIndicator.LEDColors.ORANGE);
@@ -188,7 +209,9 @@ public class StateMachine {
             case GO_HOME:
                 HomingSequence();
                 break;
-
+            case INTAKE_COLOR_CHECK:
+                IntakeColorCheck();
+                break;
         }
     }
 
@@ -284,8 +307,97 @@ public class StateMachine {
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
                 break;
 
+            case INTAKE_COLOR_CHECK:
+                IntakeColorCheck();
+                break;
         }
     }
+
+    private void IntakeColorCheck(){
+        System.out.println("Color Check Substep:" + ColorCheckSubstep);
+        switch (ColorCheckSubstep){
+            case 0:  // Intake Until Button Pressed or Timeout
+                if (!isIntakeTimerReset) {
+                    IntakeTimer.reset();  // Reset the timer only once upon entering case 0
+                    isIntakeTimerReset = true;
+                }
+                if (robot.intakeTouch.getState() && IntakeTimer.seconds() < 10) {
+                    if (robot.allianceColorRed){
+                        robot.rgbIndicator.setColor(rgbIndicator.LEDColors.RED); // Set LED while searching
+                    } else {
+                        robot.rgbIndicator.setColor(rgbIndicator.LEDColors.BLUE);
+                    }
+                    robot.runIntake(RobotHardware.ActiveIntake.IN); //Run intake
+                } else {
+                    robot.runIntake(RobotHardware.ActiveIntake.STOP); // Stop intake
+                    if (!robot.intakeTouch.getState()) {
+                        System.out.println("Limit switch triggered, moving to next step.");
+                    } else {
+                        System.out.println("Timeout reached, moving to next step.");
+                    }
+                    ColorCheckSubstep++;
+                    isIntakeTimerReset = false;  // Reset the flag for the next transition
+                    break;
+                }
+                break;
+            case 1: //Check the color and set the LED
+                if (robot.intakeColor.red() > Constants.intakeColorRed && robot.intakeColor.green() > Constants.intakeColorGreen){
+                    //YELLOW
+                    detectedColor = DetectedColor.YELLOW;
+                    robot.rgbIndicator.setColor(rgbIndicator.LEDColors.YELLOW);
+                    ColorCheckSubstep++;
+                    break;
+                } else if (robot.intakeColor.red() > Constants.intakeColorRed) {
+                    //RED
+                    detectedColor = DetectedColor.RED;
+                    robot.rgbIndicator.setColor(rgbIndicator.LEDColors.RED);
+                    ColorCheckSubstep++;
+                    break;
+                } else if (robot.intakeColor.blue() > Constants.intakeColorBlue) {
+                    //BLUE
+                    detectedColor = DetectedColor.BLUE;
+                    robot.rgbIndicator.setColor(rgbIndicator.LEDColors.BLUE);
+                    ColorCheckSubstep++;
+                    break;
+                } else {
+                    //Not Detected - this probably shouldn't happen?
+                    detectedColor = DetectedColor.NONE;
+                    robot.rgbIndicator.setColor(rgbIndicator.LEDColors.OFF);
+                    ColorCheckSubstep++;
+                    break;
+                }
+            case 2: //Do we actually want this color?
+                System.out.println("Detected Color: " + detectedColor);
+                if (!isEjectTimerReset){
+                    ColorCheckEjectTimer.reset();
+                    isEjectTimerReset = true;
+                }
+
+                if (detectedColor == DetectedColor.YELLOW ||
+                        (detectedColor == DetectedColor.RED && robot.allianceColorRed) ||
+                        (detectedColor == DetectedColor.BLUE && robot.allianceColorBlue)) {
+                    ColorCheckSubstep++;
+                    break;
+                } else {
+                    //Got a color we don't want, spit it out and restart this case
+                    robot.runIntake(RobotHardware.ActiveIntake.OUT);
+                    if (ColorCheckEjectTimer.seconds() > 0.50){
+                        robot.runIntake(RobotHardware.ActiveIntake.STOP);
+                        detectedColor = DetectedColor.NONE;
+                        ColorCheckSubstep = 0;
+                        isEjectTimerReset = false;
+                        isIntakeTimerReset = false;  // Ensure timer resets when restarting case 0
+                        break;
+                    }
+                    break;
+                }
+            case 3:
+                ColorCheckSubstep = 0;
+                setState(State.PICKUP_WAIT);
+                break;
+        }
+    }
+
     private void HomingSequence(){
         //System.out.println("Homing Sequence Substep: " + HomingSubstep);
         //System.out.println("Homing Sequence Timer: " + homingSequenceTimer.seconds());

@@ -101,4 +101,9 @@ public class Constants {
     public static final double autoIntakePincherRotateBasketLeft = 0.64;
     public static final double autoIntakePincherRotateBasketCenter = 0.26;
 
+    /// INTAKE COLOR SENSOR
+    public static final int intakeColorRed = 4000;
+    public static final int intakeColorGreen = 4000;
+    public static final int intakeColorBlue = 4000;
+
 }
