@@ -41,6 +41,7 @@ public class RobotHardware {
     private boolean holdIntakeEnabled = true; // Controls whether to hold position
     public boolean allianceColorRed = false;
     public boolean allianceColorBlue = false;
+    private ActiveIntake currentIntakeState = ActiveIntake.STOP;
 
     public enum ActiveIntake{
         IN,
@@ -387,15 +388,20 @@ public class RobotHardware {
     }
 
     public void runIntake(ActiveIntake Direction) {
-        if (Direction == ActiveIntake.OUT) {
-            intakeLeft.setPosition(1.0);  // Full speed in
-            intakeRight.setPosition(0.0); // Full speed in (opposite)
-        } else if (Direction == ActiveIntake.IN && intakeTouch.getState()) {
-            intakeLeft.setPosition(0.0);  // Full speed out
-            intakeRight.setPosition(1.0); // Full speed out (opposite)
-        } else if (Direction == ActiveIntake.STOP){
-            intakeLeft.setPosition(0.5);  // Stop
-            intakeRight.setPosition(0.5); // Stop
+        if (Direction != currentIntakeState) { //Only send commands if the state changes
+            currentIntakeState = Direction; // Update the current state
+
+            if (Direction == ActiveIntake.OUT) {
+                intakeLeft.setPosition(1.0);  // Full speed in
+                intakeRight.setPosition(0.0); // Full speed in (opposite)
+            } else if (Direction == ActiveIntake.IN && intakeTouch.getState()) {
+                intakeLeft.setPosition(0.0);  // Full speed out
+                intakeRight.setPosition(1.0); // Full speed out (opposite)
+            } else if (Direction == ActiveIntake.STOP) {
+                intakeLeft.setPosition(0.5);  // Stop
+                intakeRight.setPosition(0.5); // Stop
+            }
         }
     }
+
 }

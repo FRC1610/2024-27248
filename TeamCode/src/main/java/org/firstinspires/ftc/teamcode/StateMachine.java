@@ -91,6 +91,7 @@ public class StateMachine {
     private boolean homingIntakeComplete = false;
     private boolean isIntakeTimerReset = false;  // Track whether the timer is reset
     private boolean isEjectTimerReset = false;
+    private boolean isIntakeRunning = false; // Track if the intake is currently running
 
     public StateMachine(RobotHardware hardware) {
         this.robot = hardware;
@@ -321,15 +322,17 @@ public class StateMachine {
                     IntakeTimer.reset();  // Reset the timer only once upon entering case 0
                     isIntakeTimerReset = true;
                 }
-                if (robot.intakeTouch.getState() && IntakeTimer.seconds() < 10) {
+                if (robot.intakeTouch.getState() && IntakeTimer.seconds() < 5) {
                     if (robot.allianceColorRed){
                         robot.rgbIndicator.setColor(rgbIndicator.LEDColors.RED); // Set LED while searching
                     } else {
                         robot.rgbIndicator.setColor(rgbIndicator.LEDColors.BLUE);
                     }
-                    robot.runIntake(RobotHardware.ActiveIntake.IN); //Run intake
+                    //robot.runIntake(RobotHardware.ActiveIntake.IN); //Run intake
+
                 } else {
                     robot.runIntake(RobotHardware.ActiveIntake.STOP); // Stop intake
+                    isIntakeRunning = false;
                     if (!robot.intakeTouch.getState()) {
                         System.out.println("Limit switch triggered, moving to next step.");
                     } else {
@@ -384,9 +387,9 @@ public class StateMachine {
                     if (ColorCheckEjectTimer.seconds() > 0.50){
                         robot.runIntake(RobotHardware.ActiveIntake.STOP);
                         detectedColor = DetectedColor.NONE;
-                        ColorCheckSubstep = 0;
                         isEjectTimerReset = false;
                         isIntakeTimerReset = false;  // Ensure timer resets when restarting case 0
+                        ColorCheckSubstep++;
                         break;
                     }
                     break;

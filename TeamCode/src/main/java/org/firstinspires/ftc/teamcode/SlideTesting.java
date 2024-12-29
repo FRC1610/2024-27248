@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.StateMachine.State;
 
 @TeleOp (name="Slide Testing", group = "TeleOp")
 public class SlideTesting extends LinearOpMode {
@@ -78,17 +79,24 @@ public class SlideTesting extends LinearOpMode {
             robot.setIntakeSlide(IntakeTargetPosition);
 
             //Active Intake Testing
-            if (gamepad1.right_bumper){
+            if (gamepad1.right_bumper && robot.intakeTouch.getState()){
                 robot.runIntake(RobotHardware.ActiveIntake.IN);
             } else if (gamepad1.left_bumper) {
                 robot.runIntake(RobotHardware.ActiveIntake.OUT);
-            } else {
+            } else if (!robot.intakeTouch.getState() && StateMachine.getState() != State.INTAKE_COLOR_CHECK){
+                StateMachine.setState(State.INTAKE_COLOR_CHECK);
+            } else if (StateMachine.getState() != State.INTAKE_COLOR_CHECK){
                 robot.runIntake(RobotHardware.ActiveIntake.STOP);
             }
 
-            if (gamepad1.a && StateMachine.getState() != org.firstinspires.ftc.teamcode.StateMachine.State.INTAKE_COLOR_CHECK){
+            /*
+            if (robot.intakeTouch.getState() && StateMachine.getState() != org.firstinspires.ftc.teamcode.StateMachine.State.INTAKE_COLOR_CHECK){
+                StateMachine.setState(org.firstinspires.ftc.teamcode.StateMachine.State.INTAKE_COLOR_CHECK);
+            } else if (gamepad1.a && StateMachine.getState() != org.firstinspires.ftc.teamcode.StateMachine.State.INTAKE_COLOR_CHECK){
                 StateMachine.setState(org.firstinspires.ftc.teamcode.StateMachine.State.INTAKE_COLOR_CHECK);
             }
+
+             */
 
             //Reset button trackers
             if (!gamepad1.dpad_up){
