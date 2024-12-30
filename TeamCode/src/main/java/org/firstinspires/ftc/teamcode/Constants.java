@@ -44,7 +44,7 @@ public class Constants {
     ///ELEVATOR SERVO POSITIONS
     //Elevator Pivot
     public static final double elevatorPivotHome = 1.0;
-    public static final double elevatorPivotHandoff = 0.14; //.125
+
     public static final double elevatorPivotWait = 0.30;
     public static final double elevatorPivotWallPickup = 0.91;
     public static final double elevatorPivotVertical = 0.50;
@@ -72,10 +72,9 @@ public class Constants {
     public static final double intakePincherOpenAuto = 0.80;
     //Intake Lift
     public static final double intakeLiftFullBack = 0.12;
-    public static final double intakeLiftHandoff = 0.25;
+
     public static final double intakeLiftHome = 0.30;
-    public static final double intakeLiftSearchPosition = 0.55; //Original 0.60
-    public static final double intakeLiftIntakePosition = 0.61; //Original 0.64
+
     public static final double intakeLiftDropoffPosition = 0.45;
     //Intake Rotate
     public static final double intakeRotateHome = 0.45; //Previously .40
@@ -105,5 +104,18 @@ public class Constants {
     public static final int intakeColorRed = 4000;
     public static final int intakeColorGreen = 4000;
     public static final int intakeColorBlue = 4000;
+
+
+    ///CLAW INTAKE
+    public static final double intakeLiftHandoff = 0.25;
+    public static final double intakeLiftSearchPosition = 0.55; //Original 0.60
+    public static final double intakeLiftIntakePosition = 0.61; //Original 0.64
+    public static final double elevatorPivotHandoff = 0.14; //.125
+
+    /// ACTIVE INTAKE
+    //public static final double intakeLiftHandoff = 0.35;
+    //public static final double intakeLiftSearchPosition = 0.55;
+    //public static final double intakeLiftIntakePosition = 0.72;
+    //public static final double elevatorPivotHandoff = 0.12;
 
 }

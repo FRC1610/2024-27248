@@ -375,7 +375,7 @@ public class RobotHardware {
         intakeLift.setPosition(NewPosition);
     }
 
-    public void elevatorPivot(double PosChange){
+    public void ElevatorPivot(double PosChange){
         double CurrentPosition = elevatorPivot.getPosition();
         double NewPosition = CurrentPosition + PosChange;
         elevatorPivot.setPosition(NewPosition);

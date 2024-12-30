@@ -1,13 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.Color;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drivers.rgbIndicator;
-
-import java.util.Set;
 
 
 /* STATE FLOW
@@ -276,7 +272,7 @@ public class StateMachine {
             case HIGH_CHAMBER:
                 intakeAllHome(); //Make sure the intake is inside frame
                 robot.setElevator(Constants.elevatorHighChamber);
-                robot.elevatorPivot(Constants.elevatorPivotBasket);
+                robot.ElevatorPivot(Constants.elevatorPivotBasket);
                 break;
 
             case HIGH_BASKET:

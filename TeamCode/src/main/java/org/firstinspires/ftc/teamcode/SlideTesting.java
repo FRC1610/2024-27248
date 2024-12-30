@@ -31,6 +31,7 @@ public class SlideTesting extends LinearOpMode {
         boolean dPadLeft = false;
 
         robot.init();
+        robot.intakeRotate.setPosition(Constants.intakeRotateIntakePosition);
         waitForStart();
 
         while (opModeIsActive()) {
@@ -79,7 +80,7 @@ public class SlideTesting extends LinearOpMode {
             robot.setIntakeSlide(IntakeTargetPosition);
 
             //Active Intake Testing
-            if (gamepad1.right_bumper && robot.intakeTouch.getState()){
+            if (gamepad1.right_bumper && robot.intakeTouch.getState() ){
                 robot.runIntake(RobotHardware.ActiveIntake.IN);
             } else if (gamepad1.left_bumper) {
                 robot.runIntake(RobotHardware.ActiveIntake.OUT);
@@ -89,14 +90,17 @@ public class SlideTesting extends LinearOpMode {
                 robot.runIntake(RobotHardware.ActiveIntake.STOP);
             }
 
-            /*
-            if (robot.intakeTouch.getState() && StateMachine.getState() != org.firstinspires.ftc.teamcode.StateMachine.State.INTAKE_COLOR_CHECK){
-                StateMachine.setState(org.firstinspires.ftc.teamcode.StateMachine.State.INTAKE_COLOR_CHECK);
-            } else if (gamepad1.a && StateMachine.getState() != org.firstinspires.ftc.teamcode.StateMachine.State.INTAKE_COLOR_CHECK){
-                StateMachine.setState(org.firstinspires.ftc.teamcode.StateMachine.State.INTAKE_COLOR_CHECK);
+            if (gamepad1.a){
+                robot.IntakeLift(0.01);
+            } else if (gamepad1.b) {
+                robot.IntakeLift(- 0.01);
             }
 
-             */
+            if (gamepad1.x){
+                robot.ElevatorPivot(0.01 );
+            } else if (gamepad1.y){
+                robot.ElevatorPivot(-0.01);
+            }
 
             //Reset button trackers
             if (!gamepad1.dpad_up){
@@ -124,6 +128,8 @@ public class SlideTesting extends LinearOpMode {
             telemetry.addData("Intake Color B: ", robot.intakeColor.blue());
             telemetry.addData("Detected Color: ", StateMachine.detectedColor);
             telemetry.addData("State: ", StateMachine.getState());
+            telemetry.addData("Elev Pivot: ", robot.elevatorPivot.getPosition());
+            telemetry.addData("Intake Lift: ", robot.intakeLift.getPosition());
             telemetry.update();
 
             StateMachine.update();
