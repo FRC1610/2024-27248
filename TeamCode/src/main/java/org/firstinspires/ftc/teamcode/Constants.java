@@ -107,15 +107,15 @@ public class Constants {
 
 
     ///CLAW INTAKE
-    public static final double intakeLiftHandoff = 0.25;
-    public static final double intakeLiftSearchPosition = 0.55; //Original 0.60
-    public static final double intakeLiftIntakePosition = 0.61; //Original 0.64
-    public static final double elevatorPivotHandoff = 0.14; //.125
+    //public static final double intakeLiftHandoff = 0.25;
+    //public static final double intakeLiftSearchPosition = 0.55; //Original 0.60
+    //public static final double intakeLiftIntakePosition = 0.61; //Original 0.64
+    //public static final double elevatorPivotHandoff = 0.14; //.125
 
     /// ACTIVE INTAKE
-    //public static final double intakeLiftHandoff = 0.35;
-    //public static final double intakeLiftSearchPosition = 0.55;
-    //public static final double intakeLiftIntakePosition = 0.72;
-    //public static final double elevatorPivotHandoff = 0.12;
+    public static final double intakeLiftHandoff = 0.35;
+    public static final double intakeLiftSearchPosition = 0.55;
+    public static final double intakeLiftIntakePosition = 0.72;
+    public static final double elevatorPivotHandoff = 0.12;
 
 }
