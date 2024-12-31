@@ -137,6 +137,7 @@ public class CompActiveIntake extends LinearOpMode {
                     robot.IntakeRotate(.005);
                 } else robot.IntakeRotate(0);
 
+                /*
                 if (gamepad1.dpad_up && StateMachine.getState() == State.PICKUP_SEARCH_HALF){
                     if (robot.intakeSlide.getCurrentPosition() < Constants.intakeSlideMax) {
                         intakeSlidePower = Constants.intakeSlidePowerOut;
@@ -149,6 +150,8 @@ public class CompActiveIntake extends LinearOpMode {
                         StateMachine.getState() != State.PICKUP_RETRACT){
                 robot.runIntakeSlide(intakeSlidePower);
                 }
+                 */
+
             }
 
             ///RESET ENCODERS

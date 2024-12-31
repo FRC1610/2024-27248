@@ -68,6 +68,7 @@ public class StateMachine {
     private ElapsedTime TouchLowBarTimer = new ElapsedTime();
     private ElapsedTime ColorCheckEjectTimer = new ElapsedTime();
     private ElapsedTime IntakeTimer = new ElapsedTime();
+    private ElapsedTime IntakeHomeTimer = new ElapsedTime();
     private int currentHandoffSubStep = 0;
     private int currentPickupSequenceSubstep = 0;
     private int currentSearchSubstep = 0;
@@ -81,6 +82,7 @@ public class StateMachine {
     private int DropoffSubstep = 0;
     private int HomingSubstep = 0;
     private int ColorCheckSubstep = 0;
+    private int intakeHomeSubstep = 0;
     public DetectedColor detectedColor = DetectedColor.NONE;  // Variable to track the current color
     private State currentState;
     private final RobotHardware robot;
@@ -113,6 +115,7 @@ public class StateMachine {
         this.DropoffSubstep = 0;
         this.HomingSubstep = 0;
         this.ColorCheckSubstep = 0;
+        this.intakeHomeSubstep = 0;
 
         //Reset all timers
         intakeTimer1.reset();
@@ -128,6 +131,7 @@ public class StateMachine {
         TouchLowBarTimer.reset();
         ColorCheckEjectTimer.reset();
         IntakeTimer.reset();
+        IntakeHomeTimer.reset();
 
         updatePositions();
     }
@@ -142,6 +146,7 @@ public class StateMachine {
 
         switch (currentState){
             case HOME:
+                intakeAllHome();
                 break;
             case PICKUP_SEARCH_HALF:
                 //System.out.println("Currently in PICKUP_SEARCH_HALF update");
@@ -204,7 +209,7 @@ public class StateMachine {
                 highBasketScore();
                 break;
             case INTAKE_WAIT:
-                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
+                //robot.rgbIndicator.setColor(rgbIndicator.LEDColors.SAGE);
                 break;
             case GO_HOME:
                 HomingSequence();
@@ -260,7 +265,7 @@ public class StateMachine {
 
             case PICKUP_RETRACT: //Results in a set of cases being called
                 //System.out.println("Currently in PICKUP_RETRACT positions");
-                robot.rgbIndicator.setColor(rgbIndicator.LEDColors.AZURE);
+                //robot.rgbIndicator.setColor(rgbIndicator.LEDColors.AZURE);
                 //robot.intakePincher.setPosition(Constants.intakePincherClosed);
                 //intakePickupSequence();
                 intakeActivePickupSequence();
@@ -394,7 +399,7 @@ public class StateMachine {
                         detectedColor = DetectedColor.NONE;
                         isEjectTimerReset = false;
                         isIntakeTimerReset = false;  // Ensure timer resets when restarting case 0
-                        ColorCheckSubstep++;
+                        ColorCheckSubstep = 0;
                         break;
                     }
                     break;
@@ -462,12 +467,26 @@ public class StateMachine {
         }
     }
     private void intakeAllHome(){
-        ///Set all intake positions to home
-        robot.intakePincher.setPosition(Constants.intakePincherClosed);
-        robot.intakeRotate.setPosition(Constants.intakeRotateHome);
-        robot.intakeLift.setPosition(Constants.intakeLiftHome);
-        robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
-        robot.setIntakeSlide(Constants.intakeSlideHome);
+        switch (intakeHomeSubstep){
+            case 0:
+                IntakeHomeTimer.reset();
+                //robot.intakePincher.setPosition(Constants.intakePincherClosed);
+                //robot.intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
+                robot.intakeRotate.setPosition(Constants.intakeRotateHome);
+                robot.intakeLift.setPosition(Constants.intakeLiftHome);
+                intakeHomeSubstep++;
+                break;
+            case 1:
+                if (IntakeHomeTimer.seconds() > 0.25){
+                    robot.setIntakeSlide(Constants.intakeSlideHome);
+                    intakeHomeSubstep++;
+                    break;
+                }
+                break;
+            case 2:
+                intakeHomeSubstep = 0;
+                break;
+        }
     }
     private void TouchLowBarSequence(){
         System.out.println("Touch Low Bar Substep: " + currentTouchLowBarSubstep);
@@ -623,10 +642,10 @@ public class StateMachine {
         switch (SearchSubstep){
             case 0:
                 robot.setIntakeSlide(Constants.intakeSlideHalf);
-                robot.intakePincher.setPosition(Constants.intakePincherOpen);
+                //robot.intakePincher.setPosition(Constants.intakePincherOpen);
                 robot.intakeRotate.setPosition(Constants.intakeRotateIntakePosition);
                 robot.intakeLift.setPosition(Constants.intakeLiftIntakePosition);  //TODO Switch back to search position if claw intake
-                robot.intakePincherRotate.setPosition(Constants.intakePincherRotateIntake);
+                //robot.intakePincherRotate.setPosition(Constants.intakePincherRotateIntake);
                 robot.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
                 robot.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
                 if (Math.abs(robot.intakeSlide.getCurrentPosition() - Constants.intakeSlideHalf) < 15){
@@ -645,7 +664,7 @@ public class StateMachine {
         switch (SearchSubstep){
             case 0:
                 robot.setIntakeSlide(Constants.intakeSlideFull);
-                robot.intakePincher.setPosition(Constants.intakePincherOpen);
+                //robot.intakePincher.setPosition(Constants.intakePincherOpen);
                 //robot.intakeRotate.setPosition(Constants.intakeRotateIntakePosition);
                 //robot.intakeLift.setPosition(Constants.intakeLiftSearchPosition);
                 //robot.intakePincherRotate.setPosition(Constants.intakePincherRotateIntake);
@@ -700,6 +719,7 @@ public class StateMachine {
     }
 
     private void intakeActivePickupSequence(){
+        System.out.println("Active Intake Step: " + activeIntakePickupSubstep);
         switch (activeIntakePickupSubstep){
             case 0:
                 intakeTimer1.reset();
@@ -708,16 +728,20 @@ public class StateMachine {
                 activeIntakePickupSubstep++;
                 break;
             case 1:
-                if (intakeTimer1.seconds() > 0.20){
+                if (intakeTimer1.seconds() > 0.15){
                     robot.setIntakeSlide(Constants.intakeSlideHome);
-                    break;
-                }
-                if (robot.intakeSlide.getCurrentPosition() < 10){
                     activeIntakePickupSubstep++;  //Move to next step
                     break;
                 }
                 break;
             case 2:
+                robot.setIntakeSlide(Constants.intakeSlideHome);
+                if (robot.intakeSlide.getCurrentPosition() < 10){
+                    activeIntakePickupSubstep++;  //Move to next step
+                    break;
+                }
+                break;
+            case 3:
                 activeIntakePickupSubstep = 0;
                 setState(State.INTAKE_WAIT);
                 break;
