@@ -239,24 +239,28 @@ public class CompActiveIntake extends LinearOpMode {
                     robot.runIntake(RobotHardware.ActiveIntake.IN);
                 } else if (!robot.intakeTouch.getState() && StateMachine.getState() != State.INTAKE_COLOR_CHECK) {
                     robot.runIntake(RobotHardware.ActiveIntake.STOP);
+                    gamepad1.rumble(500);
                     StateMachine.setState(State.INTAKE_COLOR_CHECK);
                 }
             }
             /// LB
-            else if (gamepad1.left_bumper && !leftBumperPressed) {
-                if (StateMachine.getState() == State.SEARCH_WAIT) {
-                    StateMachine.setState(State.MINI_INTAKE);
-                } else if (StateMachine.getState() == State.PICKUP_WAIT) {
-                    StateMachine.setState(State.INTAKE_SEARCH);
-                } else if (StateMachine.getState() == State.WALL_TO_CHAMBER) {
+            else if (gamepad1.left_bumper){
+                //&& !leftBumperPressed)
+                if (StateMachine.getState() == State.WALL_TO_CHAMBER) {
                     StateMachine.setState(State.SCORE_CHAMBER);
                 } else if (StateMachine.getState() == State.HIGH_BASKET){
                     StateMachine.setState(State.HIGH_BASKET_SCORE);
+                } else {
+                    robot.runIntake(RobotHardware.ActiveIntake.OUT);
                 }
                 leftBumperPressed = true;
-            } else if (!gamepad1.left_bumper) {
-                leftBumperPressed = false;
+            } else {
+                robot.runIntake(RobotHardware.ActiveIntake.STOP);
             }
+
+             if (!gamepad1.left_bumper) {
+                 leftBumperPressed = false;
+             }
 
             if (!gamepad1.right_bumper) {
                 RightBumperPressed = false;
