@@ -192,7 +192,7 @@ public class CompActiveIntake extends LinearOpMode {
              */
 
             ///STATE CHANGE BUTTON SETUP
-            //TODO Maybe rearrange this
+
             /// START
             if (gamepad1.start) {
                 StateMachine.setState(State.HOME);  //START = HOME Position
@@ -234,33 +234,20 @@ public class CompActiveIntake extends LinearOpMode {
                     && !RightBumperPressed) {
                 StateMachine.setState(State.WALL_TO_CHAMBER);
                 RightBumperPressed = true;
-            } else if (gamepad1.right_bumper){
-                if (robot.intakeTouch.getState()){
-                    robot.runIntake(RobotHardware.ActiveIntake.IN);
-                } else if (!robot.intakeTouch.getState() && StateMachine.getState() != State.INTAKE_COLOR_CHECK) {
-                    robot.runIntake(RobotHardware.ActiveIntake.STOP);
-                    gamepad1.rumble(500);
-                    StateMachine.setState(State.INTAKE_COLOR_CHECK);
-                }
             }
             /// LB
-            else if (gamepad1.left_bumper){
-                //&& !leftBumperPressed)
+            else if (gamepad1.left_bumper && !leftBumperPressed){
                 if (StateMachine.getState() == State.WALL_TO_CHAMBER) {
                     StateMachine.setState(State.SCORE_CHAMBER);
                 } else if (StateMachine.getState() == State.HIGH_BASKET){
                     StateMachine.setState(State.HIGH_BASKET_SCORE);
-                } else {
-                    robot.runIntake(RobotHardware.ActiveIntake.OUT);
                 }
                 leftBumperPressed = true;
-            } else {
-                robot.runIntake(RobotHardware.ActiveIntake.STOP);
             }
 
-             if (!gamepad1.left_bumper) {
+            if (!gamepad1.left_bumper) {
                  leftBumperPressed = false;
-             }
+            }
 
             if (!gamepad1.right_bumper) {
                 RightBumperPressed = false;
@@ -270,18 +257,25 @@ public class CompActiveIntake extends LinearOpMode {
                 aPressed = false;
             }
 
+            ///ACTIVE INTAKE
             if (gamepad1.right_trigger > 0.1){
-                robot.IntakePincherRotate(-0.01);
+                if (robot.intakeTouch.getState()){
+                    robot.runIntake(RobotHardware.ActiveIntake.IN);
+                } else if (!robot.intakeTouch.getState() && StateMachine.getState() != State.INTAKE_COLOR_CHECK) {
+                    robot.runIntake(RobotHardware.ActiveIntake.STOP);
+                    gamepad1.rumble(500);
+                    StateMachine.setState(State.INTAKE_COLOR_CHECK);
+                }
             } else if (gamepad1.left_trigger > 0.1) {
-                robot.IntakePincherRotate(0.01);
+                robot.runIntake(RobotHardware.ActiveIntake.OUT);
             } else {
-                robot.IntakePincherRotate(0);
+                robot.runIntake(RobotHardware.ActiveIntake.STOP);
             }
 
+
             StateMachine.update(); //Update state machine in case of long running tasks
+
             telemetry.addData("State", StateMachine.getState());
-
-
             telemetry.addData("Elevator Pos", robot.elevatorLift.getCurrentPosition());
             telemetry.addData("Intake Slide Pos", robot.intakeSlide.getCurrentPosition());
             //telemetry.addData("Intake Pincher Pos",robot.intakePincher.getPosition());

@@ -718,7 +718,7 @@ public class StateMachine {
         }
     }
 
-    private void intakeActivePickupSequence(){
+    public boolean intakeActivePickupSequence(){
         System.out.println("Active Intake Step: " + activeIntakePickupSubstep);
         switch (activeIntakePickupSubstep){
             case 0:
@@ -744,8 +744,12 @@ public class StateMachine {
             case 3:
                 activeIntakePickupSubstep = 0;
                 setState(State.INTAKE_WAIT);
-                break;
+                return true;
+            default:
+                System.out.println("Active Pickup: Invalid case.");
+                return true;  // Exit state machine
         }
+        return false;
     }
 
     private void intakePickupSequence(){  //This is the sequence for the claw intake
@@ -790,7 +794,7 @@ public class StateMachine {
         }
     }
 
-    private void ActiveHandoffSequence(){
+    public boolean ActiveHandoffSequence(){
         System.out.println("Entering Handoff Sequence");
         System.out.println("Handoff Substep: " + currentHandoffSubStep);
         System.out.println("Handoff Timer: " + handoffTimer.seconds());
@@ -819,8 +823,13 @@ public class StateMachine {
                 robot.runIntake(RobotHardware.ActiveIntake.STOP);
                 currentHandoffSubStep = 0;
                 setState(State.HANDOFF_WAIT);
-                break;
+                return true;
+
+            default:
+                System.out.println("Active Handoff: Invalid case.");
+                return true;  // Exit state machine
         }
+        return false; //Not yet finished
     }
 
     private void HandoffSequence(){  //Clamp handoff
