@@ -167,11 +167,11 @@ public class Competition extends LinearOpMode {
             /// Elevator Pincher Rotation Test
             //TODO Remove this once State Machine handles this
             if (gamepad2.a){
-                robot.elevatorPivot(0.01);
+                robot.ElevatorPivot(0.01);
             } else if (gamepad2.b) {
-                robot.elevatorPivot(-0.01);
+                robot.ElevatorPivot(-0.01);
             } else {
-                robot.elevatorPivot(0);
+                robot.ElevatorPivot(0);
             }
 
             //TODO Remove this once State Machine handles this
@@ -195,7 +195,7 @@ public class Competition extends LinearOpMode {
             /// X
             } else if (gamepad1.x) {
                 StateMachine.setState(State.WALL_PICKUP);
-
+            ///A
             } else if (gamepad1.a && !aPressed) {
                 aPressed = true; // Register the button press
 

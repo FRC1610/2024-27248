@@ -33,12 +33,10 @@ public class AutoHighBasketx4v2 extends LinearOpMode {
         if (opModeIsActive()){
             AutoTimer.reset();
 
-            ///Drive forward 8 inches then strafe left 24 inches
-
-            /*
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
 
+            ///Drive forward 8 inches then strafe left 24 inches
             robot.drive(8,0.6,.25);
             hardware.setElevator(Constants.elevatorHighBasket);
             robot.strafe(24,0.75,0.15);
@@ -50,8 +48,6 @@ public class AutoHighBasketx4v2 extends LinearOpMode {
             sleep(400);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
             hardware.setElevator(Constants.elevatorHome);
-
-             */
 
             ///Left Pickup
             hardware.setIntakeSlide(Constants.intakeSlideHalf); //TODO remeasure this
