@@ -84,7 +84,7 @@ public class CompActiveIntake extends LinearOpMode {
             telemetry.addData("REV Hub Frequency: ", frequency); //prints the control system refresh rate
 
             ///MECANUM DRIVE
-
+            double heading = pos.getHeading(AngleUnit.RADIANS);
             // Get joystick inputs
             y = -gamepad1.left_stick_y * 0.75; // Forward/backward - multiply by 0.75 to scale speed down
             x = gamepad1.left_stick_x * 0.75;  // Strafe - multiply by 0.75 to scale speed down
@@ -94,7 +94,8 @@ public class CompActiveIntake extends LinearOpMode {
                 rotation = gamepad1.right_stick_x * 0.75; // Rotation - multiply by 0.75 to scale speed down
             }
 
-            robot.mecanumDrive(x, y, rotation);
+            //robot.mecanumDrive(x, y, rotation);
+            robot.FieldCentricDrive(x, y, rotation, heading);
 
             ///MANUAL CONTROL
 
