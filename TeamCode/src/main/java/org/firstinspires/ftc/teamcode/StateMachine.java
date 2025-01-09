@@ -477,7 +477,7 @@ public class StateMachine {
                 intakeHomeSubstep++;
                 break;
             case 1:
-                if (IntakeHomeTimer.seconds() > 0.25){
+                if (IntakeHomeTimer.seconds() > 0.30){
                     robot.setIntakeSlide(Constants.intakeSlideHome);
                     intakeHomeSubstep++;
                     break;
@@ -805,15 +805,18 @@ public class StateMachine {
                 currentHandoffSubStep++;
                 break;
             case 1:
-                robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
                 if (handoffTimer.seconds() > 0.20){
+                    robot.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
+                }
+
+                if (handoffTimer.seconds() > 0.40){
                     currentHandoffSubStep++;
                     break;
                 }
                 break;
             case 2:
                 robot.runIntake(RobotHardware.ActiveIntake.OUT);
-                if (handoffTimer.seconds() > 0.40){
+                if (handoffTimer.seconds() > 0.60){
                     robot.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
                     currentHandoffSubStep++;
                     break;

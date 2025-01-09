@@ -46,17 +46,22 @@ public class AutoHighBasketx4v2 extends LinearOpMode {
             sleep(700);
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
             sleep(400);
-            hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
+            hardware.elevatorPivot.setPosition(Constants.elevatorPivotWait);
             hardware.setElevator(Constants.elevatorHome);
 
             ///Left Pickup
-            hardware.setIntakeSlide(Constants.intakeSlideHalf); //TODO remeasure this
+            hardware.intakeLift.setPosition(Constants.intakeLiftIntakePosition);
+            sleep(250);
+            hardware.intakeRotate.setPosition(Constants.autoIntakeRotateBasketLeft);
+            sleep(250);
+            hardware.setIntakeSlide(Constants.autoIntakeSlideBasketLeft);
             //runtime.reset();
             while (opModeIsActive() && hardware.intakeSlide.isBusy()) {
                 hardware.elevatorPivot.setPosition(Constants.elevatorPivotWait);
                 hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
                 hardware.intakeLift.setPosition(Constants.intakeLiftIntakePosition);
                 hardware.intakeRotate.setPosition(Constants.autoIntakeRotateBasketLeft);
+                hardware.runIntake(RobotHardware.ActiveIntake.IN);
             }
 
             ///INTAKE UNTIL SENSOR - 2.5 SEC TIMEOUT
@@ -66,7 +71,7 @@ public class AutoHighBasketx4v2 extends LinearOpMode {
             }
             hardware.runIntake(RobotHardware.ActiveIntake.STOP);
             ///PICKUP
-            while (opModeIsActive() && !hardware.intakeTouch.getState() && !StateMachine.intakeActivePickupSequence()){
+            while (opModeIsActive() && !StateMachine.intakeActivePickupSequence()){
                 System.out.println("Auto: Active pickup sequence running.");
             }
             sleep(500);

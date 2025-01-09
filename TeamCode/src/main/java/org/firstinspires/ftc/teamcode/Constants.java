@@ -77,7 +77,7 @@ public class Constants {
 
     public static final double intakeLiftDropoffPosition = 0.45;
     //Intake Rotate
-    public static final double intakeRotateHome = 0.45; //Previously .40
+    public static final double intakeRotateHome = 0.425; //Previously .45
     public static final double intakeRotateDropoff = 0.40;
     public static final double intakeRotateIntakePosition = 0.80;
     public static final double intakeRotateHandoffPosition = 0.80;
@@ -89,7 +89,8 @@ public class Constants {
     ///AUTONOMOUS SETPOINTS
     public static final double autoIntakeLift = 0.55;
     //AUTO INTAKE SLIDE
-    public static final int autoIntakeSlideBasketLeft = 1775;
+    //public static final int autoIntakeSlideBasketLeft = 1775;
+    public static final int autoIntakeSlideBasketLeft = 450;
     public static final int autoIntakeSlideBasketCenter = 2000;
     //public static final int autoIntakeSlideBasketRight = 1600;
     //AUTO INTAKE ROTATE
@@ -113,9 +114,9 @@ public class Constants {
     //public static final double elevatorPivotHandoff = 0.14; //.125
 
     /// ACTIVE INTAKE
-    public static final double intakeLiftHandoff = 0.35;
+    public static final double intakeLiftHandoff = 0.33;
     public static final double intakeLiftSearchPosition = 0.55;
-    public static final double intakeLiftIntakePosition = 0.72;
-    public static final double elevatorPivotHandoff = 0.12;
+    public static final double intakeLiftIntakePosition = 0.685; //.72
+    public static final double elevatorPivotHandoff = 0.115;
 
 }
