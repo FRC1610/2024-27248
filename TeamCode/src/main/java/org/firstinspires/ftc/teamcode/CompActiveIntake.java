@@ -284,9 +284,10 @@ public class CompActiveIntake extends LinearOpMode {
             telemetry.addData("Intake Lift Pos",robot.intakeLift.getPosition());
             //telemetry.addData("Intake Pincher Rotate",robot.intakePincherRotate.getPosition());
             telemetry.addData("Intake Touch: ", robot.intakeTouch.getState());
-            telemetry.addData("Intake Color R: ", robot.intakeColor.red());
-            telemetry.addData("Intake Color G: ", robot.intakeColor.green());
-            telemetry.addData("Intake Color B: ", robot.intakeColor.blue());
+            telemetry.addData("Intake Prox (mm): ", robot.intakeDistance.getDistance(DistanceUnit.MM));
+            //telemetry.addData("Intake Color R: ", robot.intakeColor.red());
+            //telemetry.addData("Intake Color G: ", robot.intakeColor.green());
+            //telemetry.addData("Intake Color B: ", robot.intakeColor.blue());
             telemetry.addData("Detected Color: ", StateMachine.detectedColor);
             telemetry.update();
         }

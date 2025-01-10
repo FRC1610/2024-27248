@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
@@ -37,6 +38,7 @@ public class RobotHardware {
     public Servo intakeRight = null;
     public DigitalChannel intakeTouch = null;
     public ColorSensor intakeColor = null;
+    public DistanceSensor intakeDistance = null;
     private int intakeSlideLastPosition = 0;
     private boolean holdIntakeEnabled = true; // Controls whether to hold position
     public boolean allianceColorRed = false;
@@ -175,6 +177,7 @@ public class RobotHardware {
         intakeTouch = myOpMode.hardwareMap.get(DigitalChannel.class,"intakeTouch");
         intakeTouch.setMode(DigitalChannel.Mode.INPUT);
         intakeColor = myOpMode.hardwareMap.get(RevColorSensorV3.class, "intakeColor");
+        intakeDistance = myOpMode.hardwareMap.get(DistanceSensor.class, "intakeColor");
 
         ///Elevator Servos
         elevatorPivot = myOpMode.hardwareMap.get(Servo.class, "elevatorPivot");
