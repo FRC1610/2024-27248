@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drivers.rgbIndicator;
 
 
@@ -329,7 +330,7 @@ public class StateMachine {
                     IntakeTimer.reset();  // Reset the timer only once upon entering case 0
                     isIntakeTimerReset = true;
                 }
-                if (robot.intakeTouch.getState() && IntakeTimer.seconds() < 5) {
+                if (robot.intakeTouch.getState() && robot.intakeDistance.getDistance(DistanceUnit.MM) > Constants.intakeProx && IntakeTimer.seconds() < 5) {
                     if (robot.allianceColorRed){
                         robot.rgbIndicator.setColor(rgbIndicator.LEDColors.RED); // Set LED while searching
                     } else {
@@ -340,7 +341,7 @@ public class StateMachine {
                 } else {
                     robot.runIntake(RobotHardware.ActiveIntake.STOP); // Stop intake
                     isIntakeRunning = false;
-                    if (!robot.intakeTouch.getState()) {
+                    if (!robot.intakeTouch.getState() || robot.intakeDistance.getDistance(DistanceUnit.MM) < Constants.intakeProx) {
                         System.out.println("Limit switch triggered, moving to next step.");
                     } else {
                         System.out.println("Timeout reached, moving to next step.");

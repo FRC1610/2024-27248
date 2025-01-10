@@ -6,6 +6,7 @@
 
 package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot;
  * The IMU gyro is used to stabilize the heading during all motions
  */
 
+@Disabled
 @Autonomous(name="Sample Autonomous", group = "Mr. Phil")
 public class SampleAutonomous extends LinearOpMode
 {

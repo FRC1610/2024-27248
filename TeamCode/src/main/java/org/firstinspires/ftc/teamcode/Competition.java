@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -15,6 +16,7 @@ import com.qualcomm.hardware.limelightvision.LLResult;
 //import com.qualcomm.hardware.limelightvision.Limelight3A;
 import java.util.Locale;
 
+@Disabled
 @TeleOp(name = "Competition Main", group = "TeleOp")
 public class Competition extends LinearOpMode {
 
@@ -88,8 +90,8 @@ public class Competition extends LinearOpMode {
             ///MECANUM DRIVE
 
             // Get joystick inputs
-            y = -gamepad1.left_stick_y * 0.75; // Forward/backward - multiply by 0.75 to scale speed down
-            x = gamepad1.left_stick_x * 0.75;  // Strafe - multiply by 0.75 to scale speed down
+            y = -gamepad1.left_stick_y * 0.80; // Forward/backward - multiply by 0.75 to scale speed down
+            x = gamepad1.left_stick_x * 0.80;  // Strafe - multiply by 0.75 to scale speed down
             if (gamepad1.right_stick_button) {
                 rotation = gamepad1.right_stick_x * 0.45; //Slow rotation mode when button pressed in
             } else {

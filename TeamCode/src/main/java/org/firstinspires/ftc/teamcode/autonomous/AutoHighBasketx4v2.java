@@ -43,7 +43,7 @@ public class AutoHighBasketx4v2 extends LinearOpMode {
 
             ///Score in High Basket
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
-            sleep(700);
+            sleep(1000);
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
             sleep(400);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotWait);
@@ -91,57 +91,105 @@ public class AutoHighBasketx4v2 extends LinearOpMode {
             sleep(400);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
             hardware.setElevator(Constants.elevatorHome);
-            sleep(2500);
 
-            /*
+            ///Center Pickup
 
-            ///Elevator Up
-            hardware.setElevator(Constants.elevatorHighBasket);
-            while (opModeIsActive() &&
-                    hardware.elevatorLift.isBusy()
-            ) {
-                hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
-                //Duplicating these up into the Elevator Lift to save time
-                hardware.setIntakeSlide(Constants.autoIntakeSlideBasketCenter);
-                hardware.intakeLift.setPosition(Constants.autoIntakeLift);
-                hardware.intakePincherRotate.setPosition(Constants.autoIntakePincherRotateBasketCenter);
+            hardware.intakeLift.setPosition(Constants.intakeLiftIntakePosition);
+            sleep(250);
+            hardware.intakeRotate.setPosition(Constants.autoIntakeRotateBasketCenter);
+            sleep(250);
+            hardware.setIntakeSlide(Constants.autoIntakeSlideBasketCenter);
+            //runtime.reset();
+            while (opModeIsActive() && hardware.intakeSlide.isBusy()) {
+                hardware.elevatorPivot.setPosition(Constants.elevatorPivotWait);
+                hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
+                hardware.intakeLift.setPosition(Constants.intakeLiftIntakePosition);
                 hardware.intakeRotate.setPosition(Constants.autoIntakeRotateBasketCenter);
-                hardware.intakePincher.setPosition(Constants.intakePincherOpenAuto);
+                hardware.runIntake(RobotHardware.ActiveIntake.IN);
+            }
+
+            ///INTAKE UNTIL SENSOR - 2.5 SEC TIMEOUT
+            runtime.reset();
+            while (opModeIsActive() && runtime.seconds() < 2.5 && hardware.intakeTouch.getState()){
+                hardware.runIntake(RobotHardware.ActiveIntake.IN);
+            }
+            hardware.runIntake(RobotHardware.ActiveIntake.STOP);
+            ///PICKUP
+            while (opModeIsActive() && !StateMachine.intakeActivePickupSequence()){
+                System.out.println("Auto: Active pickup sequence running.");
+            }
+            sleep(500);
+            ///HANDOFF
+            while (opModeIsActive() && !StateMachine.ActiveHandoffSequence()){
+                System.out.println("Auto: Active handoff sequence running.");
+            }
+            sleep(500);
+            ///ELEVATOR UP & SCORE
+            hardware.setElevator(Constants.elevatorHighBasket);
+            while (opModeIsActive() && hardware.elevatorLift.isBusy()){
+                System.out.println("Waiting for elevator.");
             }
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
-            sleep(675);
+            sleep(700);
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
             sleep(400);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
             hardware.setElevator(Constants.elevatorHome);
-
-            ///Center Pickup
-
 
             ///Slide over to get right specimen
             robot.strafe(-10.25,0.6,0.20);
 
             ///Right (basically center again) Pickup
 
+            hardware.intakeLift.setPosition(Constants.intakeLiftIntakePosition);
+            sleep(250);
+            hardware.intakeRotate.setPosition(Constants.autoIntakeRotateBasketCenter);
+            sleep(250);
+            hardware.setIntakeSlide(Constants.autoIntakeSlideBasketCenter);
+            //runtime.reset();
+            while (opModeIsActive() && hardware.intakeSlide.isBusy()) {
+                hardware.elevatorPivot.setPosition(Constants.elevatorPivotWait);
+                hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
+                hardware.intakeLift.setPosition(Constants.intakeLiftIntakePosition);
+                hardware.intakeRotate.setPosition(Constants.autoIntakeRotateBasketCenter);
+                hardware.runIntake(RobotHardware.ActiveIntake.IN);
+            }
+
+            ///INTAKE UNTIL SENSOR - 2.5 SEC TIMEOUT
+            runtime.reset();
+            while (opModeIsActive() && runtime.seconds() < 2.5 && hardware.intakeTouch.getState()){
+                hardware.runIntake(RobotHardware.ActiveIntake.IN);
+            }
+            hardware.runIntake(RobotHardware.ActiveIntake.STOP);
+            ///PICKUP
+            while (opModeIsActive() && !StateMachine.intakeActivePickupSequence()){
+                System.out.println("Auto: Active pickup sequence running.");
+            }
+            sleep(500);
+            ///HANDOFF
+            while (opModeIsActive() && !StateMachine.ActiveHandoffSequence()){
+                System.out.println("Auto: Active handoff sequence running.");
+            }
+            sleep(500);
+
             //Strafe back to wall
             robot.strafe(10.25,0.6,0);
 
+            ///ELEVATOR UP & SCORE
             hardware.setElevator(Constants.elevatorHighBasket);
-            while (opModeIsActive() &&
-                    hardware.elevatorLift.isBusy()
-            ) {
-                hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
+            while (opModeIsActive() && hardware.elevatorLift.isBusy()){
+                System.out.println("Waiting for elevator.");
             }
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
-            sleep(675);
+            sleep(700);
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
-            sleep(250);
-            hardware.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
-            robot.drive(6,0.6,0);
+            sleep(400);
+            hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
             hardware.setElevator(Constants.elevatorHome);
+
             sleep(2500);
 
-             */
+
 
         }
     }

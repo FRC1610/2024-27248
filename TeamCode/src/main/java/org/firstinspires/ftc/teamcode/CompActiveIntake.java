@@ -86,8 +86,8 @@ public class CompActiveIntake extends LinearOpMode {
             ///MECANUM DRIVE
             double heading = pos.getHeading(AngleUnit.RADIANS);
             // Get joystick inputs
-            y = -gamepad1.left_stick_y * 0.75; // Forward/backward - multiply by 0.75 to scale speed down
-            x = gamepad1.left_stick_x * 0.75;  // Strafe - multiply by 0.75 to scale speed down
+            y = -gamepad1.left_stick_y * 0.85; // Forward/backward - multiply by 0.75 to scale speed down
+            x = gamepad1.left_stick_x * 0.85;  // Strafe - multiply by 0.75 to scale speed down
             if (gamepad1.right_stick_button) {
                 rotation = gamepad1.right_stick_x * 0.45; //Slow rotation mode when button pressed in
             } else {
@@ -262,7 +262,8 @@ public class CompActiveIntake extends LinearOpMode {
             if (gamepad1.right_trigger > 0.1){
                 if (robot.intakeTouch.getState()){
                     robot.runIntake(RobotHardware.ActiveIntake.IN);
-                } else if (!robot.intakeTouch.getState() && StateMachine.getState() != State.INTAKE_COLOR_CHECK) {
+                } else if (!robot.intakeTouch.getState() && StateMachine.getState() != State.INTAKE_COLOR_CHECK ||
+                    robot.intakeDistance.getDistance(DistanceUnit.MM) < Constants.intakeProx && StateMachine.getState() != State.INTAKE_COLOR_CHECK) {
                     robot.runIntake(RobotHardware.ActiveIntake.STOP);
                     gamepad1.rumble(500);
                     StateMachine.setState(State.INTAKE_COLOR_CHECK);

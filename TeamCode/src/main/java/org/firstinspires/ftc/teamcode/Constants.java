@@ -3,25 +3,27 @@ package org.firstinspires.ftc.teamcode;
 public class Constants {
     ///ELEVATOR SETPOINTS
     public static final int elevatorHome = 0;
-    //public static final int elevatorMax = 3500;
+
+    /*
     ///1150RPM SETTINGS
-    public static final int elevatorHighChamber = 450; //TODO Measure This
-    public static final int elevatorLowBar = 500;   //TODO Measure This
-    public static final int elevatorHighChamberScore = 100; //TODO Measure This
-    public static final int elevatorLowBasket = 1750; //TODO Measure This
+    public static final int elevatorHighChamber = 450;
+    public static final int elevatorLowBar = 500;
+    public static final int elevatorHighChamberScore = 100;
+    public static final int elevatorLowBasket = 1750;
     public static final int elevatorHighBasket = 975;
 
-    /* 435RPM OLD SETTINGS
+     */
+
+    /// 435RPM SETTINGS
     public static final int elevatorHighChamber = 450;
     public static final int elevatorLowBar = 500;
     public static final int elevatorHighChamberScore = 100; //400
     public static final int elevatorLowBasket = 1750;
-    public static final int elevatorHighBasket = 2375; //2400 original
-    */
+    public static final int elevatorHighBasket = 2350; //2400 original
 
     ///ELEVATOR POWER
     public static final double elevatorPowerUp = 1.0;
-    public static final double elevatorPowerDown = -0.75;
+    public static final double elevatorPowerDown = -0.85;
     public static final double elevatorPowerHome = -0.35;
 
     ///INTAKE SLIDE SETPOINTS
@@ -61,7 +63,7 @@ public class Constants {
     public static final double elevatorPincherRotateHandoff = 0.8;
 
     ///INTAKE SLIDE POWER
-    public static final double intakeSlidePowerOut = 0.95;
+    public static final double intakeSlidePowerOut = 0.50;
     public static final double intakeSlidePowerIn = -0.95;
     public static final double intakeSlidePowerHome = -0.35;
 
@@ -77,8 +79,8 @@ public class Constants {
 
     public static final double intakeLiftDropoffPosition = 0.45;
     //Intake Rotate
-    public static final double intakeRotateHome = 0.425; //Previously .45
-    public static final double intakeRotateDropoff = 0.40;
+    public static final double intakeRotateHome = 0.50; //Previously .45
+    public static final double intakeRotateDropoff = 0.45;
     public static final double intakeRotateIntakePosition = 0.80;
     public static final double intakeRotateHandoffPosition = 0.80;
     //Intake Pincher Rotate
@@ -91,11 +93,11 @@ public class Constants {
     //AUTO INTAKE SLIDE
     //public static final int autoIntakeSlideBasketLeft = 1775;
     public static final int autoIntakeSlideBasketLeft = 450;
-    public static final int autoIntakeSlideBasketCenter = 2000;
+    public static final int autoIntakeSlideBasketCenter = 525;
     //public static final int autoIntakeSlideBasketRight = 1600;
     //AUTO INTAKE ROTATE
     public static final double autoIntakeRotateBasketLeft = 0.935;
-    public static final double autoIntakeRotateBasketCenter = 0.6;
+    public static final double autoIntakeRotateBasketCenter = 0.625; //.60
     //public static final double autoIntakeRotateBasketRight = 0.75;
     //AUTO PINCHER ROTATE
     public static final double autoIntakePincherRotateBasketLeft = 0.64;
@@ -116,7 +118,8 @@ public class Constants {
     /// ACTIVE INTAKE
     public static final double intakeLiftHandoff = 0.33;
     public static final double intakeLiftSearchPosition = 0.55;
-    public static final double intakeLiftIntakePosition = 0.685; //.72
+    public static final double intakeLiftIntakePosition = 0.66; //.72
     public static final double elevatorPivotHandoff = 0.115;
+    public static final int intakeProx = 10;
 
 }
