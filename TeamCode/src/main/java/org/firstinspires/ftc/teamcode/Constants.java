@@ -118,7 +118,7 @@ public class Constants {
     /// ACTIVE INTAKE
     public static final double intakeLiftHandoff = 0.33;
     public static final double intakeLiftSearchPosition = 0.55;
-    public static final double intakeLiftIntakePosition = 0.66; //.72
+    public static final double intakeLiftIntakePosition = 0.67; //.72
     public static final double elevatorPivotHandoff = 0.115;
     public static final int intakeProx = 10;
 
