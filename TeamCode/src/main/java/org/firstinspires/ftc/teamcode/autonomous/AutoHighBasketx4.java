@@ -1,15 +1,21 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-//@Disabled
+import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.RobotHardware;
+import org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot;
+import org.firstinspires.ftc.teamcode.StateMachine;
+
+@Disabled
 @Autonomous(name="Auto High Basket x4", group="Auto")
 public class AutoHighBasketx4 extends LinearOpMode {
     RobotHardware hardware = new RobotHardware(this);
     private SimplifiedOdometryRobot robot = new SimplifiedOdometryRobot(this, hardware);
-    StateMachine StateMachine;
+    org.firstinspires.ftc.teamcode.StateMachine StateMachine;
     private ElapsedTime AutoTimer = new ElapsedTime();
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -46,7 +52,7 @@ public class AutoHighBasketx4 extends LinearOpMode {
                 hardware.intakeLift.setPosition(Constants.autoIntakeLift);
                 hardware.intakePincherRotate.setPosition(Constants.autoIntakePincherRotateBasketLeft);
                 hardware.intakeRotate.setPosition(Constants.autoIntakeRotateBasketLeft);
-                hardware.intakePincher.setPosition(Constants.intakePincherOpen);
+                hardware.intakePincher.setPosition(Constants.intakePincherOpenAuto);
             }
 
             runtime.reset();
@@ -74,7 +80,7 @@ public class AutoHighBasketx4 extends LinearOpMode {
 
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
             sleep(400);
-            hardware.intakePincher.setPosition(Constants.intakePincherOpen);
+            hardware.intakePincher.setPosition(Constants.intakePincherOpenAuto);
             sleep(375);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
             sleep(700);
@@ -102,7 +108,7 @@ public class AutoHighBasketx4 extends LinearOpMode {
                 hardware.intakeLift.setPosition(Constants.autoIntakeLift);
                 hardware.intakePincherRotate.setPosition(Constants.autoIntakePincherRotateBasketCenter);
                 hardware.intakeRotate.setPosition(Constants.autoIntakeRotateBasketCenter);
-                hardware.intakePincher.setPosition(Constants.intakePincherOpen);
+                hardware.intakePincher.setPosition(Constants.intakePincherOpenAuto);
             }
 
             runtime.reset();
@@ -130,7 +136,7 @@ public class AutoHighBasketx4 extends LinearOpMode {
 
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
             sleep(400);
-            hardware.intakePincher.setPosition(Constants.intakePincherOpen);
+            hardware.intakePincher.setPosition(Constants.intakePincherOpenAuto);
             sleep(375);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
             sleep(700);
@@ -162,7 +168,7 @@ public class AutoHighBasketx4 extends LinearOpMode {
                 hardware.intakeLift.setPosition(Constants.autoIntakeLift);
                 hardware.intakePincherRotate.setPosition(Constants.autoIntakePincherRotateBasketCenter);
                 hardware.intakeRotate.setPosition(Constants.autoIntakeRotateBasketCenter);
-                hardware.intakePincher.setPosition(Constants.intakePincherOpen);
+                hardware.intakePincher.setPosition(Constants.intakePincherOpenAuto);
             }
 
             runtime.reset();
@@ -190,7 +196,7 @@ public class AutoHighBasketx4 extends LinearOpMode {
 
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherClosed);
             sleep(400);
-            hardware.intakePincher.setPosition(Constants.intakePincherOpen);
+            hardware.intakePincher.setPosition(Constants.intakePincherOpenAuto);
             sleep(375);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotVertical);
             sleep(700);

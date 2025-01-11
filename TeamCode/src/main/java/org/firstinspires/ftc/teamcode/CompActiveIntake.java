@@ -1,28 +1,24 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-
 import org.firstinspires.ftc.teamcode.StateMachine.State;
 import org.firstinspires.ftc.teamcode.drivers.GoBildaPinpointDriver;
 
-import com.qualcomm.hardware.limelightvision.LLResult;
-//import com.qualcomm.hardware.limelightvision.Limelight3A;
 import java.util.Locale;
 
-@Disabled
-@TeleOp(name = "Competition Main", group = "TeleOp")
-public class Competition extends LinearOpMode {
+@TeleOp(name = "Comp Active Intake", group = "TeleOp")
+public class CompActiveIntake extends LinearOpMode {
 
     GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
 
-    org.firstinspires.ftc.teamcode.RobotHardware robot = new RobotHardware(this);
+    RobotHardware robot = new RobotHardware(this);
 
     StateMachine StateMachine;
 
@@ -88,17 +84,18 @@ public class Competition extends LinearOpMode {
             telemetry.addData("REV Hub Frequency: ", frequency); //prints the control system refresh rate
 
             ///MECANUM DRIVE
-
+            double heading = pos.getHeading(AngleUnit.RADIANS);
             // Get joystick inputs
-            y = -gamepad1.left_stick_y * 0.80; // Forward/backward - multiply by 0.75 to scale speed down
-            x = gamepad1.left_stick_x * 0.80;  // Strafe - multiply by 0.75 to scale speed down
+            y = -gamepad1.left_stick_y * 0.85; // Forward/backward - multiply by 0.75 to scale speed down
+            x = gamepad1.left_stick_x * 0.85;  // Strafe - multiply by 0.75 to scale speed down
             if (gamepad1.right_stick_button) {
                 rotation = gamepad1.right_stick_x * 0.45; //Slow rotation mode when button pressed in
             } else {
                 rotation = gamepad1.right_stick_x * 0.75; // Rotation - multiply by 0.75 to scale speed down
             }
 
-            robot.mecanumDrive(x, y, rotation);
+            //robot.mecanumDrive(x, y, rotation);
+            robot.FieldCentricDrive(x, y, rotation, heading);
 
             ///MANUAL CONTROL
 
@@ -141,6 +138,7 @@ public class Competition extends LinearOpMode {
                     robot.IntakeRotate(.005);
                 } else robot.IntakeRotate(0);
 
+                /*
                 if (gamepad1.dpad_up && StateMachine.getState() == State.PICKUP_SEARCH_HALF){
                     if (robot.intakeSlide.getCurrentPosition() < Constants.intakeSlideMax) {
                         intakeSlidePower = Constants.intakeSlidePowerOut;
@@ -153,6 +151,8 @@ public class Competition extends LinearOpMode {
                         StateMachine.getState() != State.PICKUP_RETRACT){
                 robot.runIntakeSlide(intakeSlidePower);
                 }
+                 */
+
             }
 
             ///RESET ENCODERS
@@ -166,6 +166,7 @@ public class Competition extends LinearOpMode {
             //Intake Pincher
             boolean IntakeButtonPressed = gamepad1.left_bumper; //Check if button pressed
 
+            /*
             /// Elevator Pincher Rotation Test
             //TODO Remove this once State Machine handles this
             if (gamepad2.a){
@@ -189,8 +190,10 @@ public class Competition extends LinearOpMode {
             telemetry.addData("Elev Pinch Rotate", robot.elevatorPincherRotate.getPosition());
             telemetry.addData("Elev Pinch Pos", robot.elevatorPincher.getPosition());
 
+             */
+
             ///STATE CHANGE BUTTON SETUP
-            //TODO Maybe rearrange this
+
             /// START
             if (gamepad1.start) {
                 StateMachine.setState(State.HOME);  //START = HOME Position
@@ -202,25 +205,13 @@ public class Competition extends LinearOpMode {
                 aPressed = true; // Register the button press
 
                 // Toggle logic based on the current state
-                if (StateMachine.getState() == State.SEARCH_FULL
-                      //  || StateMachine.getState() == State.PICKUP_SEARCH_FULL
-                ) {StateMachine.setState(State.PICKUP_SEARCH_HALF); // Switch to PICKUP_SEARCH_HALF
-                } else if (StateMachine.getState() == State.SEARCH_HALF
-                      //  || StateMachine.getState() == State.PICKUP_SEARCH_HALF
-                ) {StateMachine.setState(State.PICKUP_SEARCH_FULL); // Switch to PICKUP_SEARCH_FULL
+                if (StateMachine.getState() == State.SEARCH_FULL) {
+                    StateMachine.setState(State.PICKUP_SEARCH_HALF); // Switch to PICKUP_SEARCH_HALF
+                } else if (StateMachine.getState() == State.SEARCH_HALF) {
+                    StateMachine.setState(State.PICKUP_SEARCH_FULL); // Switch to PICKUP_SEARCH_FULL
                 } else StateMachine.setState(State.PICKUP_SEARCH_HALF);
             }
 
-/*
-            /// A
-            } else if (gamepad1.a && StateMachine.getState() != State.SEARCH_HALF ||
-                    gamepad1.a && StateMachine.getState() != State.PICKUP_SEARCH_FULL) {
-                StateMachine.setState(State.PICKUP_SEARCH_HALF); //A = PICKUP_SEARCH_HALF Position
-                //aPressed = true;
-            } else if (gamepad1.a && StateMachine.getState() != State.SEARCH_FULL ||
-                    gamepad1.a && StateMachine.getState() != State.PICKUP_SEARCH_HALF ){
-                StateMachine.setState(State.PICKUP_SEARCH_FULL);
-*/
             /// B
             else if (gamepad1.b && StateMachine.getState() == State.INTAKE_WAIT) {
                 StateMachine.setState(State.DROPOFF);
@@ -236,34 +227,27 @@ public class Competition extends LinearOpMode {
                 StateMachine.setState(State.HANDOFF);
             } else if (gamepad1.y && StateMachine.getState() == State.HANDOFF_WAIT) {
                 StateMachine.setState(State.HIGH_BASKET);
-
-
+            }
 
             /// RB
-            } else if (gamepad1.right_bumper &&
+            else if (gamepad1.right_bumper &&
                     StateMachine.getState() == State.WALL_PICKUP
                     && !RightBumperPressed) {
                 StateMachine.setState(State.WALL_TO_CHAMBER);
                 RightBumperPressed = true;
-            } else if (gamepad1.right_bumper &&
-                    StateMachine.getState() != State.HANDOFF_WAIT &&
-                    !RightBumperPressed) {
-                StateMachine.setState(State.PICKUP_RETRACT);
-                RightBumperPressed = true;
+            }
             /// LB
-            } else if (gamepad1.left_bumper && !leftBumperPressed) {
-                if (StateMachine.getState() == State.SEARCH_WAIT) {
-                    StateMachine.setState(State.MINI_INTAKE);
-                } else if (StateMachine.getState() == State.PICKUP_WAIT) {
-                    StateMachine.setState(State.INTAKE_SEARCH);
-                } else if (StateMachine.getState() == State.WALL_TO_CHAMBER) {
+            else if (gamepad1.left_bumper && !leftBumperPressed){
+                if (StateMachine.getState() == State.WALL_TO_CHAMBER) {
                     StateMachine.setState(State.SCORE_CHAMBER);
                 } else if (StateMachine.getState() == State.HIGH_BASKET){
                     StateMachine.setState(State.HIGH_BASKET_SCORE);
                 }
                 leftBumperPressed = true;
-            } else if (!gamepad1.left_bumper) {
-                leftBumperPressed = false;
+            }
+
+            if (!gamepad1.left_bumper) {
+                 leftBumperPressed = false;
             }
 
             if (!gamepad1.right_bumper) {
@@ -274,24 +258,38 @@ public class Competition extends LinearOpMode {
                 aPressed = false;
             }
 
+            ///ACTIVE INTAKE
             if (gamepad1.right_trigger > 0.1){
-                robot.IntakePincherRotate(-0.01);
+                if (robot.intakeTouch.getState()){
+                    robot.runIntake(RobotHardware.ActiveIntake.IN);
+                } else if (!robot.intakeTouch.getState() && StateMachine.getState() != State.INTAKE_COLOR_CHECK ||
+                    robot.intakeDistance.getDistance(DistanceUnit.MM) < Constants.intakeProx && StateMachine.getState() != State.INTAKE_COLOR_CHECK) {
+                    robot.runIntake(RobotHardware.ActiveIntake.STOP);
+                    gamepad1.rumble(500);
+                    StateMachine.setState(State.INTAKE_COLOR_CHECK);
+                }
             } else if (gamepad1.left_trigger > 0.1) {
-                robot.IntakePincherRotate(0.01);
+                robot.runIntake(RobotHardware.ActiveIntake.OUT);
             } else {
-                robot.IntakePincherRotate(0);
+                robot.runIntake(RobotHardware.ActiveIntake.STOP);
             }
 
+
             StateMachine.update(); //Update state machine in case of long running tasks
+
             telemetry.addData("State", StateMachine.getState());
-
-
             telemetry.addData("Elevator Pos", robot.elevatorLift.getCurrentPosition());
             telemetry.addData("Intake Slide Pos", robot.intakeSlide.getCurrentPosition());
-            telemetry.addData("Intake Pincher Pos",robot.intakePincher.getPosition());
+            //telemetry.addData("Intake Pincher Pos",robot.intakePincher.getPosition());
             telemetry.addData("Intake Rotate Pos",robot.intakeRotate.getPosition());
             telemetry.addData("Intake Lift Pos",robot.intakeLift.getPosition());
-            telemetry.addData("Intake Pincher Rotate",robot.intakePincherRotate.getPosition());
+            //telemetry.addData("Intake Pincher Rotate",robot.intakePincherRotate.getPosition());
+            telemetry.addData("Intake Touch: ", robot.intakeTouch.getState());
+            telemetry.addData("Intake Prox (mm): ", robot.intakeDistance.getDistance(DistanceUnit.MM));
+            //telemetry.addData("Intake Color R: ", robot.intakeColor.red());
+            //telemetry.addData("Intake Color G: ", robot.intakeColor.green());
+            //telemetry.addData("Intake Color B: ", robot.intakeColor.blue());
+            telemetry.addData("Detected Color: ", StateMachine.detectedColor);
             telemetry.update();
         }
     }

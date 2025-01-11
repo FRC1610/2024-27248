@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import org.firstinspires.ftc.teamcode.rgbIndicator.LEDColors;
+
+import org.firstinspires.ftc.teamcode.drivers.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.drivers.rgbIndicator;
+import org.firstinspires.ftc.teamcode.drivers.rgbIndicator.LEDColors;
 //import com.qualcomm.robotcore.hardware.LED;
 
 public class RobotHardware {
@@ -16,22 +21,38 @@ public class RobotHardware {
     private LinearOpMode myOpMode = null;   // gain access to methods in the calling OpMode.
 
     // Define Motor and Servo objects  (Make them private so they can't be accessed externally)
-    DcMotor leftFront = null;
-    DcMotor rightFront = null;
-    DcMotor leftBack = null;
-    DcMotor rightBack = null;
-    DcMotorEx elevatorLift = null;
-    DcMotorEx intakeSlide = null;
-    Servo intakePincher = null;
-    Servo intakeRotate = null;
-    Servo intakeLift = null;
-    Servo intakePincherRotate = null;
-    Servo elevatorPivot = null;
-    Servo elevatorPincher = null;
-    Servo elevatorPincherRotate = null;
+    public DcMotor leftFront = null;
+    public DcMotor rightFront = null;
+    public DcMotor leftBack = null;
+    public DcMotor rightBack = null;
+    public DcMotorEx elevatorLift = null;
+    public DcMotorEx intakeSlide = null;
+    public Servo intakePincher = null;
+    public Servo intakeRotate = null;
+    public Servo intakeLift = null;
+    public Servo intakePincherRotate = null;
+    public Servo elevatorPivot = null;
+    public Servo elevatorPincher = null;
+    public Servo elevatorPincherRotate = null;
+    public Servo intakeLeft = null;
+    public Servo intakeRight = null;
+    public DigitalChannel intakeTouch = null;
+    public ColorSensor intakeColor = null;
+    public DistanceSensor intakeDistance = null;
+    private int intakeSlideLastPosition = 0;
+    private boolean holdIntakeEnabled = true; // Controls whether to hold position
+    public boolean allianceColorRed = false;
+    public boolean allianceColorBlue = false;
+    private ActiveIntake currentIntakeState = ActiveIntake.STOP;
+
+    public enum ActiveIntake{
+        IN,
+        OUT,
+        STOP
+    }
     Limelight3A limelight = null;
     GoBildaPinpointDriver odo = null; // Declare OpMode member for the Odometry Computer
-    rgbIndicator rgbIndicator = null;
+    org.firstinspires.ftc.teamcode.drivers.rgbIndicator rgbIndicator = null;
     //private RevBlinkinLedDriver blinkinLedDriver = null;
     //private RevBlinkinLedDriver.BlinkinPattern pattern = null;
     private DigitalChannel allianceButton = null;
@@ -52,7 +73,16 @@ public class RobotHardware {
     public void init()    {
 
         rgbIndicator = new rgbIndicator(myOpMode.hardwareMap, "rgbLight");
-        rgbIndicator.setColor(LEDColors.YELLOW);
+        //rgbIndicator.setColor(LEDColors.YELLOW);
+
+        allianceButton = myOpMode.hardwareMap.get(DigitalChannel.class, "allianceButton");
+        if (allianceButton.getState()){
+            allianceColorRed = true;
+            rgbIndicator.setColor(LEDColors.RED);
+        } else {
+            allianceColorBlue = true;
+            rgbIndicator.setColor(LEDColors.BLUE);
+        }
 
         ///GoBilda Odometry Pod Setup
         //Deploy to Control Hub to make Odometry Pod show in hardware selection list
@@ -83,7 +113,7 @@ public class RobotHardware {
 
          */
 
-        ///Motor Setup
+        ///Drive Motor Setup
         // Define and Initialize Drive Motors
         leftFront  = myOpMode.hardwareMap.get(DcMotorEx.class, "leftFront");
         rightFront = myOpMode.hardwareMap.get(DcMotorEx.class, "rightFront");
@@ -107,18 +137,23 @@ public class RobotHardware {
         rightBack.setDirection(DcMotor.Direction.REVERSE);
 
         ///Linear Slide Motor Setup
+        //ELEVATOR
         elevatorLift = myOpMode.hardwareMap.get(DcMotorEx.class, "elevatorLift");
-        intakeSlide = myOpMode.hardwareMap.get(DcMotorEx.class,"intakeSlide");
-
         elevatorLift.setDirection(DcMotor.Direction.REVERSE);
-        intakeSlide.setDirection(DcMotor.Direction.REVERSE);
-
-        intakeSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        elevatorLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        elevatorLift.setTargetPositionTolerance(5);
         elevatorLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        elevatorLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        elevatorLift.setTargetPosition(Constants.elevatorHome);
+        elevatorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //INTAKE
+        intakeSlide = myOpMode.hardwareMap.get(DcMotorEx.class,"intakeSlide");
+        intakeSlide.setDirection(DcMotor.Direction.REVERSE);
+        intakeSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intakeSlide.setTargetPositionTolerance(5);
         intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        intakeSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        intakeSlide.setTargetPosition(Constants.intakeSlideHome);
+        intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Define and initialize ALL installed servos.
         ///Intake Servos
@@ -133,6 +168,16 @@ public class RobotHardware {
 
         intakePincherRotate = myOpMode.hardwareMap.get(Servo.class, "intakePincherRotate");
         intakePincherRotate.setPosition(Constants.intakePincherRotateHome);
+
+        //Active Intake Servos
+        intakeLeft = myOpMode.hardwareMap.get(Servo.class, "intakeLeft");
+        intakeRight = myOpMode.hardwareMap.get(Servo.class, "intakeRight");
+
+        //Intake Sensors
+        intakeTouch = myOpMode.hardwareMap.get(DigitalChannel.class,"intakeTouch");
+        intakeTouch.setMode(DigitalChannel.Mode.INPUT);
+        intakeColor = myOpMode.hardwareMap.get(RevColorSensorV3.class, "intakeColor");
+        intakeDistance = myOpMode.hardwareMap.get(DistanceSensor.class, "intakeColor");
 
         ///Elevator Servos
         elevatorPivot = myOpMode.hardwareMap.get(Servo.class, "elevatorPivot");
@@ -186,7 +231,25 @@ public class RobotHardware {
         leftBackPower /= maxPower;
         rightBackPower /= maxPower;
 
-        // Use existing function to drive both wheels.
+        // Use existing function to drive the wheels.
+        setDrivePower(leftFrontPower, rightFrontPower, leftBackPower, rightBackPower);
+    }
+
+    public void FieldCentricDrive(double x, double y, double rx, double botHeading){
+        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
+        rotX = rotX * 1.1;  // Counteract imperfect strafing
+
+        // Denominator is the largest motor power (absolute value) or 1
+        // This ensures all the powers maintain the same ratio,
+        // but only if at least one is out of the range [-1, 1]
+        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+        double leftFrontPower = (rotY + rotX + rx) / denominator;
+        double leftBackPower = (rotY - rotX + rx) / denominator;
+        double rightFrontPower = (rotY - rotX - rx) / denominator;
+        double rightBackPower = (rotY + rotX - rx) / denominator;
+
         setDrivePower(leftFrontPower, rightFrontPower, leftBackPower, rightBackPower);
     }
 
@@ -230,7 +293,9 @@ public class RobotHardware {
     public void setElevator (int elevatorTargetPosition){
         double elevatorPower = 0;
         int ElevatorCurrentPosition = elevatorLift.getCurrentPosition();
-        if (elevatorTargetPosition > ElevatorCurrentPosition){
+        if (elevatorTargetPosition < 0 ){
+            elevatorPower = 0;
+        } else if (elevatorTargetPosition > ElevatorCurrentPosition){
             elevatorPower = Constants.elevatorPowerUp;
         } else
             elevatorPower = Constants.elevatorPowerDown;
@@ -247,8 +312,11 @@ public class RobotHardware {
      */
     public void setIntakeSlide (int intakeSlideTargetPosition){
         double intakeSlidePower = 0;
+        intakeSlideLastPosition = intakeSlideTargetPosition;
         int intakeSlideCurrentPosition = intakeSlide.getCurrentPosition();
-        if (intakeSlideTargetPosition < intakeSlideCurrentPosition){
+        if (intakeSlideTargetPosition <0 ){
+            intakeSlidePower = 0;
+        } else if (intakeSlideTargetPosition > intakeSlideCurrentPosition){
             intakeSlidePower = Constants.intakeSlidePowerOut;
         } else
             intakeSlidePower = Constants.intakeSlidePowerIn;
@@ -256,6 +324,22 @@ public class RobotHardware {
         intakeSlide.setTargetPosition(intakeSlideTargetPosition);
         intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         intakeSlide.setPower(intakeSlidePower);
+    }
+
+    public void holdIntakeSlidePosition (){
+        if (holdIntakeEnabled) {
+            intakeSlide.setTargetPosition(intakeSlideLastPosition);
+            intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            intakeSlide.setPower(0.1); // Minimal power to hold position
+        }
+    }
+
+    public void disableHoldIntake() {
+        holdIntakeEnabled = false;
+    }
+
+    public void enableHoldIntake() {
+        holdIntakeEnabled = true;
     }
 
     /**
@@ -312,7 +396,7 @@ public class RobotHardware {
         intakeLift.setPosition(NewPosition);
     }
 
-    public void elevatorPivot(double PosChange){
+    public void ElevatorPivot(double PosChange){
         double CurrentPosition = elevatorPivot.getPosition();
         double NewPosition = CurrentPosition + PosChange;
         elevatorPivot.setPosition(NewPosition);
@@ -323,4 +407,22 @@ public class RobotHardware {
         double NewPosition = CurrentPosition + PosChange;
         elevatorPincher.setPosition(NewPosition);
     }
+
+    public void runIntake(ActiveIntake Direction) {
+        if (Direction != currentIntakeState) { //Only send commands if the state changes
+            currentIntakeState = Direction; // Update the current state
+
+            if (Direction == ActiveIntake.OUT) {
+                intakeLeft.setPosition(1.0);  // Full speed in
+                intakeRight.setPosition(0.0); // Full speed in (opposite)
+            } else if (Direction == ActiveIntake.IN && intakeTouch.getState()) {
+                intakeLeft.setPosition(0.0);  // Full speed out
+                intakeRight.setPosition(1.0); // Full speed out (opposite)
+            } else if (Direction == ActiveIntake.STOP) {
+                intakeLeft.setPosition(0.5);  // Stop
+                intakeRight.setPosition(0.5); // Stop
+            }
+        }
+    }
+
 }

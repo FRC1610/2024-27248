@@ -1,15 +1,21 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-//@Disabled
+import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.RobotHardware;
+import org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot;
+import org.firstinspires.ftc.teamcode.StateMachine;
+
+@Disabled
 @Autonomous(name="Auto Chamber x1", group="Auto")
 public class AutoChamberx1 extends LinearOpMode {
     RobotHardware hardware = new RobotHardware(this);
     private SimplifiedOdometryRobot robot = new SimplifiedOdometryRobot(this, hardware);
-    StateMachine StateMachine;
+    org.firstinspires.ftc.teamcode.StateMachine StateMachine;
     private ElapsedTime AutoTimer = new ElapsedTime();
     private ElapsedTime runtime = new ElapsedTime();
 

@@ -4,10 +4,14 @@
     See the readme for a link to a video tutorial explaining the operation and limitations of the code.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+import org.firstinspires.ftc.teamcode.RobotHardware;
+import org.firstinspires.ftc.teamcode.SimplifiedOdometryRobot;
 
 /*
  * This OpMode illustrates an autonomous opmode using simple Odometry
@@ -16,6 +20,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  * The IMU gyro is used to stabilize the heading during all motions
  */
 
+@Disabled
 @Autonomous(name="Sample Autonomous", group = "Mr. Phil")
 public class SampleAutonomous extends LinearOpMode
 {
