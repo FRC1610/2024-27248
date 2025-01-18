@@ -392,7 +392,9 @@ public class StateMachine {
                         (detectedColor == DetectedColor.BLUE && robot.allianceColorBlue)) {
                     ColorCheckSubstep++;
                     break;
-                } else {
+                } else if (detectedColor == DetectedColor.RED && robot.allianceColorBlue ||
+                        detectedColor == DetectedColor.BLUE && robot.allianceColorRed
+                ){
                     //Got a color we don't want, spit it out and restart this case
                     robot.runIntake(RobotHardware.ActiveIntake.OUT);
                     if (ColorCheckEjectTimer.seconds() > 0.50){

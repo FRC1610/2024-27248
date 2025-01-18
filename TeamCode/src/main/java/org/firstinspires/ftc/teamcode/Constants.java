@@ -39,6 +39,7 @@ public class Constants {
 
     ///1150 RPM SETTINGS
     public static final int intakeSlideHome = 0;
+    public static final int intakeSlideAutoReady = 300;
     public static final int intakeSlideHalf = 250;
     public static final int intakeSlideFull = 500;
     public static final int intakeSlideMax = 550;
@@ -63,7 +64,7 @@ public class Constants {
     public static final double elevatorPincherRotateHandoff = 0.8;
 
     ///INTAKE SLIDE POWER
-    public static final double intakeSlidePowerOut = 0.50;
+    public static final double intakeSlidePowerOut = 0.25; //TODO fix this for Teleop
     public static final double intakeSlidePowerIn = -0.95;
     public static final double intakeSlidePowerHome = -0.35;
 
@@ -73,7 +74,7 @@ public class Constants {
     public static final double intakePincherOpen = 0.75; //Original 0.60
     public static final double intakePincherOpenAuto = 0.80;
     //Intake Lift
-    public static final double intakeLiftFullBack = 0.12;
+    //public static final double intakeLiftFullBack = 0.12;
 
     public static final double intakeLiftHome = 0.30;
 
@@ -96,8 +97,8 @@ public class Constants {
     public static final int autoIntakeSlideBasketCenter = 525;
     //public static final int autoIntakeSlideBasketRight = 1600;
     //AUTO INTAKE ROTATE
-    public static final double autoIntakeRotateBasketLeft = 0.935;
-    public static final double autoIntakeRotateBasketCenter = 0.625; //.60
+    public static final double autoIntakeRotateBasketLeft = 0.935; //.935
+    public static final double autoIntakeRotateBasketCenter = 0.635; //.625
     //public static final double autoIntakeRotateBasketRight = 0.75;
     //AUTO PINCHER ROTATE
     public static final double autoIntakePincherRotateBasketLeft = 0.64;
@@ -116,10 +117,10 @@ public class Constants {
     //public static final double elevatorPivotHandoff = 0.14; //.125
 
     /// ACTIVE INTAKE
-    public static final double intakeLiftHandoff = 0.33;
+    public static final double intakeLiftHandoff = 0.30; //.33
     public static final double intakeLiftSearchPosition = 0.55;
-    public static final double intakeLiftIntakePosition = 0.67; //.72
-    public static final double elevatorPivotHandoff = 0.115;
+    public static final double intakeLiftIntakePosition = 0.66; //.67
+    public static final double elevatorPivotHandoff = 0.10; //.115
     public static final int intakeProx = 10;
 
 }

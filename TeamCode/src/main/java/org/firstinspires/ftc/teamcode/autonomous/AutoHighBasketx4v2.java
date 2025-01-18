@@ -42,6 +42,7 @@ public class AutoHighBasketx4v2 extends LinearOpMode {
             robot.strafe(24,0.75,0.15);
 
             ///Score in High Basket
+            hardware.setIntakeSlide(Constants.intakeSlideAutoReady);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
             sleep(1000);
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
@@ -66,7 +67,8 @@ public class AutoHighBasketx4v2 extends LinearOpMode {
 
             ///INTAKE UNTIL SENSOR - 2.5 SEC TIMEOUT
             runtime.reset();
-            while (opModeIsActive() && runtime.seconds() < 2.5 && hardware.intakeTouch.getState()){
+            hardware.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
+            while (opModeIsActive() && runtime.seconds() < 1.5 && hardware.intakeTouch.getState()){
                 hardware.runIntake(RobotHardware.ActiveIntake.IN);
             }
             hardware.runIntake(RobotHardware.ActiveIntake.STOP);
@@ -85,6 +87,7 @@ public class AutoHighBasketx4v2 extends LinearOpMode {
             while (opModeIsActive() && hardware.elevatorLift.isBusy()){
                 System.out.println("Waiting for elevator.");
             }
+            hardware.setIntakeSlide(Constants.intakeSlideAutoReady);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
             sleep(700);
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
@@ -110,7 +113,8 @@ public class AutoHighBasketx4v2 extends LinearOpMode {
 
             ///INTAKE UNTIL SENSOR - 2.5 SEC TIMEOUT
             runtime.reset();
-            while (opModeIsActive() && runtime.seconds() < 2.5 && hardware.intakeTouch.getState()){
+            hardware.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
+            while (opModeIsActive() && runtime.seconds() < 1.5 && hardware.intakeTouch.getState()){
                 hardware.runIntake(RobotHardware.ActiveIntake.IN);
             }
             hardware.runIntake(RobotHardware.ActiveIntake.STOP);
@@ -129,6 +133,7 @@ public class AutoHighBasketx4v2 extends LinearOpMode {
             while (opModeIsActive() && hardware.elevatorLift.isBusy()){
                 System.out.println("Waiting for elevator.");
             }
+            hardware.setIntakeSlide(Constants.intakeSlideAutoReady);
             hardware.elevatorPivot.setPosition(Constants.elevatorPivotBasket);
             sleep(700);
             hardware.elevatorPincher.setPosition(Constants.elevatorPincherOpen);
@@ -157,7 +162,8 @@ public class AutoHighBasketx4v2 extends LinearOpMode {
 
             ///INTAKE UNTIL SENSOR - 2.5 SEC TIMEOUT
             runtime.reset();
-            while (opModeIsActive() && runtime.seconds() < 2.5 && hardware.intakeTouch.getState()){
+            hardware.elevatorPivot.setPosition(Constants.elevatorPivotHandoff);
+            while (opModeIsActive() && runtime.seconds() < 1.5 && hardware.intakeTouch.getState()){
                 hardware.runIntake(RobotHardware.ActiveIntake.IN);
             }
             hardware.runIntake(RobotHardware.ActiveIntake.STOP);

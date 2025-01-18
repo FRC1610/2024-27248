@@ -86,12 +86,12 @@ public class CompActiveIntake extends LinearOpMode {
             ///MECANUM DRIVE
             double heading = pos.getHeading(AngleUnit.RADIANS);
             // Get joystick inputs
-            y = -gamepad1.left_stick_y * 0.85; // Forward/backward - multiply by 0.75 to scale speed down
-            x = gamepad1.left_stick_x * 0.85;  // Strafe - multiply by 0.75 to scale speed down
+            y = -gamepad1.left_stick_y; // Forward/backward - multiply by 0.75 to scale speed down
+            x = gamepad1.left_stick_x;  // Strafe - multiply by 0.75 to scale speed down
             if (gamepad1.right_stick_button) {
                 rotation = gamepad1.right_stick_x * 0.45; //Slow rotation mode when button pressed in
             } else {
-                rotation = gamepad1.right_stick_x * 0.75; // Rotation - multiply by 0.75 to scale speed down
+                rotation = gamepad1.right_stick_x * 0.85; // Rotation - multiply by 0.75 to scale speed down
             }
 
             //robot.mecanumDrive(x, y, rotation);
