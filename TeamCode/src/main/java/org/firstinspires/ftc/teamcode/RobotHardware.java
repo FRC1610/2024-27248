@@ -53,11 +53,7 @@ public class RobotHardware {
     Limelight3A limelight = null;
     GoBildaPinpointDriver odo = null; // Declare OpMode member for the Odometry Computer
     org.firstinspires.ftc.teamcode.drivers.rgbIndicator rgbIndicator = null;
-    //private RevBlinkinLedDriver blinkinLedDriver = null;
-    //private RevBlinkinLedDriver.BlinkinPattern pattern = null;
     private DigitalChannel allianceButton = null;
-    //private LED LED_red = null;
-    //private LED LED_green = null;
 
     // Define a constructor that allows the OpMode to pass a reference to itself.
     public RobotHardware(LinearOpMode opmode) {
@@ -91,27 +87,6 @@ public class RobotHardware {
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
         odo.resetPosAndIMU();
-
-        ///REV LED Setup
-        //LED_green = myOpMode.hardwareMap.get(LED.class, "LED_green");
-        //LED_red = myOpMode.hardwareMap.get(LED.class, "LED_red");
-
-        /*
-        ///Blinkin Setup
-        blinkinLedDriver = myOpMode.hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
-        allianceButton = myOpMode.hardwareMap.get(DigitalChannel.class,"allianceButton");
-        if (allianceButton.getState()) {
-            pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_RED;
-            LED_red.on();
-            LED_green.off();
-        } else {
-            pattern = RevBlinkinLedDriver.BlinkinPattern.HEARTBEAT_BLUE;
-            LED_red.off();
-            LED_green.on();
-        }
-        blinkinLedDriver.setPattern(pattern);
-
-         */
 
         ///Drive Motor Setup
         // Define and Initialize Drive Motors
@@ -267,12 +242,6 @@ public class RobotHardware {
         rightFront.setPower(rightFrontPower);
         leftBack.setPower(leftBackPower);
         rightBack.setPower(rightBackPower);
-
-        //myOpMode.telemetry.addData("Front Left Power", leftFrontPower);
-        //myOpMode.telemetry.addData("Front Right Power", rightFrontPower);
-        //myOpMode.telemetry.addData("Rear Left Power", leftBackPower);
-        //myOpMode.telemetry.addData("Rear Right Power", rightBackPower);
-        //myOpMode.telemetry.update();
     }
 
     /**

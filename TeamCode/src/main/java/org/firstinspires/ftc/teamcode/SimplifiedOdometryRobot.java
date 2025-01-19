@@ -63,14 +63,6 @@ public class SimplifiedOdometryRobot {
 
     private RobotHardware hardware;
 
-    //private DcMotor leftFront;     //  control the left front drive wheel
-    //private DcMotor rightFront;    //  control the right front drive wheel
-    //private DcMotor leftBack;      //  control the left back drive wheel
-    //private DcMotor rightBack;     //  control the right back drive wheel
-
-    //private DcMotor driveEncoder;       //  the Axial (front/back) Odometry Module (may overlap with motor, or may not)
-    //private DcMotor strafeEncoder;      //  the Lateral (left/right) Odometry Module (may overlap with motor, or may not)
-
     private LinearOpMode myOpMode;
     //private IMU imu;
     private ElapsedTime holdTimer = new ElapsedTime();  // User for any motion requiring a hold time or timeout.
@@ -100,31 +92,6 @@ public class SimplifiedOdometryRobot {
     public void initialize(boolean showTelemetry)
     {
         hardware.init();
-        // Initialize the hardware variables. Note that the strings used to 'get' each
-        // motor/device must match the names assigned during the robot configuration.
-
-        // !!!  Set the drive direction to ensure positive power drives each wheel forward.
-        //leftFront  = setupDriveMotor("leftFront", DcMotor.Direction.REVERSE);
-        //rightFront = setupDriveMotor("rightFront", DcMotor.Direction.FORWARD);
-        //leftBack  = setupDriveMotor( "leftBack", DcMotor.Direction.REVERSE);
-        //rightBack = setupDriveMotor( "rightBack",DcMotor.Direction.FORWARD);
-        //imu = myOpMode.hardwareMap.get(IMU.class, "imu");
-
-        //  Connect to the encoder channels using the name of that channel.
-        //driveEncoder = myOpMode.hardwareMap.get(DcMotor.class, "axial");
-        //strafeEncoder = myOpMode.hardwareMap.get(DcMotor.class, "lateral");
-
-        // Set all hubs to use the AUTO Bulk Caching mode for faster encoder reads
-        //List<LynxModule> allHubs = myOpMode.hardwareMap.getAll(LynxModule.class);
-        //for (LynxModule module : allHubs) {
-        //    module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-        //}
-
-        // Tell the software how the Control Hub is mounted on the robot to align the IMU XYZ axes correctly
-        //RevHubOrientationOnRobot orientationOnRobot =
-        //       new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,
-        //                                    RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
-        //imu.initialize(new IMU.Parameters(orientationOnRobot));
 
         // zero out all the odometry readings.
         resetOdometry();
@@ -163,12 +130,6 @@ public class SimplifiedOdometryRobot {
         strafeDistance = (rawStrafeOdometer - strafeOdometerOffset);
 
         Pose2D vel = hardware.odo.getVelocity();
-        //vel.getHeading(AngleUnit.DEGREES);
-
-        //YawPitchRollAngles orientation = hardware.odo.getRobotYawPitchRollAngles();
-        //AngularVelocity angularVelocity = hardware.odo.getRobotAngularVelocity(AngleUnit.DEGREES);
-        //YawPitchRollAngles orientation =
-        //double angularVelocity = hardware.odo.getHeadingVelocity();
 
         rawHeading  = pos.getHeading(AngleUnit.DEGREES);
         heading     = rawHeading - headingOffset;
