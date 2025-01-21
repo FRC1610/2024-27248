@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -27,6 +28,8 @@ public class RobotHardware {
     public DcMotor rightBack = null;
     public DcMotorEx elevatorLift = null;
     public DcMotorEx intakeSlide = null;
+    public DcMotorEx climberTilt = null;
+    public DcMotorEx climberExtend = null;
     public Servo intakePincher = null;
     public Servo intakeRotate = null;
     public Servo intakeLift = null;
@@ -129,6 +132,22 @@ public class RobotHardware {
         intakeSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         intakeSlide.setTargetPosition(Constants.intakeSlideHome);
         intakeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        ///CLIMBER SETUP
+
+        climberTilt = myOpMode.hardwareMap.get(DcMotorEx.class, "climberTilt");
+        //climberTilt.setDirection(DcMotorSimple.Direction.REVERSE);
+        climberTilt.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        climberTilt.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        climberTilt.setTargetPosition(Constants.climberTiltHome);
+        climberTilt.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        climberExtend = myOpMode.hardwareMap.get(DcMotorEx.class, "climberExtend");
+        //climberExtend.setDirection(DcMotorSimple.Direction.REVERSE);
+        climberExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        climberExtend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        climberExtend.setTargetPosition(Constants.climberExtendHome);
+        climberExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Define and initialize ALL installed servos.
         ///Intake Servos

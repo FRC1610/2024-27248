@@ -123,4 +123,8 @@ public class Constants {
     public static final double elevatorPivotHandoff = 0.10; //.115
     public static final int intakeProx = 10;
 
+    /// CLIMBER
+    public static final int climberTiltHome = 0;
+    public static final int climberExtendHome = 0;
+
 }
