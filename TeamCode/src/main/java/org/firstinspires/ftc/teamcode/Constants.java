@@ -125,6 +125,8 @@ public class Constants {
 
     /// CLIMBER
     public static final int climberTiltHome = 0;
+    public static final int climberTiltMax = 160;
     public static final int climberExtendHome = 0;
+    public static final int climberExtendMax = 3200;
 
 }

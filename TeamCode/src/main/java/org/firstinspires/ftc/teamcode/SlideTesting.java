@@ -25,6 +25,11 @@ public class SlideTesting extends LinearOpMode {
         int ElevatorTargetPosition = 0;
         int IntakeTargetPosition = 0;
 
+        int ClimbExtendCurrentPosition = 0;
+        int ClimbTiltCurrentPosition = 0;
+        int ClimbExtendTargetPosition = 0;
+        int ClimbTiltTargetPosition = 0;
+
         boolean dPadUp = false;
         boolean dPadDown = false;
         boolean dPadRight = false;
@@ -52,6 +57,38 @@ public class SlideTesting extends LinearOpMode {
             ElevatorCurrentPosition = robot.elevatorLift.getCurrentPosition();
             IntakeSlideCurrentPosition = robot.intakeSlide.getCurrentPosition();
 
+            ClimbExtendCurrentPosition = robot.climberExtend.getCurrentPosition();
+            ClimbTiltCurrentPosition = robot.climberTilt.getCurrentPosition();
+
+            if (gamepad1.dpad_up && !dPadUp) {
+                dPadUp = true;
+                ClimbExtendTargetPosition = ClimbExtendCurrentPosition + 100;
+            } else if (gamepad1.dpad_down && !dPadDown) {
+                dPadDown = true;
+                ClimbExtendTargetPosition = ClimbExtendCurrentPosition - 100;
+            }
+
+            if (gamepad1.dpad_right && !dPadRight){
+                dPadRight = true;
+                ClimbTiltTargetPosition = ClimbTiltCurrentPosition + 10;
+            } else if (gamepad1.dpad_left && !dPadLeft){
+                dPadLeft = true;
+                ClimbTiltTargetPosition = ClimbTiltCurrentPosition - 10;
+            }
+
+            if (gamepad1.a){
+                ClimbExtendTargetPosition = Constants.climberExtendMax;
+            } else if (gamepad1.b) {
+                ClimbExtendTargetPosition = Constants.climberExtendHome;
+            }
+
+            if (gamepad1.y){
+                ClimbTiltTargetPosition = Constants.climberTiltMax;
+            } else if (gamepad1.x) {
+                ClimbTiltTargetPosition = Constants.climberTiltHome;
+            }
+
+            /*
             if (gamepad1.dpad_up && !dPadUp) {
                 dPadUp = true;
                 ElevatorTargetPosition = ElevatorCurrentPosition + 50;
@@ -68,6 +105,16 @@ public class SlideTesting extends LinearOpMode {
                 IntakeTargetPosition = IntakeSlideCurrentPosition - 50;
             }
 
+             */
+
+            if (ClimbExtendTargetPosition < 0) {
+                ClimbExtendTargetPosition = 0;
+            }
+
+            if (ClimbTiltTargetPosition < 0){
+                ClimbTiltTargetPosition = 0;
+            }
+
             if (ElevatorTargetPosition <0 ){
                 ElevatorTargetPosition = 0;
             }
@@ -76,9 +123,13 @@ public class SlideTesting extends LinearOpMode {
                 IntakeTargetPosition = 0;
             }
 
-            robot.setElevator(ElevatorTargetPosition);
-            robot.setIntakeSlide(IntakeTargetPosition);
+            //robot.setElevator(ElevatorTargetPosition);
+            //robot.setIntakeSlide(IntakeTargetPosition);
 
+            robot.setClimbExtend(ClimbExtendTargetPosition);
+            robot.setClimbTilt(ClimbTiltTargetPosition);
+
+            /*
             //Active Intake Testing
             if (gamepad1.right_bumper && robot.intakeTouch.getState() ){
                 robot.runIntake(RobotHardware.ActiveIntake.IN);
@@ -102,6 +153,8 @@ public class SlideTesting extends LinearOpMode {
                 robot.ElevatorPivot(-0.01);
             }
 
+             */
+
             //Reset button trackers
             if (!gamepad1.dpad_up){
                 dPadUp = false;
@@ -120,16 +173,17 @@ public class SlideTesting extends LinearOpMode {
             }
 
             telemetry.addData("Elevator Pos: ", robot.elevatorLift.getCurrentPosition());
-            telemetry.addData("Intake Pos: ", robot.intakeSlide.getCurrentPosition());
-            telemetry.addData("Intake Touch: ", robot.intakeTouch.getState());
-            telemetry.addData("Intake Color ARGB: ", robot.intakeColor.argb());
-            telemetry.addData("Intake Color R: ", robot.intakeColor.red());
-            telemetry.addData("Intake Color G: ", robot.intakeColor.green());
-            telemetry.addData("Intake Color B: ", robot.intakeColor.blue());
+            //telemetry.addData("Intake Pos: ", robot.intakeSlide.getCurrentPosition());
+            //telemetry.addData("Intake Touch: ", robot.intakeTouch.getState());
+            //telemetry.addData("Intake Color R: ", robot.intakeColor.red());
+            //telemetry.addData("Intake Color G: ", robot.intakeColor.green());
+            //telemetry.addData("Intake Color B: ", robot.intakeColor.blue());
             telemetry.addData("Detected Color: ", StateMachine.detectedColor);
             telemetry.addData("State: ", StateMachine.getState());
-            telemetry.addData("Elev Pivot: ", robot.elevatorPivot.getPosition());
-            telemetry.addData("Intake Lift: ", robot.intakeLift.getPosition());
+            //telemetry.addData("Elev Pivot: ", robot.elevatorPivot.getPosition());
+            //telemetry.addData("Intake Lift: ", robot.intakeLift.getPosition());
+            telemetry.addData("Climb Extend: ", robot.climberExtend.getCurrentPosition());
+            telemetry.addData("Climb Tilt: ", robot.climberTilt.getCurrentPosition());
             telemetry.update();
 
             StateMachine.update();

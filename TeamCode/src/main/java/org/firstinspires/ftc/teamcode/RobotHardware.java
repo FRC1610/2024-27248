@@ -136,14 +136,12 @@ public class RobotHardware {
         ///CLIMBER SETUP
 
         climberTilt = myOpMode.hardwareMap.get(DcMotorEx.class, "climberTilt");
-        //climberTilt.setDirection(DcMotorSimple.Direction.REVERSE);
         climberTilt.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         climberTilt.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         climberTilt.setTargetPosition(Constants.climberTiltHome);
         climberTilt.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         climberExtend = myOpMode.hardwareMap.get(DcMotorEx.class, "climberExtend");
-        //climberExtend.setDirection(DcMotorSimple.Direction.REVERSE);
         climberExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         climberExtend.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         climberExtend.setTargetPosition(Constants.climberExtendHome);
@@ -291,6 +289,26 @@ public class RobotHardware {
         elevatorLift.setTargetPosition(elevatorTargetPosition);
         elevatorLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         elevatorLift.setPower(elevatorPower);
+    }
+
+    /**
+     * @param climbExtendTargetPosition Target Position
+     */
+    public void setClimbExtend (int climbExtendTargetPosition){
+        double ClimbExtendPower = 0.75;
+        climberExtend.setTargetPosition(climbExtendTargetPosition);
+        climberExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        climberExtend.setPower(ClimbExtendPower);
+    }
+
+    /**
+     * @param climbTiltTargetPosition Target Position
+     */
+    public void setClimbTilt (int climbTiltTargetPosition){
+        double ClimbTiltPower = 0.75;
+        climberTilt.setTargetPosition(climbTiltTargetPosition);
+        climberTilt.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        climberTilt.setPower(ClimbTiltPower);
     }
 
     /**
