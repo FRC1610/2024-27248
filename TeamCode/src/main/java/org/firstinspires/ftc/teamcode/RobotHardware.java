@@ -295,7 +295,7 @@ public class RobotHardware {
      * @param climbExtendTargetPosition Target Position
      */
     public void setClimbExtend (int climbExtendTargetPosition){
-        double ClimbExtendPower = 0.75;
+        double ClimbExtendPower = 1.0;
         climberExtend.setTargetPosition(climbExtendTargetPosition);
         climberExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         climberExtend.setPower(ClimbExtendPower);
@@ -305,7 +305,7 @@ public class RobotHardware {
      * @param climbTiltTargetPosition Target Position
      */
     public void setClimbTilt (int climbTiltTargetPosition){
-        double ClimbTiltPower = 0.75;
+        double ClimbTiltPower = 1.0;
         climberTilt.setTargetPosition(climbTiltTargetPosition);
         climberTilt.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         climberTilt.setPower(ClimbTiltPower);
